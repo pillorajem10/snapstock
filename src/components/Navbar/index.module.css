@@ -13,7 +13,7 @@
   margin: 0;
   padding: 0;
   height: 3.5rem;
-  background-color: #00B9E2;
+  background-color: black;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -31,5 +31,5 @@
 }
 
 .listings a:hover {
-  color: #111;
+  color: #9E9E9E;
 }

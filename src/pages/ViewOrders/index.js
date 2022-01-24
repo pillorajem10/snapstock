@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { jkai } from '../../redux/combineActions';
+import { jkai, common } from '../../redux/combineActions';
 
 //REACT ROUTER SHIT
 import { useNavigate } from 'react-router-dom';
@@ -26,10 +26,13 @@ import {
 import styles from './index.module.css';
 
 //UTILS
-import { formatPriceX } from '../../utils/methods'
+import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
 
 const Page = () => {
-  const { loading, error } = useSelector(state => state.jkai.order);
+  const { error } = useSelector(state => state.jkai.order);
+  const {
+    ui: { loading },
+  } = useSelector((state) => state.common);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,12 +41,23 @@ const Page = () => {
   const [pageDetails, setPageDetails] = useState(null);
   const [pageSize] = useState(7);
 
+  const fomattedDateNow = convertMomentWithFormat(Date.now());
+
+  const monthOrdered = +fomattedDateNow.split('/')[0];
+  const dateOrdered = +fomattedDateNow.split('/')[1];
+  const yearOrdered = +fomattedDateNow.split('/')[2];
+
   const handleOrderList = useCallback(
   (pageIndex = 1) => {
     const payload = {
       pageIndex,
       pageSize,
+      // monthOrdered,
+      // dateOrdered,
+      // yearOrdered,
     }
+
+    dispatch(common.ui.setLoading());
     dispatch(jkai.order.getOrdersByParams(payload))
       .then((res) => {
         const { success, data } = res;
@@ -57,6 +71,9 @@ const Page = () => {
           });
         }
       })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
   },
   [dispatch, pageSize],
 );
@@ -70,7 +87,8 @@ const Page = () => {
     return (
       <TableBody style = {{
           display: loading && 'none',
-          background: order.credit === "true" ? "yellow" : "white"
+          background: order.credit === "true" ? "yellow" : "white",
+          cursor: "pointer"
         }} key={idx}
         onClick = {() => navigate(`/order/${order._id}`)}
       >
@@ -101,6 +119,13 @@ const Page = () => {
             createBanana(order, index)
           ))}
         </Table>
+        <TableRow style={{ marginTop:"1rem" }}>
+          <TableCell>
+            <b style={{ fontSize: "1.5rem" }}>
+              Total: <span style={{ color: "red" }}>{formatPriceX(orderList && orderList.reduce((a, c) => c.totalPrice + a, 0))}</span>
+            </b>
+          </TableCell>
+        </TableRow>
       </TableContainer>
 
       <Pagination

@@ -1,3 +1,4 @@
-import * as jkai from './actions';
+import * as jkai from './jkai/actions';
+import * as common from './common/actions';
 
-export { jkai };
+export { jkai, common };

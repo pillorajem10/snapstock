@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { jkai } from '../../redux/combineActions';
+import { jkai, common } from '../../redux/combineActions';
 
 //MUI STUFFS
 import {
@@ -25,7 +25,10 @@ import styles from './index.module.css';
 import { formatPriceX } from '../../utils/methods'
 
 const Page = () => {
-  const { loading, error } = useSelector(state => state.jkai.product);
+  const { error } = useSelector(state => state.jkai.product);
+  const {
+    ui: { loading },
+  } = useSelector((state) => state.common);
 
   const dispatch = useDispatch();
 
@@ -38,7 +41,9 @@ const Page = () => {
     const payload = {
       pageIndex,
       pageSize,
-    }
+    };
+
+    dispatch(common.ui.setLoading());
     dispatch(jkai.product.getProductsByParams(payload))
       .then((res) => {
         const { success, data } = res;
@@ -52,6 +57,9 @@ const Page = () => {
           });
         }
       })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
   },
   [dispatch, pageSize],
 );
@@ -76,7 +84,7 @@ const Page = () => {
   };
 
   return (
-    loading ? <CircularProgress color="inherit"/> :
+    loading ? <CircularProgress/> :
     <>
       <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
         <Table aria-label="simple table">

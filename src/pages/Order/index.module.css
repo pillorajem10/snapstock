@@ -1,0 +1,60 @@
+.header {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.container {
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.addOrderForm {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  margin-left: 1rem;
+  border: solid;
+  width: 25rem;
+  border-radius: 16px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.orderInfoForm {
+  margin-top: .2rem;
+  margin-bottom: 2rem;
+  border: solid;
+  width: 20rem;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.inputField {
+  margin-top: 1rem;
+}
+
+.slct {
+  width: 13.9rem;
+  border-color: #C1C1C1;
+  font-size: 1rem;
+  border-radius: 4px;
+  height: 3.5rem;
+}
+
+.btn {
+  height: 2.5rem;
+  margin-top: .5rem;
+  width: 10rem;
+  border: none;
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border: solid;
+  background-color: white;
+  color: black;
+  transition: .5s;
+}

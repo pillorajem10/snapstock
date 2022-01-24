@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 /**
  * convert format price
  * @param {*} params
@@ -20,3 +22,37 @@ export const convertQueryString = (params) => {
     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
     .join('&');
 };
+
+
+/**
+ * anti boolean 'true'
+ * @param {*} params
+ */
+export const evalBoolean = (params) => {
+  return params === 'true' || params === true;
+};
+
+
+/**
+ * convert date format
+ * @param {*} params
+ */
+ export const convertMomentWithFormat = (v) => {
+   return moment(v).format('MM/DD/YYYY');
+ };
+
+ export const evaluateBooleanFields = (v) => {
+   const evalObj = v;
+   Object.keys(evalObj).map(fld => {
+     if (evalObj[fld] === 'true' || evalObj[fld] === 'false') {
+       evalObj[fld] = evalBoolean(evalObj[fld]);
+     }
+
+     /*if (knownBooleanFields.includes(evalObj[fld])) {
+       evalObj[fld] = evalObj[fld] === '' ? false : true;
+     }*/
+
+     return fld;
+   })
+   return evalObj;
+ };
