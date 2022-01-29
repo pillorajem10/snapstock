@@ -8,6 +8,10 @@ export async function fetchOrderByParams(payload) {
   return GET(`/order?${params}`);
 }
 
+export async function createOrder(payload) {
+  return POST(`/order`, payload);
+}
+
 export async function fetchOrder(payload) {
   return GET(`/order/${payload}`);
 }
@@ -25,7 +29,5 @@ export async function addOrderItem(payload) {
 export async function fetchOrderItemByParams(payload) {
   const params = methods.convertQueryString(payload);
   const { orderId } = payload;
-  console.log("PAYLOADDDDDDDDDDD SA ORDER ITEMSSSSSSSSSSSSSS", payload);
-  console.log("PAYLOADDDDDDDDDDD params SA ORDER ITEMSSSSSSSSSSSSSS", params);
   return GET(`/order/orderItem/${orderId}?${params}`);
 }

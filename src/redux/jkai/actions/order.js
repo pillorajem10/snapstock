@@ -1,5 +1,5 @@
 //api
-import { fetchOrderByParams, fetchOrder, updateOrder, addOrderItem, fetchOrderItemByParams } from '../../../services/api/order';
+import { fetchOrderByParams, fetchOrder, updateOrder, addOrderItem, fetchOrderItemByParams, createOrder } from '../../../services/api/order';
 
 //types
 import * as types from '../types';
@@ -22,6 +22,28 @@ export const getOrdersByParams = (payload) => (dispatch) => {
     return res;
   });
 };
+
+
+
+//ADD ORDER
+export const addOrder = (payload) => (dispatch) => {
+  return createOrder(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.ORDER_ADD_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.ORDER_ADD_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
 
 
 //GET DETAILS BY
@@ -69,28 +91,37 @@ export const getOrdersItemsByParams = (payload) => (dispatch) => {
 
 
 
+export const addItem = (payload) => () => {
+  return addOrderItem(payload).then((res) => {
+    return res;
+  });
+};
 
+
+/*
 //ADD ORDER ITEMS
 export const addItem = (payload) => (dispatch) => {
   return addOrderItem(payload).then((res) => {
+    console.log("RESSSSSSSSSSS ADD ITEM", res)
+
     if (res.success) {
       dispatch({
         type: types.ORDER_ADD_ITEM_SUCCESS,
         payload: res.data,
       });
     } else {
+      console.log("RESSSSSSS MSG", res.msg);
       dispatch({
         type: types.ORDER_ADD_ITEM_FAIL,
         payload: res.msg,
       });
     }
 
-    console.log("RESSSSSSSSSSS ADD ITEM", res)
 
     return res;
   });
 };
-
+*/
 
 
 

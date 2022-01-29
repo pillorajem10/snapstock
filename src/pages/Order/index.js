@@ -25,7 +25,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 
 //UTILS
-import { formatPriceX, evaluateBooleanFields } from '../../utils/methods'
+import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '../../utils/methods'
 
 //css
 import styles from './index.module.css';
@@ -48,6 +48,7 @@ const Page = () => {
   const [qty, setQty] = useState('');
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openSuccessSnackbarAddItem, setOpenSuccessSnackbarAddItem] = useState(false);
+  const [openErrorSnackbarAddItem, setOpenErrorSnackbarAddItem] = useState(false);
   const [orderItemList, setOrderItemList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
   const [pageSize] = useState(50);
@@ -73,20 +74,19 @@ const Page = () => {
     [dispatch],
   );
 
+/*
 const handleOrderItemList = useCallback(
   (pageIndex = 1) => {
     const payload = {
       pageIndex,
       pageSize,
       orderId: id
-      // monthOrdered,
-      // dateOrdered,
-      // yearOrdered,
     }
 
     dispatch(common.ui.setLoading());
     dispatch(jkai.order.getOrdersItemsByParams(payload))
       .then((res) => {
+        console.log("TUMAKBOOOOOOOOOOO")
         const { success, data } = res;
         if (success) {
           setOrderItemList(data.docs);
@@ -98,8 +98,37 @@ const handleOrderItemList = useCallback(
           });
         }
       })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
   },
-  [dispatch, pageSize],
+  [dispatch],
+  );
+*/
+  const handleOrderItemList = useCallback(
+    (pageIndex = 1) => {
+      const payload = { pageSize, pageIndex, orderId: id };
+
+      dispatch(common.ui.setLoading());
+      dispatch(jkai.order.getOrdersItemsByParams(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            console.log("DATAAAAAAAAAAAA", data)
+            setOrderItemList(data.docs);
+            setPageDetails({
+              pageIndex: data.page,
+              pageSize: data.limit,
+              totalPages: data.totalPages,
+              totalDocs: data.totalDocs
+            });
+          }
+        })
+        .finally(() => {
+          dispatch(common.ui.clearLoading());
+        });
+    },
+    [dispatch, id],
   );
 
   useEffect(() => {
@@ -150,6 +179,7 @@ const handleOrderItemList = useCallback(
 
   const handleSubmitAddItem = (event) => {
     event.preventDefault();
+    console.log("DITO PO UNG PAYLOADD SA ADD ITEM 1")
     const payload = {
       orderId: id,
       productId,
@@ -162,6 +192,9 @@ const handleOrderItemList = useCallback(
         const { success } = res;
         if (success) {
           setOpenSuccessSnackbarAddItem(true)
+          location.reload();
+        } else {
+          setOpenErrorSnackbarAddItem(true)
         }
       })
       .finally(() => {
@@ -175,7 +208,8 @@ const handleOrderItemList = useCallback(
     }
 
     setOpenSuccessSnackbar(false);
-    setOpenSuccessSnackbarAddItem(false)
+    setOpenSuccessSnackbarAddItem(false);
+    setOpenErrorSnackbarAddItem(false);
   };
 
   const handleCreditSwitch = () => {
@@ -206,6 +240,7 @@ const handleOrderItemList = useCallback(
       >
         <TableCell>{item.productName}</TableCell>
         <TableCell>{item.qty}</TableCell>
+        <TableCell>{convertMomentWithFormat(item.createdAt)}</TableCell>
         <TableCell>{formatPriceX(item.total)}</TableCell>
       </TableBody>
     )
@@ -228,6 +263,11 @@ const handleOrderItemList = useCallback(
     <Snackbar open={openSuccessSnackbarAddItem} autoHideDuration={2000} onClose={handleClose}>
       <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
         Item successfully added.
+      </Alert>
+    </Snackbar>
+    <Snackbar open={openErrorSnackbarAddItem} autoHideDuration={2000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+        {error}
       </Alert>
     </Snackbar>
       <div className={styles.container}>
@@ -256,6 +296,7 @@ const handleOrderItemList = useCallback(
               <TableRow style={{ marginTop:"1rem" }} >
                 <TableCell><b style={{ fontSize: "1.5rem" }}>Product</b></TableCell>
                 <TableCell><b style={{ fontSize: "1.5rem" }}>Quantity</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Date</b></TableCell>
                 <TableCell><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
               </TableRow>
             </TableHead>
@@ -267,7 +308,7 @@ const handleOrderItemList = useCallback(
             <TableRow style={{ marginTop:"1rem" }}>
               <TableCell>
                 <b style={{ fontSize: "1.5rem" }}>
-                  Total: <span style={{ color: "red" }}>{formatPriceX(orderItemList && orderItemList.reduce((a, c) => c.total + a, 0))}</span>
+                  Total: <span style={{ color: "#39CD35" }}>{formatPriceX(orderItemList && orderItemList.reduce((a, c) => c.total + a, 0))}</span>
                 </b>
               </TableCell>
             </TableRow>

@@ -24,16 +24,19 @@ import {
 } from '@mui/material'
 
 // sectiions
-import AddOrderForm from './sections/AddOrder';
+// import AddDeliveryForm from './sections/AddDelivery';
 
 //STYLE
 import styles from './index.module.css';
+
+// sectiions
+import AddDeliveryForm from './sections/AddDelivery';
 
 //UTILS
 import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
 
 const Page = () => {
-  const { error } = useSelector(state => state.jkai.order);
+  const { error } = useSelector(state => state.jkai.delivery);
   const {
     ui: { loading },
   } = useSelector((state) => state.common);
@@ -41,34 +44,35 @@ const Page = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [orderList, setOrderList] = useState([]);
+  const [orderList, setDeliveryList] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [pageDetails, setPageDetails] = useState(null);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(7);
 
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
-  const monthOrdered = +fomattedDateNow.split('/')[0];
-  const dateOrdered = +fomattedDateNow.split('/')[1];
-  const yearOrdered = +fomattedDateNow.split('/')[2];
+  const monthDelivered = +fomattedDateNow.split('/')[0];
+  const dateDelivered = +fomattedDateNow.split('/')[1];
+  const yearDelivered = +fomattedDateNow.split('/')[2];
 
-  const handleOrderList = useCallback(
+  const handleDeliveryList = useCallback(
   (pageIndex = 1) => {
     const payload = {
       pageIndex,
       pageSize,
-      customerName,
-      monthOrdered,
-      dateOrdered,
-      yearOrdered,
+      customerName
+      // monthDelivered,
+      // dateDelivered,
+      // yearDelivered,
     }
 
     dispatch(common.ui.setLoading());
-    dispatch(jkai.order.getOrdersByParams(payload))
+    dispatch(jkai.delivery.getDeliveriesByParams(payload))
       .then((res) => {
         const { success, data } = res;
         if (success) {
-          setOrderList(data.docs);
+          setDeliveryList(data.docs);
+          console.log("DATAA DOVS", data.docs)
           setPageDetails({
             pageIndex: data.page,
             pageSize: data.limit,
@@ -86,36 +90,36 @@ const Page = () => {
 
 
   useEffect(() =>{
-    handleOrderList();
-  },[handleOrderList])
+    handleDeliveryList();
+  },[handleDeliveryList])
 
-  const createBanana = (order, idx) => {
+  const createBanana = (delivery, idx) => {
     return (
       <TableBody style = {{
           display: loading && 'none',
-          background: order.credit === "true" ? "yellow" : "white",
           cursor: "pointer"
         }} key={idx}
-        onClick = {() => navigate(`/order/${order._id}`)}
+        /*onClick = {() => navigate(`/delivery/${delivery._id}`)}*/
       >
-        <TableCell>{order.customerName}</TableCell>
-        <TableCell>{`${order.monthOrdered}/${order.dateOrdered}/${order.yearOrdered}`}</TableCell>
-        <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}>{formatPriceX(order.totalPrice)}</TableCell>
+        <TableCell>{delivery.productName}</TableCell>
+        <TableCell>{delivery.qty}</TableCell>
+        <TableCell>{`${delivery.monthDelivered}/${delivery.dateDelivered}/${delivery.yearDelivered}`}</TableCell>
+        <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}>{formatPriceX(delivery.total)}</TableCell>
       </TableBody>
     )
   };
 
   const handleChangePageIndex = (event, value) => {
-    handleOrderList(value);
+    handleDeliveryList(value);
   };
 
-  const filteredCreditArray = orderList && orderList.filter(order => order.credit === "false" || order.credit === false);
+  // const filteredCreditArray = orderList && orderList.filter(delivery => delivery.credit === "false" || delivery.credit === false);
 
   return (
     <>
-      <AddOrderForm/>
+      <AddDeliveryForm/>
       <form className={styles.searchForm}>
-        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search orders by customer name" size="small"/>
+        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search deliveries by customer name" size="small"/>
         {/*<button className={styles.btn} type="submit">Search</button>*/}
       </form>
       {loading ? <CircularProgress color="inherit"/> :
@@ -124,23 +128,24 @@ const Page = () => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow style={{ marginTop:"1rem" }} >
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Ordered By</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Date Ordered</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Delivered By</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Quantity</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Date Delivered</b></TableCell>
                 <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
                 {/* <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell> */}
               </TableRow>
             </TableHead>
-            {orderList.map((order, index) => (
-              createBanana(order, index)
+            {orderList.map((delivery, index) => (
+              createBanana(delivery, index)
             ))}
           </Table>
-          <TableRow style={{ marginTop:"1rem" }}>
+          {/*<TableRow style={{ marginTop:"1rem" }}>
             <TableCell>
               <b style={{ fontSize: "1.5rem" }}>
-                Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0))}</span>
+                Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.total + a, 0))}</span>
               </b>
             </TableCell>
-          </TableRow>
+          </TableRow>*/}
         </TableContainer>
 
         <Pagination

@@ -17,6 +17,12 @@ const reducer = (state = initialState, action) => {
     case types.ORDER_LIST_FAIL:
       return { ...state, error: action.payload };
 
+    case types.ORDER_ADD_SUCCESS:
+      return { ...state, order: action.payload };
+
+    case types.ORDER_ADD_FAIL:
+      return { ...state, error: action.payload };
+
     case types.ORDER_DETAILS_SUCCESS:
       return { ...state, order: action.payload };
 

@@ -24,7 +24,7 @@ import {
 } from '@mui/material'
 
 // sectiions
-import AddOrderForm from './sections/AddOrder';
+// import AddOrderForm from './sections/AddOrder';
 
 //STYLE
 import styles from './index.module.css';
@@ -44,7 +44,7 @@ const Page = () => {
   const [orderList, setOrderList] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [pageDetails, setPageDetails] = useState(null);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(7);
 
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
@@ -57,10 +57,10 @@ const Page = () => {
     const payload = {
       pageIndex,
       pageSize,
-      customerName,
-      monthOrdered,
-      dateOrdered,
-      yearOrdered,
+      customerName
+      // monthOrdered,
+      // dateOrdered,
+      // yearOrdered,
     }
 
     dispatch(common.ui.setLoading());
@@ -109,11 +109,10 @@ const Page = () => {
     handleOrderList(value);
   };
 
-  const filteredCreditArray = orderList && orderList.filter(order => order.credit === "false" || order.credit === false);
+  // const filteredCreditArray = orderList && orderList.filter(order => order.credit === "false" || order.credit === false);
 
   return (
     <>
-      <AddOrderForm/>
       <form className={styles.searchForm}>
         <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search orders by customer name" size="small"/>
         {/*<button className={styles.btn} type="submit">Search</button>*/}
@@ -134,13 +133,13 @@ const Page = () => {
               createBanana(order, index)
             ))}
           </Table>
-          <TableRow style={{ marginTop:"1rem" }}>
+          {/*<TableRow style={{ marginTop:"1rem" }}>
             <TableCell>
               <b style={{ fontSize: "1.5rem" }}>
                 Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0))}</span>
               </b>
             </TableCell>
-          </TableRow>
+          </TableRow>*/}
         </TableContainer>
 
         <Pagination

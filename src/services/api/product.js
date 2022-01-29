@@ -1,7 +1,7 @@
 // utils
 import * as methods from '../../utils/methods';
 
-import { GET, POST } from '../request';
+import { GET, POST, PUT } from '../request';
 
 /*
 export async function fetchProductByParams() {
@@ -16,6 +16,22 @@ export async function fetchProductByParams() {
 export async function fetchProductByParams(payload) {
   const params = methods.convertQueryString(payload);
   return GET(`/product?${params}`);
+}
+
+export async function fetchProduct(payload) {
+  return GET(`/product/${payload}`);
+}
+
+export async function updateProductById(payload) {
+  const { id } = payload;
+  console.log("PAYLOADDDDDDDDDDDDDDDDDD PRODUCT", payload)
+  return PUT(`/product/${id}`, payload);
+}
+
+
+export async function addStocksById(payload) {
+  const { id } = payload;
+  return POST(`/product/${id}`, payload);
 }
 
 /*

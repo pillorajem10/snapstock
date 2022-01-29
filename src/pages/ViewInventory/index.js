@@ -15,8 +15,12 @@ import {
   TableRow,
   Paper,
   CircularProgress,
+  TextField,
   Pagination,
 } from '@mui/material'
+
+//REACT ROUTER SHIT
+import { useNavigate } from 'react-router-dom';
 
 //STYLE
 import styles from './index.module.css';
@@ -31,9 +35,11 @@ const Page = () => {
   } = useSelector((state) => state.common);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [productList, setProductList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
+  const [name, setName] = useState('');
   const [pageSize] = useState(7);
 
   const handleProductList = useCallback(
@@ -41,6 +47,7 @@ const Page = () => {
     const payload = {
       pageIndex,
       pageSize,
+      name,
     };
 
     dispatch(common.ui.setLoading());
@@ -61,7 +68,7 @@ const Page = () => {
         dispatch(common.ui.clearLoading());
       });
   },
-  [dispatch, pageSize],
+  [dispatch, pageSize, name],
 );
 
 
@@ -71,7 +78,7 @@ const Page = () => {
 
   const createBanana = (product, idx) => {
     return (
-      <TableBody style = {{ display: loading && 'none'}} key={idx}>
+      <TableBody style = {{ display: loading && 'none', cursor: "pointer"}} key={idx} onClick = {() => navigate(`/viewinvt/${product._id}`)}>
         <TableCell>{product.name}</TableCell>
         <TableCell>{product.stocks}</TableCell>
         <TableCell>{formatPriceX(product.price)}</TableCell>
@@ -84,32 +91,38 @@ const Page = () => {
   };
 
   return (
-    loading ? <CircularProgress/> :
     <>
-      <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow style={{ marginTop:"1rem" }} >
-              <TableCell><b style={{ fontSize: "1.5rem" }}>Name</b></TableCell>
-              <TableCell><b style={{ fontSize: "1.5rem" }}>Stock</b></TableCell>
-              <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell>
-            </TableRow>
-          </TableHead>
-          {productList.map((recipe, index) => (
-            createBanana(recipe, index)
-          ))}
-        </Table>
-      </TableContainer>
+      <form className={styles.searchForm}>
+        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small"/>
+        {/*<button className={styles.btn} type="submit">Search</button>*/}
+      </form>
+      {loading ? <CircularProgress/> :
+      <div>
+        <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow style={{ marginTop:"1rem" }} >
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Name</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Stock</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell>
+              </TableRow>
+            </TableHead>
+            {productList.map((recipe, index) => (
+              createBanana(recipe, index)
+            ))}
+          </Table>
+        </TableContainer>
 
-      <Pagination
-        style = {{ display: loading && 'none', marginTop: "1rem" }}
-        count={pageDetails && pageDetails.totalPages}
-        page={pageDetails && pageDetails.pageIndex}
-        defaultPage={1}
-        color="primary"
-        size="large"
-        onChange={handleChangePageIndex}
-      />
+        <Pagination
+          style = {{ display: loading && 'none', marginTop: "1rem" }}
+          count={pageDetails && pageDetails.totalPages}
+          page={pageDetails && pageDetails.pageIndex}
+          defaultPage={1}
+          color="primary"
+          size="large"
+          onChange={handleChangePageIndex}
+        />
+      </div>}
     </>
   )
 }
