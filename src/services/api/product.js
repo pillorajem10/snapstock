@@ -19,6 +19,7 @@ export async function fetchProductByParams(payload) {
 }
 
 export async function fetchProduct(payload) {
+  console.log("ETOOOOOOOOOO YONN", payload)
   return GET(`/product/${payload}`);
 }
 

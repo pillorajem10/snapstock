@@ -11,6 +11,7 @@ import ViewAllOrders from './pages/ViewAllOrders';
 import Order from './pages/Order';
 import Product from './pages/Product';
 import Delivery from './pages/Delivery';
+import LoginPage from './pages/LoginPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/deliveries" element={<Delivery/>}></Route>
         <Route path="/order/:id" element={<Order/>}></Route>
         <Route path="/viewinvt/:id" element={<Product/>}></Route>
+        <Route path="/login/" element={<LoginPage/>}></Route>
       </Routes>
     </BrowserRouter>
   );

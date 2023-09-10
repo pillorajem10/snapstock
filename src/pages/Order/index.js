@@ -281,9 +281,9 @@ const handleOrderItemList = useCallback(
             variant="outlined"
             onChange={(e) => setCustomerName(e.target.value)}
           />
-          <p style={{fontSize: "1.5rem", fontWeight: "bold"}}>
+          {/*<p style={{fontSize: "1.5rem", fontWeight: "bold"}}>
             Credit: <Switch onClick={() => setClick(click + 1)} checked={credit === true || credit === "true"} size="large"/>
-          </p>
+          </p>*/}
           <button className={styles.btn} type="submit">Update Order</button>
         </form>
       </div>

@@ -26,6 +26,7 @@ export const getProductsByParams = (payload) => (dispatch) => {
 
 
 export const getProduct = (payload) => (dispatch) => {
+  console.log("DITO YON")
   return fetchProduct(payload).then((res) => {
     if (res.success) {
       dispatch({
@@ -33,6 +34,7 @@ export const getProduct = (payload) => (dispatch) => {
         payload: res.data.docs,
       });
     } else {
+      console.log("ERRORRRRRRRR BRAD")
       dispatch({
         type: types.PRODUCT_GET_FAIL,
         payload: res.msg,
@@ -42,6 +44,7 @@ export const getProduct = (payload) => (dispatch) => {
     return res;
   });
 };
+
 
 //UPDATE DETAILS BY
 export const updateProduct = (payload) => (dispatch) => {

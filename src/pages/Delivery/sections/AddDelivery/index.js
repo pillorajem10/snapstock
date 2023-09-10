@@ -79,7 +79,7 @@ const Page = () => {
   return (
     <>
       <form onSubmit={handleAddDelivery} className={styles.addDeliveryForm}>
-        <div style={{ fontSize: "1.5rem" }}><b>Add Delivery</b></div>
+        <div style={{ fontSize: "1.5rem" }}><b>Add Products</b></div>
         <div className={styles.inputField}>
           {/*<TextField
             id="outlined-basic"
