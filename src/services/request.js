@@ -1,8 +1,16 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
+
+const storedToken = Cookies.get('token');
+const bearerToken = `Bearer ${storedToken}`;
 
 // request header configuration
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 axios.defaults.headers.post.Accept = 'application/json';
+axios.defaults.headers.common.Authorization = storedToken === undefined ? null : bearerToken;
+
+
+// console.log('BEARERRRR TOKEN', axios.defaults.headers.common.Authorization)
 
 // const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3007' : 'https://hapichair.com/api-v1';
 const baseUrl = 'http://localhost:4000';

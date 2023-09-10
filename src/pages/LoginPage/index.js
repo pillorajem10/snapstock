@@ -7,6 +7,9 @@ import { jkai, common } from '../../redux/combineActions';
 
 //react router dom
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+import Cookies from 'js-cookie';
 
 //MUI STUFFS
 import {
@@ -32,6 +35,7 @@ const Page = () => {
 
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [productDeets, setProductDeets] = useState({});
   const [username, setUsername] = useState('');
@@ -39,27 +43,21 @@ const Page = () => {
   const [addedStocks, setAddedStocks] = useState('');
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
 
-
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
 
-  /*useEffect(() => {
-    dispatch(common.ui.setLoading());
-    dispatch(jkai.user.getProduct(id))
-      .then((res) => {
-        const { success, data } = res;
-        if (success) {
-          setProductDeets(data);
-        }
-      })
-      .finally(() => {
-        dispatch(common.ui.clearLoading());
-      });
-  }, []);*/
+  useEffect(() => {
+    const token = Cookies.get('token'); // Check local storage for the token
 
-  const handleSubmitUpdateProd = (event) => {
+    if (token) {
+      // If there's no token, redirect to the login page or any other route
+      navigate('/home');
+    }
+  }, [navigate]);
+
+  const handleSubmitLogin = (event) => {
     event.preventDefault();
 
     const payload = {
@@ -73,6 +71,7 @@ const Page = () => {
         const { success, data } = res;
         if (success) {
           setOpenSuccessSnackbar(true);
+          window.location.replace('/home');
         }
       })
       .finally(() => {
@@ -117,7 +116,7 @@ const Page = () => {
     <>
       <div style={{margin: 20}}>
         <div className={styles.forms}>
-          <form className={styles.orderInfoForm} onSubmit={handleSubmitUpdateProd}>
+          <form className={styles.orderInfoForm} onSubmit={handleSubmitLogin}>
             <div style={{fontSize: "1.5rem", fontWeight: "bold"}}>Login</div>
             <TextField
              style={{marginTop: 20}}

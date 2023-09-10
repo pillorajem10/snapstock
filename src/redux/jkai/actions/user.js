@@ -16,8 +16,6 @@ export const setAuthorizationHeader = (token) => {
 };
 
 export const setUserDetails = (userDetails) => {
-  console.log("USER DETAILSSSS SHITTTT", userDetails)
-
   Cookies.set('account', JSON.stringify(userDetails));
   Cookies.set('authenticated', true);
 
@@ -28,7 +26,7 @@ export const setUserDetails = (userDetails) => {
 };
 
 //GET LIST
-export const loginFunction = (payload) => (dispatch) => {
+/*export const loginFunction = (payload) => (dispatch) => {
   console.log('PAYYYYYYYYYYYYYYYYYLOADDDDDDDDDDDDDDDDDDD', payload);
   return loginFunc(payload).then((res) => {
     console.log('RESPONSEEEEEEEEEEEEEEEE', res)
@@ -42,9 +40,6 @@ export const loginFunction = (payload) => (dispatch) => {
         type: types.LOGIN_SUCCESS,
         payload: res.data.docs,
       });
-      // localStorage.setItem('token',JSON.stringify(res.data.token));
-      // Cookies.set('account', JSON.stringify(userDetails));
-      // Cookies.set('authenticated', true);
     } else {
       dispatch({
         type: types.LOGIN_FAIL,
@@ -54,4 +49,30 @@ export const loginFunction = (payload) => (dispatch) => {
 
     return res;
   });
+};*/
+
+export const loginFunction = (payload) => async (dispatch) => {
+  try {
+
+    const res = await loginFunc(payload);
+    const { success, data, msg } = res;
+
+    // console.log('RESPONSEEEE', res);
+
+    if (success) {
+      const { token } = data;
+      const account = jwtDecode(token);
+
+      setAuthorizationHeader(token);
+      dispatch(setUserDetails({account}));
+
+      return res;
+    }
+
+  } catch (err) {
+    dispatch({
+      type: types.LOGIN_FAIL,
+      // payload: res.msg,
+    });
+  }
 };
