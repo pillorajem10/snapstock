@@ -25,6 +25,7 @@ export const setUserDetails = (userDetails) => {
   };
 };
 
+
 //GET LIST
 /*export const loginFunction = (payload) => (dispatch) => {
   console.log('PAYYYYYYYYYYYYYYYYYLOADDDDDDDDDDDDDDDDDDD', payload);
@@ -53,26 +54,33 @@ export const setUserDetails = (userDetails) => {
 
 export const loginFunction = (payload) => async (dispatch) => {
   try {
-
     const res = await loginFunc(payload);
     const { success, data, msg } = res;
 
-    // console.log('RESPONSEEEE', res);
+    console.log('RESPONSEEEE', res);
 
     if (success) {
       const { token } = data;
       const account = jwtDecode(token);
 
       setAuthorizationHeader(token);
-      dispatch(setUserDetails({account}));
-
-      return res;
+      dispatch(setUserDetails({ account }));
     }
 
+    return res; // Return the response object in both success and error cases
+
   } catch (err) {
-    dispatch({
+    return dispatch({
       type: types.LOGIN_FAIL,
-      // payload: res.msg,
+      payload: err.response.data.msg,
     });
   }
+};
+
+export const userLogout = () => {
+  Cookies.remove('token');
+  Cookies.remove('account');
+  window.location.replace('/home');
+
+  // Router.push('/logout');
 };

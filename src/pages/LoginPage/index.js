@@ -42,6 +42,7 @@ const Page = () => {
   const [password, setPassword] = useState('');
   const [addedStocks, setAddedStocks] = useState('');
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -57,27 +58,38 @@ const Page = () => {
     }
   }, [navigate]);
 
+
   const handleSubmitLogin = (event) => {
     event.preventDefault();
 
     const payload = {
       username,
       password
-    }
+    };
 
     dispatch(common.ui.setLoading());
     dispatch(jkai.user.loginFunction(payload))
       .then((res) => {
-        const { success, data } = res;
-        if (success) {
-          setOpenSuccessSnackbar(true);
+        // Handle the response, whether success or error
+        if (res.success) {
           window.location.replace('/home');
+        } else {
+          setOpenSuccessSnackbar(true);
+          console.log('Login was not successful:', res.payload); // Log the error message
+          setErrMsg(res.payload)
+          // You can also display an error message to the user if needed
         }
+      })
+      .catch((error) => {
+        // Handle network or other errors
+        console.error('An error occurred during login:', error);
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());
       });
   };
+
+
 
   /*const handleSubmitAddStocks = (event) => {
     event.preventDefault();
@@ -114,6 +126,11 @@ const Page = () => {
 
   return (
     <>
+      <Snackbar open={openSuccessSnackbar} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {errMsg}
+        </Alert>
+      </Snackbar>
       <div style={{margin: 20}}>
         <div className={styles.forms}>
           <form className={styles.orderInfoForm} onSubmit={handleSubmitLogin}>
