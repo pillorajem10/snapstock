@@ -14,8 +14,6 @@ import Cookies from 'js-cookie';
 //MUI STUFFS
 import {
   CircularProgress,
-  TableRow,
-  Paper,
   TextField,
   Snackbar,
 } from '@mui/material';
@@ -89,32 +87,6 @@ const Page = () => {
       });
   };
 
-
-
-  /*const handleSubmitAddStocks = (event) => {
-    event.preventDefault();
-
-    const forIntAddedStocks = parseInt(addedStocks)
-
-    const payload = {
-      id,
-      addedStocks: forIntAddedStocks
-    }
-
-    dispatch(common.ui.setLoading());
-    dispatch(jkai.user.addStocks(payload))
-      .then((res) => {
-        const { success, data } = res;
-        if (success) {
-          setOpenSuccessSnackbar(true);
-        }
-      })
-      .finally(() => {
-        dispatch(common.ui.clearLoading());
-        location.reload();
-      });
-  }*/
-
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -125,39 +97,43 @@ const Page = () => {
 
 
   return (
-    <>
-      <Snackbar open={openSuccessSnackbar} autoHideDuration={5000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-          {errMsg}
-        </Alert>
-      </Snackbar>
-      <div style={{margin: 20}}>
-        <div className={styles.forms}>
-          <form className={styles.orderInfoForm} onSubmit={handleSubmitLogin}>
-            <div style={{fontSize: "1.5rem", fontWeight: "bold"}}>Login</div>
-            <TextField
-             style={{marginTop: 20}}
-              id="outlined-basic"
-              onChange={(e) => setUsername(e.target.value)}
-              label="Username:"
-              required
-              variant="outlined"
-            />
-            <TextField
-              style={{marginTop: 20}}
-              id="outlined-basic"
-              onChange={(e) => setPassword(e.target.value)}
-              label="Password:"
-              type="password"
-              required
-              variant="outlined"
-            />
-            <button className={styles.btn} type="submit">Login</button>
-          </form>
+    <div className={styles.container}>
+      <>
+        <Snackbar open={openSuccessSnackbar} autoHideDuration={5000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+            {errMsg}
+          </Alert>
+        </Snackbar>
+        <div style={{ margin: 20 }}>
+          <div className={styles.forms}>
+            <form className={styles.orderInfoForm} onSubmit={handleSubmitLogin}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Login</div>
+              <TextField
+                style={{ marginTop: 20, width: '100%' }}
+                id="outlined-basic"
+                onChange={(e) => setUsername(e.target.value)}
+                label="Username:"
+                required
+                variant="outlined"
+              />
+              <TextField
+                style={{ marginTop: 20, width: '100%' }}
+                id="outlined-basic"
+                onChange={(e) => setPassword(e.target.value)}
+                label="Password:"
+                type="password"
+                required
+                variant="outlined"
+              />
+              <button className={styles.btn} type="submit">
+                Login
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </>
-  )
+      </>
+    </div>
+  );
 }
 
 export default Page

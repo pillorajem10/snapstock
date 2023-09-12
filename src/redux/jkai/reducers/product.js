@@ -32,6 +32,12 @@ const reducer = (state = initialState, action) => {
     case types.PRODUCT_ADD_STOCKS_FAIL:
       return { ...state, loading: false, error: action.payload };
 
+    case types.PRODUCT_ADD_SUCCESS:
+      return { ...state, loading: false, product: action.payload };
+
+    case types.PRODUCT_ADD_FAIL:
+      return { ...state, loading: false, error: action.payload };
+
     default:
       return state;
   }

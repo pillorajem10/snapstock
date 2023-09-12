@@ -19,6 +19,9 @@ import {
   Pagination,
 } from '@mui/material'
 
+// sectiions
+import AddProductForm from './sections/AddProduct';
+
 //REACT ROUTER SHIT
 import { useNavigate } from 'react-router-dom';
 
@@ -92,6 +95,7 @@ const Page = () => {
 
   return (
     <>
+      <AddProductForm/>
       <form className={styles.searchForm}>
         <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small"/>
         {/*<button className={styles.btn} type="submit">Search</button>*/}

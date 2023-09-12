@@ -25,21 +25,21 @@ const Page = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [customerName, setCustomerName] = useState('');
-  const [productList, setProductList] = useState([]);
-  const [productId, setProductId] = useState('');
-  const [qty, setQty] = useState('');
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [stocks, setStocks] = useState('');
 
   const handleAddDelivery = (event) => {
     event.preventDefault();
 
     const payload = {
-      productId,
-      qty
+      name,
+      price,
+      stocks
     }
 
     dispatch(common.ui.setLoading());
-    dispatch(jkai.delivery.addDelivery(payload))
+    dispatch(jkai.product.addProduct(payload))
     .then((res) => {
       const { success, data } = res;
       if (success) {
@@ -53,51 +53,31 @@ const Page = () => {
     });
   };
 
-  const handleProductList = useCallback(
-    () => {
-      const payload = {
-        pageIndex: 1,
-        pageSize: 100,
-      }
-      dispatch(jkai.product.getProductsByParams(payload))
-        .then((res) => {
-          const { success, data } = res;
-          if (success) {
-            setProductList(data.docs);
-          }
-        })
-    },
-    [dispatch],
-  );
-
-  useEffect(() => {
-    handleProductList();
-  }, [handleProductList])
-
-  console.log("PRODUCT LIST DELLLLLLLLLL", productList)
 
   return (
     <>
       <form onSubmit={handleAddDelivery} className={styles.addDeliveryForm}>
-        <div style={{ fontSize: "1.5rem" }}><b>Add Product Stocks</b></div>
-        <div className={styles.inputField}>
-          {/*<TextField
-            id="outlined-basic"
-            label="Customer Name"
-            style={{ width: "100%" }}
-            required
-            onChange={(e) => setCustomerName(e.target.value)}
-            variant="outlined"
-          />*/}
+        <div style={{ fontSize: "1.5rem" }}><b>Add New Product</b></div>
+        <div className={styles.inputField}> 
           <div className={styles.inputField}>
-            <select required className={styles.slct} onChange={(e) => setProductId(e.target.value)}>
-              <option value=" ">Choose a product</option>
-              {productList.map((product) => (
-                <option key={product.name} value={product._id}>
-                  {product.name}
-                </option>
-              ))}
-            </select>
+            <TextField
+              id="outlined-basic"
+              label="Name of product"
+              style={{ width: "25rem" }}
+              required
+              variant="outlined"
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className={styles.inputField}>
+            <TextField
+              id="outlined-basic"
+              label="Price"
+              style={{ width: "25rem" }}
+              required
+              variant="outlined"
+              onChange={(e) => setPrice(e.target.value)}
+            />
           </div>
           <div className={styles.inputField}>
             <TextField
@@ -106,7 +86,7 @@ const Page = () => {
               style={{ width: "25rem" }}
               required
               variant="outlined"
-              onChange={(e) => setQty(e.target.value)}
+              onChange={(e) => setStocks(e.target.value)}
             />
           </div>
         </div>

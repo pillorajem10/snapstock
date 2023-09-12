@@ -13,6 +13,12 @@ export async function fetchProductByParams() {
  * fetch mpn list
  * @param {*} payload
  */
+
+ export async function addNewProduct(payload) {
+   return POST(`/product`, payload);
+ }
+
+
 export async function fetchProductByParams(payload) {
   const params = methods.convertQueryString(payload);
   return GET(`/product?${params}`);

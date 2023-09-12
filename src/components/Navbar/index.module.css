@@ -1,11 +1,11 @@
+
 .mainName {
   display: inline;
   font-size: 2rem;
   color: white;
   margin-left: 1.5rem;
-  text-decoration: none;
+  cursor: pointer;
 }
-
 
 .navbarContainer {
   display: flex;
@@ -22,7 +22,7 @@
 
 .listings {
   margin-left: 2rem;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
   font-size: 1.1rem;
 }
 
