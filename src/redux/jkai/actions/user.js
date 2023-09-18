@@ -1,5 +1,8 @@
 //api
-import { loginFunc } from '../../../services/api/user';
+import { loginFunc,
+  fetchUserByParams,
+  fetchUser,
+  updateUserById } from '../../../services/api/user';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
@@ -16,12 +19,14 @@ export const setAuthorizationHeader = (token) => {
 };
 
 export const setUserDetails = (userDetails) => {
-  Cookies.set('account', JSON.stringify(userDetails));
+  const { user } = userDetails;
+  Cookies.set('account', JSON.stringify(user));
   Cookies.set('authenticated', true);
+  Cookies.set('role', user.role);
 
   return {
     type: types.SET_USER_DETAILS,
-    payload: userDetails,
+    payload: user,
   };
 };
 
@@ -64,7 +69,7 @@ export const loginFunction = (payload) => async (dispatch) => {
       const account = jwtDecode(token);
 
       setAuthorizationHeader(token);
-      dispatch(setUserDetails({ account }));
+      dispatch(setUserDetails(account));
     }
 
     return res; // Return the response object in both success and error cases
@@ -80,7 +85,93 @@ export const loginFunction = (payload) => async (dispatch) => {
 export const userLogout = () => {
   Cookies.remove('token');
   Cookies.remove('account');
+  Cookies.remove('role');
+  Cookies.remove('authenticated');
   window.location.replace('/home');
 
   // Router.push('/logout');
+};
+
+export const getUsersByParams = (payload) => (dispatch) => {
+  return fetchUserByParams(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.USER_LIST_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.USER_LIST_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
+
+//ADD USER
+export const addUser = (payload) => (dispatch) => {
+  return addNewUser(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.USER_ADD_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.USER_ADD_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
+
+
+export const getUser = (payload) => (dispatch) => {
+  return fetchUser(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.USER_GET_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.USER_GET_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
+
+//UPDATE DETAILS BY
+export const updateUser = (payload) => async (dispatch) => {
+  try {
+    const res = await updateUserById(payload);
+    const { success, data, msg } = res;
+
+    console.log('RESPONSEEEE', res);
+
+    if (success) {
+      dispatch({
+        type: types.USER_UPDATE_SUCCESS,
+        payload: res.data,
+      });
+    }
+
+    return res; // Return the response object in both success and error cases
+
+  } catch (err) {
+    return dispatch({
+      type: types.USER_UPDATE_FAIL,
+      payload: err.response.data.msg,
+    });
+  }
 };

@@ -12,7 +12,9 @@ import ViewAllOrders from './pages/ViewAllOrders';
 import Order from './pages/Order';
 import Product from './pages/Product';
 import Delivery from './pages/Delivery';
+import User from './pages/User';
 import LoginPage from './pages/LoginPage';
+import UserDeets from './pages/UserDeets';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
           <Route path="/order/:id" element={<Order/>}></Route>
           <Route path="/viewinvt/:id" element={<Product/>}></Route>
           <Route path="/home" element={<ViewOrders/>}></Route>
+          <Route path="/users" element={<User/>}></Route>
+          <Route path="/user/:id" element={<UserDeets/>}></Route>
         </Routes>
       </AuthRouter>
     </BrowserRouter>
