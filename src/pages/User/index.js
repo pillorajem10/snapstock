@@ -31,6 +31,9 @@ import styles from './index.module.css';
 //UTILS
 import { formatPriceX } from '../../utils/methods'
 
+// NAVIGATION
+import Cookies from 'js-cookie';
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.user);
   const {
@@ -42,7 +45,7 @@ const Page = () => {
 
   const [userList, setUserList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [pageSize] = useState(7);
 
   const handleUserList = useCallback(
@@ -50,7 +53,7 @@ const Page = () => {
     const payload = {
       pageIndex,
       pageSize,
-      name,
+      username,
     };
 
     dispatch(common.ui.setLoading());
@@ -71,7 +74,7 @@ const Page = () => {
         dispatch(common.ui.clearLoading());
       });
   },
-  [dispatch, pageSize, name],
+  [dispatch, pageSize, username],
 );
 
 
@@ -94,9 +97,9 @@ const Page = () => {
 
   return (
     <>
-      <AddUserForm/>
+      {/*<AddUserForm/>*/}
       <form className={styles.searchForm}>
-        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setName(e.target.value)} placeholder="Search for user" size="small"/>
+        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>
         {/*<button className={styles.btn} type="submit">Search</button>*/}
       </form>
       {loading ? <CircularProgress/> :

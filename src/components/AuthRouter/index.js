@@ -6,12 +6,15 @@ const AuthRouter = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = Cookies.get('token'); // Check local storage for the token
+    const token = Cookies.get('token');
+    const role = Cookies.get('role');
 
     if (!token) {
-      // If there's no token, redirect to the login page or any other route
       navigate('/');
+    } else if (role === '0') {
+      navigate('/home');
     }
+
   }, [navigate]);
 
   return <>{children}</>;
