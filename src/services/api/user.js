@@ -8,6 +8,10 @@ export async function loginFunc(payload) {
   return POST('/auth/login', payload);
 }
 
+export async function registerFunc(payload) {
+  return POST('/user', payload);
+}
+
 export async function fetchUserByParams(payload) {
   const params = methods.convertQueryString(payload);
   return GET(`/user?${params}`);

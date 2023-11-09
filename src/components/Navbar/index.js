@@ -1,5 +1,10 @@
+// REACT
+import React, { useState, useEffect } from 'react';
+
 //STYLE
 import styles from './index.module.css';
+
+// COOKIES
 import Cookies from 'js-cookie';
 
 //REACT ROUTER DOM
@@ -10,12 +15,18 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { jkai } from '../../redux/combineActions';
 
+
+
 const Navbar = () => {
   const storedToken = Cookies.get('token');
   const role = Cookies.get('role');
+  const categoryId = Cookies.get('category');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [categoryDetails, setCategoryDetails] = useState({});
+  const [name, setName] = useState('Inventory checker');
 
   const handleSignOut = () => {
     dispatch(jkai.user.userLogout())
@@ -29,10 +40,25 @@ const Navbar = () => {
     }
   }
 
+  useEffect(() => {
+    if (storedToken) {
+      dispatch(jkai.category.getCategory(categoryId))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setCategoryDetails(data);
+            setName(`${data.name} Inventory Checker`)
+          }
+        })
+    }
+  }, []);
+
+  console.log('CATEGORY DEEEEEEEEEEEEETS', categoryDetails);
+
   return (
     <div className={styles.navbarContainer}>
       <div onClick={handleBackToHome} className={styles.mainName}>
-        Softdrinks/Beer Inventory
+        {name}
       </div>
       {storedToken && (
         <>

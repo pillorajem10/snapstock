@@ -11,9 +11,9 @@ const AuthRouter = ({ children }) => {
 
     if (!token) {
       navigate('/');
-    } else if (role === '0') {
+    } /* else if (role === '0') {
       navigate('/home');
-    }
+    } */
 
   }, [navigate]);
 

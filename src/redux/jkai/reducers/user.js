@@ -20,6 +20,12 @@ const reducer = (state = initialState, action) => {
     case types.LOGIN_FAIL:
       return { ...state, loading: false, error: action.payload };
 
+    case types.USER_ADD_SUCCESS:
+      return { ...state, loading: false, user: action.payload };
+
+    case types.USER_ADD_FAIL:
+      return { ...state, loading: false, error: action.payload };
+
     default:
       return state;
   }

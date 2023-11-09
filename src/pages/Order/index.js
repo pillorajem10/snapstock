@@ -27,6 +27,9 @@ import MuiAlert from '@mui/material/Alert';
 //UTILS
 import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '../../utils/methods'
 
+//COOKIES
+import Cookies from 'js-cookie';
+
 //css
 import styles from './index.module.css';
 
@@ -53,6 +56,8 @@ const Page = () => {
   const [pageDetails, setPageDetails] = useState(null);
   const [pageSize] = useState(50);
 
+  const category = Cookies.get('category');
+
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -62,6 +67,7 @@ const Page = () => {
       const payload = {
         pageIndex: 1,
         pageSize: 100,
+        category
       }
       dispatch(jkai.product.getProductsByParams(payload))
         .then((res) => {

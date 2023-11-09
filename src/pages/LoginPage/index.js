@@ -38,7 +38,9 @@ const Page = () => {
   const [productDeets, setProductDeets] = useState({});
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [addedStocks, setAddedStocks] = useState('');
+  const [repassword, setRepassword] = useState('');
+  const [category, setCategory] = useState('');
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [errMsg, setErrMsg] = useState('');
 
@@ -72,7 +74,7 @@ const Page = () => {
         if (res.success) {
           window.location.replace('/home');
         } else {
-          setOpenSuccessSnackbar(true);
+          setOpenErrorSnackbar(true);
           console.log('Login was not successful:', res.payload); // Log the error message
           setErrMsg(res.payload)
           // You can also display an error message to the user if needed
@@ -87,27 +89,68 @@ const Page = () => {
       });
   };
 
+  const handleSubmitRegister = (event) => {
+    event.preventDefault();
+
+    const payload = {
+      category,
+      username,
+      password,
+      repassword
+    };
+
+    dispatch(common.ui.setLoading());
+    dispatch(jkai.user.addUser(payload))
+      .then((res) => {
+        // Handle the response, whether success or error
+        if (res.success) {
+          setOpenSuccessSnackbar(true);
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } else {
+          setOpenErrorSnackbar(true);
+          console.log('Register was not successful:', res.payload); // Log the error message
+          setErrMsg(res.payload)
+          // You can also display an error message to the user if needed
+        }
+      })
+      .catch((error) => {
+        // Handle network or other errors
+        console.error('An error occurred during registration:', error);
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
+  };
+
+
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
 
-    setOpenSuccessSnackbar(false);
+    setOpenErrorSnackbar(false);
   };
 
 
   return (
     <div className={styles.container}>
       <>
-        <Snackbar open={openSuccessSnackbar} autoHideDuration={5000} onClose={handleClose}>
+        <Snackbar open={openErrorSnackbar} autoHideDuration={5000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
             {errMsg}
+          </Alert>
+        </Snackbar>
+        <Snackbar open={openSuccessSnackbar} autoHideDuration={5000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            Registration completed, you may now login.
           </Alert>
         </Snackbar>
         <div style={{ margin: 20 }}>
           <div className={styles.forms}>
             <form className={styles.orderInfoForm} onSubmit={handleSubmitLogin}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Login</div>
+              <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Please login if you have an account with us.</div>
               <TextField
                 style={{ marginTop: 20, width: '100%' }}
                 id="outlined-basic"
@@ -127,6 +170,52 @@ const Page = () => {
               />
               <button className={styles.btn} type="submit">
                 Login
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/*     REGISTRATION FORM         */}
+        <div style={{ margin: 20 }}>
+          <div className={styles.forms}>
+            <form className={styles.orderInfoForm} onSubmit={handleSubmitRegister}>
+              <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Dont have an account? Register first.</div>
+              <TextField
+                style={{ marginTop: 20, width: '100%' }}
+                id="outlined-basic"
+                onChange={(e) => setCategory(e.target.value)}
+                label="Business name:"
+                required
+                variant="outlined"
+              />
+              <TextField
+                style={{ marginTop: 20, width: '100%' }}
+                id="outlined-basic"
+                onChange={(e) => setUsername(e.target.value)}
+                label="Username:"
+                required
+                variant="outlined"
+              />
+              <TextField
+                style={{ marginTop: 20, width: '100%' }}
+                id="outlined-basic"
+                onChange={(e) => setPassword(e.target.value)}
+                label="Password:"
+                type="password"
+                required
+                variant="outlined"
+              />
+              <TextField
+                style={{ marginTop: 20, width: '100%' }}
+                id="outlined-basic"
+                onChange={(e) => setRepassword(e.target.value)}
+                label="Re-type password:"
+                type="password"
+                required
+                variant="outlined"
+              />
+              <button className={styles.btn} type="submit">
+                Register
               </button>
             </form>
           </div>

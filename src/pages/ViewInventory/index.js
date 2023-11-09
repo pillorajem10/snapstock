@@ -31,6 +31,9 @@ import styles from './index.module.css';
 //UTILS
 import { formatPriceX } from '../../utils/methods'
 
+//COOKIES
+import Cookies from 'js-cookie';
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.product);
   const {
@@ -45,12 +48,15 @@ const Page = () => {
   const [name, setName] = useState('');
   const [pageSize] = useState(7);
 
+  const category = Cookies.get('category');
+
   const handleProductList = useCallback(
   (pageIndex = 1) => {
     const payload = {
       pageIndex,
       pageSize,
       name,
+      category
     };
 
     dispatch(common.ui.setLoading());

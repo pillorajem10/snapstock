@@ -16,6 +16,9 @@ import {
   TextField,
 } from '@mui/material';
 
+//COOKIES
+import Cookies from 'js-cookie';
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.order);
   const {
@@ -26,12 +29,18 @@ const Page = () => {
   const navigate = useNavigate();
 
   const [customerName, setCustomerName] = useState('');
+  const category = Cookies.get('category');
 
   const handleAddOrder = (event) => {
     event.preventDefault();
 
+    const payload = {
+      customerName,
+      category
+    }
+
     dispatch(common.ui.setLoading());
-    dispatch(jkai.order.addOrder({customerName}))
+    dispatch(jkai.order.addOrder(payload))
     .then((res) => {
       const { success, data } = res;
       if (success) {

@@ -15,6 +15,7 @@ import Delivery from './pages/Delivery';
 import User from './pages/User';
 import LoginPage from './pages/LoginPage';
 import UserDeets from './pages/UserDeets';
+import DefaultPage from './pages/DefaultPage';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/home" element={<ViewOrders/>}></Route>
           <Route path="/users" element={<User/>}></Route>
           <Route path="/user/:id" element={<UserDeets/>}></Route>
+          <Route path="*" element={<DefaultPage/>} />
         </Routes>
       </AuthRouter>
     </BrowserRouter>

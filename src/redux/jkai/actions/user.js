@@ -2,7 +2,8 @@
 import { loginFunc,
   fetchUserByParams,
   fetchUser,
-  updateUserById } from '../../../services/api/user';
+  updateUserById,
+  registerFunc   } from '../../../services/api/user';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
@@ -20,9 +21,12 @@ export const setAuthorizationHeader = (token) => {
 
 export const setUserDetails = (userDetails) => {
   const { user } = userDetails;
+
+
   Cookies.set('account', JSON.stringify(user));
   Cookies.set('authenticated', true);
   Cookies.set('role', user.role);
+  Cookies.set('category', user.category);
 
   return {
     type: types.SET_USER_DETAILS,
@@ -82,11 +86,54 @@ export const loginFunction = (payload) => async (dispatch) => {
   }
 };
 
+export const addUser = (payload) => async (dispatch) => {
+  /*return registerFunc(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.USER_ADD_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.USER_ADD_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });*/
+
+
+  try {
+    const res = await registerFunc(payload);
+    const { success, data, msg } = res;
+
+    console.log('RESPONSEEEE SA REDUX', res);
+
+    if (success) {
+      dispatch({
+        type: types.USER_ADD_SUCCESS,
+        payload: res.data.docs,
+      });
+    }
+
+    return res; // Return the response object in both success and error cases
+
+  } catch (err) {
+    return dispatch({
+      type: types.USER_ADD_FAIL,
+      payload: err.response.data.msg,
+    });
+  }
+};
+
+
 export const userLogout = () => {
   Cookies.remove('token');
   Cookies.remove('account');
   Cookies.remove('role');
   Cookies.remove('authenticated');
+  Cookies.remove('category');
   window.location.replace('/home');
 
   // Router.push('/logout');
@@ -112,7 +159,7 @@ export const getUsersByParams = (payload) => (dispatch) => {
 
 
 //ADD USER
-export const addUser = (payload) => (dispatch) => {
+/*export const addUser = (payload) => (dispatch) => {
   return addNewUser(payload).then((res) => {
     if (res.success) {
       dispatch({
@@ -128,7 +175,25 @@ export const addUser = (payload) => (dispatch) => {
 
     return res;
   });
-};
+};*/
+
+/*export const addUser = (payload) => (dispatch) => {
+  return registerFunc(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.USER_ADD_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.USER_ADD_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};*/
 
 
 

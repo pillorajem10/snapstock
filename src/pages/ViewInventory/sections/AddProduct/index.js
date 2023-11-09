@@ -16,6 +16,9 @@ import {
   TextField,
 } from '@mui/material';
 
+//COOKIES
+import Cookies from 'js-cookie';
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.delivery);
   const {
@@ -29,13 +32,16 @@ const Page = () => {
   const [price, setPrice] = useState('');
   const [stocks, setStocks] = useState('');
 
+  const category = Cookies.get('category');
+
   const handleAddDelivery = (event) => {
     event.preventDefault();
 
     const payload = {
       name,
       price,
-      stocks
+      stocks,
+      category
     }
 
     dispatch(common.ui.setLoading());
@@ -58,7 +64,7 @@ const Page = () => {
     <>
       <form onSubmit={handleAddDelivery} className={styles.addDeliveryForm}>
         <div style={{ fontSize: "1.5rem" }}><b>Add New Product</b></div>
-        <div className={styles.inputField}> 
+        <div className={styles.inputField}>
           <div className={styles.inputField}>
             <TextField
               id="outlined-basic"

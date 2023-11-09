@@ -32,6 +32,9 @@ import styles from './index.module.css';
 //UTILS
 import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
 
+//COOKIES
+import Cookies from 'js-cookie';
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.order);
   const {
@@ -45,6 +48,8 @@ const Page = () => {
   const [customerName, setCustomerName] = useState('');
   const [pageDetails, setPageDetails] = useState(null);
   const [pageSize] = useState(10);
+
+  const category = Cookies.get('category');
 
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
@@ -61,6 +66,7 @@ const Page = () => {
       monthOrdered,
       dateOrdered,
       yearOrdered,
+      category
     }
 
     dispatch(common.ui.setLoading());
