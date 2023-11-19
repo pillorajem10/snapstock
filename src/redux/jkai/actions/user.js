@@ -3,6 +3,7 @@ import { loginFunc,
   fetchUserByParams,
   fetchUser,
   updateUserById,
+  verifyAccount,
   registerFunc   } from '../../../services/api/user';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -149,6 +150,24 @@ export const getUsersByParams = (payload) => (dispatch) => {
     } else {
       dispatch({
         type: types.USER_LIST_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
+export const verifyAccountByToken = (payload) => (dispatch) => {
+  return verifyAccount(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.USER_VERIFY_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.USER_VERIFY_FAIL,
         payload: res.msg,
       });
     }

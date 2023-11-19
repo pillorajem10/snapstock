@@ -49,7 +49,15 @@
   transform: scale(1.05); /* Add a slight scale effect on hover */
 }
 
+.formLinks{
+  color: black;
+  cursor: pointer;
+}
 
+.formLinks:hover {
+  color: #ABABAB;
+  transition: .3s;
+}
 
 
 /* Define the fadeIn animation */

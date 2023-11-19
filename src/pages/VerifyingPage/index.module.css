@@ -1,0 +1,39 @@
+.header {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.forms {
+  display: flex;
+}
+
+
+.orderInfoForm {
+  margin-top: .2rem;
+  margin-bottom: 2rem;
+  margin-right: 5rem;
+  border: solid;
+  width: 20rem;
+  text-align: center;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.btn {
+  height: 2.5rem;
+  margin-top: .5rem;
+  width: 10rem;
+  border: none;
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border: solid;
+  background-color: white;
+  color: black;
+  transition: .5s;
+}

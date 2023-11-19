@@ -26,7 +26,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const [categoryDetails, setCategoryDetails] = useState({});
-  const [name, setName] = useState('Inventory checker');
+  const [name, setName] = useState('SnapStock');
 
   const handleSignOut = () => {
     dispatch(jkai.user.userLogout())
@@ -47,7 +47,7 @@ const Navbar = () => {
           const { success, data } = res;
           if (success) {
             setCategoryDetails(data);
-            setName(`${data.name} Inventory Checker`)
+            setName(`${data.name} SnapStock`)
           }
         })
     }

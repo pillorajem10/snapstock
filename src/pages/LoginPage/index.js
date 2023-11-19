@@ -25,6 +25,9 @@ import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '..
 //css
 import styles from './index.module.css';
 
+// components
+import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.user);
   const {
@@ -40,6 +43,10 @@ const Page = () => {
   const [password, setPassword] = useState('');
   const [repassword, setRepassword] = useState('');
   const [category, setCategory] = useState('');
+  const [fname, setFname] = useState('');
+  const [lname, setLname] = useState('');
+  const [email, setEmail] = useState('');
+  const [formFormat, setFormFormat] = useState('login');
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [errMsg, setErrMsg] = useState('');
@@ -94,7 +101,10 @@ const Page = () => {
 
     const payload = {
       category,
+      email,
       username,
+      fname,
+      lname,
       password,
       repassword
     };
@@ -107,7 +117,7 @@ const Page = () => {
           setOpenSuccessSnackbar(true);
           setTimeout(() => {
             location.reload();
-          }, 2000);
+          }, 3000);
         } else {
           setOpenErrorSnackbar(true);
           console.log('Register was not successful:', res.payload); // Log the error message
@@ -144,82 +154,112 @@ const Page = () => {
         </Snackbar>
         <Snackbar open={openSuccessSnackbar} autoHideDuration={5000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-            Registration completed, you may now login.
+            Registration completed, email already sent for verifying the account. Please verify first before logging in.
           </Alert>
         </Snackbar>
-        <div style={{ margin: 20 }}>
-          <div className={styles.forms}>
-            <form className={styles.orderInfoForm} onSubmit={handleSubmitLogin}>
-              <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Please login if you have an account with us.</div>
-              <TextField
-                style={{ marginTop: 20, width: '100%' }}
-                id="outlined-basic"
-                onChange={(e) => setUsername(e.target.value)}
-                label="Username:"
-                required
-                variant="outlined"
-              />
-              <TextField
-                style={{ marginTop: 20, width: '100%' }}
-                id="outlined-basic"
-                onChange={(e) => setPassword(e.target.value)}
-                label="Password:"
-                type="password"
-                required
-                variant="outlined"
-              />
-              <button className={styles.btn} type="submit">
-                Login
-              </button>
-            </form>
-          </div>
-        </div>
+        <LoadingSpinner />
 
-        {/*     REGISTRATION FORM         */}
-        <div style={{ margin: 20 }}>
-          <div className={styles.forms}>
-            <form className={styles.orderInfoForm} onSubmit={handleSubmitRegister}>
-              <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Dont have an account? Register first.</div>
-              <TextField
-                style={{ marginTop: 20, width: '100%' }}
-                id="outlined-basic"
-                onChange={(e) => setCategory(e.target.value)}
-                label="Business name:"
-                required
-                variant="outlined"
-              />
-              <TextField
-                style={{ marginTop: 20, width: '100%' }}
-                id="outlined-basic"
-                onChange={(e) => setUsername(e.target.value)}
-                label="Username:"
-                required
-                variant="outlined"
-              />
-              <TextField
-                style={{ marginTop: 20, width: '100%' }}
-                id="outlined-basic"
-                onChange={(e) => setPassword(e.target.value)}
-                label="Password:"
-                type="password"
-                required
-                variant="outlined"
-              />
-              <TextField
-                style={{ marginTop: 20, width: '100%' }}
-                id="outlined-basic"
-                onChange={(e) => setRepassword(e.target.value)}
-                label="Re-type password:"
-                type="password"
-                required
-                variant="outlined"
-              />
-              <button className={styles.btn} type="submit">
-                Register
-              </button>
-            </form>
+        { formFormat === 'login' ? (
+          <div style={{ margin: 20 }}>
+            <div className={styles.forms}>
+              <form className={styles.orderInfoForm} onSubmit={handleSubmitLogin}>
+                <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Please login if you have an account with us.</div>
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setUsername(e.target.value)}
+                  label="Username:"
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setPassword(e.target.value)}
+                  label="Password:"
+                  type="password"
+                  required
+                  variant="outlined"
+                />
+                <button className={styles.btn} type="submit">
+                  Login
+                </button>
+              </form>
+              <div className={styles.formLinks} onClick={(e) => setFormFormat('register')}>Don't have an account yet? Register here.</div>
+            </div>
           </div>
-        </div>
+
+        ) : (
+          <div style={{ margin: 20 }}>
+            <div className={styles.forms}>
+              <form className={styles.orderInfoForm} onSubmit={handleSubmitRegister}>
+                <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Dont have an account? Register first.</div>
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setCategory(e.target.value)}
+                  label="Business name:"
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setEmail(e.target.value)}
+                  label="Email:"
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setUsername(e.target.value)}
+                  label="Username:"
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setFname(e.target.value)}
+                  label="First name:"
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setLname(e.target.value)}
+                  label="Last name:"
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setPassword(e.target.value)}
+                  label="Password:"
+                  type="password"
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  style={{ marginTop: 20, width: '100%' }}
+                  id="outlined-basic"
+                  onChange={(e) => setRepassword(e.target.value)}
+                  label="Re-type password:"
+                  type="password"
+                  required
+                  variant="outlined"
+                />
+                <button className={styles.btn} type="submit">
+                  Register
+                </button>
+              </form>
+              <div className={styles.formLinks} onClick={(e) => setFormFormat('login')}>Have an account already? Login here.</div>
+            </div>
+          </div>
+        )}
       </>
     </div>
   );
