@@ -72,21 +72,21 @@ const Page = () => {
     dispatch(common.ui.setLoading());
     dispatch(jkai.user.updateUser(payload))
       .then((res) => {
-        console.log('RESPONEEEEEEEEEE', res)
+        // console.log('RESPONEEEEEEEEEE', res)
         if (res.success) {
           setOpenSuccessSnackbar(true);
           setTimeout(() => {
             location.reload();
-          }, 2000); 
+          }, 2000);
         } else {
-          console.log('ERRROR USER UPDATE', res.payload)
+          // console.log('ERRROR USER UPDATE', res.payload)
           setOpenErrorSnackbar(true);
           setErrMsg(res.payload);
         }
       })
       .catch((error) => {
         // Handle network or other errors
-        console.error('An error occurred during UPDATING:', error);
+        // console.error('An error occurred during UPDATING:', error);
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());

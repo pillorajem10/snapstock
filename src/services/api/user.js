@@ -13,7 +13,7 @@ export async function registerFunc(payload) {
 }
 
 export async function verifyAccount(payload) {
-  console.log("ETOOOOOOOOOO YONN", payload)
+  // console.log("ETOOOOOOOOOO YONN", payload)
   return GET(`/user/verify/${payload}`);
 }
 
@@ -29,6 +29,6 @@ export async function fetchUser(payload) {
 
 export async function updateUserById(payload) {
   const { id } = payload;
-  console.log("PAYLOADDDDDDDDDDDDDDDDDD USERRRR", payload)
+  // console.log("PAYLOADDDDDDDDDDDDDDDDDD USERRRR", payload)
   return PUT(`/user/${id}`, payload);
 }

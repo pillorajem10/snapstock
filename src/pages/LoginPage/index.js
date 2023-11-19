@@ -82,14 +82,14 @@ const Page = () => {
           window.location.replace('/home');
         } else {
           setOpenErrorSnackbar(true);
-          console.log('Login was not successful:', res.payload); // Log the error message
+          // console.log('Login was not successful:', res.payload); // Log the error message
           setErrMsg(res.payload)
           // You can also display an error message to the user if needed
         }
       })
       .catch((error) => {
         // Handle network or other errors
-        console.error('An error occurred during login:', error);
+        // console.error('An error occurred during login:', error);
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());
@@ -120,14 +120,14 @@ const Page = () => {
           }, 3000);
         } else {
           setOpenErrorSnackbar(true);
-          console.log('Register was not successful:', res.payload); // Log the error message
+        // console.log('Register was not successful:', res.payload); // Log the error message
           setErrMsg(res.payload)
           // You can also display an error message to the user if needed
         }
       })
       .catch((error) => {
         // Handle network or other errors
-        console.error('An error occurred during registration:', error);
+        // console.error('An error occurred during registration:', error);
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());

@@ -53,7 +53,6 @@ const Navbar = () => {
     }
   }, []);
 
-  console.log('CATEGORY DEEEEEEEEEEEEETS', categoryDetails);
 
   return (
     <div className={styles.navbarContainer}>

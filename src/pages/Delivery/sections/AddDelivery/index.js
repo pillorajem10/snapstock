@@ -74,7 +74,6 @@ const Page = () => {
     handleProductList();
   }, [handleProductList])
 
-  console.log("PRODUCT LIST DELLLLLLLLLL", productList)
 
   return (
     <>

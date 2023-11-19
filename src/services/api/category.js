@@ -25,13 +25,13 @@ export async function fetchCategoryByParams(payload) {
 }
 
 export async function fetchCategory(payload) {
-  console.log("ETOOOOOOOOOO YONN", payload)
+  // console.log("ETOOOOOOOOOO YONN", payload)
   return GET(`/category/${payload}`);
 }
 
 export async function updateCategoryById(payload) {
   const { id } = payload;
-  console.log("PAYLOADDDDDDDDDDDDDDDDDD PRODUCT", payload)
+  // console.log("PAYLOADDDDDDDDDDDDDDDDDD PRODUCT", payload)
   return PUT(`/category/${id}`, payload);
 }
 

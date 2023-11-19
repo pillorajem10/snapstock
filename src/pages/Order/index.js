@@ -120,7 +120,7 @@ const handleOrderItemList = useCallback(
         .then((res) => {
           const { success, data } = res;
           if (success) {
-            console.log("DATAAAAAAAAAAAA", data)
+            // console.log("DATAAAAAAAAAAAA", data)
             setOrderItemList(data.docs);
             setPageDetails({
               pageIndex: data.page,
@@ -170,7 +170,7 @@ const handleOrderItemList = useCallback(
       customerName
     };
 
-    console.log("PAYLOADDDDDDDDDDDDDDDDD", payload)
+    // console.log("PAYLOADDDDDDDDDDDDDDDDD", payload)
     dispatch(jkai.order.updateOrderDetails(payload))
       .then((res) => {
         const { success } = res;
@@ -185,7 +185,7 @@ const handleOrderItemList = useCallback(
 
   const handleSubmitAddItem = (event) => {
     event.preventDefault();
-    console.log("DITO PO UNG PAYLOADD SA ADD ITEM 1")
+    // console.log("DITO PO UNG PAYLOADD SA ADD ITEM 1")
     const payload = {
       orderId: id,
       productId,

@@ -25,13 +25,13 @@ export async function fetchProductByParams(payload) {
 }
 
 export async function fetchProduct(payload) {
-  console.log("ETOOOOOOOOOO YONN", payload)
+  // console.log("ETOOOOOOOOOO YONN", payload)
   return GET(`/product/${payload}`);
 }
 
 export async function updateProductById(payload) {
   const { id } = payload;
-  console.log("PAYLOADDDDDDDDDDDDDDDDDD PRODUCT", payload)
+  // console.log("PAYLOADDDDDDDDDDDDDDDDDD PRODUCT", payload)
   return PUT(`/product/${id}`, payload);
 }
 

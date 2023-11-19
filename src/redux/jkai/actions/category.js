@@ -5,7 +5,7 @@ import { fetchCategory } from '../../../services/api/category';
 import * as types from '../types';
 
 export const getCategory = (payload) => (dispatch) => {
-  console.log("DITO YON")
+  // console.log("DITO YON")
   return fetchCategory(payload).then((res) => {
     if (res.success) {
       dispatch({
@@ -13,7 +13,7 @@ export const getCategory = (payload) => (dispatch) => {
         payload: res.data.docs,
       });
     } else {
-      console.log("ERRORRRRRRRR BRAD")
+      // console.log("ERRORRRRRRRR BRAD")
       dispatch({
         type: types.CATEGORY_GET_FAIL,
         payload: res.msg,

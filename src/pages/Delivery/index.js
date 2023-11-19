@@ -72,7 +72,7 @@ const Page = () => {
         const { success, data } = res;
         if (success) {
           setDeliveryList(data.docs);
-          console.log("DATAA DOVS", data.docs)
+          // console.log("DATAA DOVS", data.docs)
           setPageDetails({
             pageIndex: data.page,
             pageSize: data.limit,

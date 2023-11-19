@@ -84,7 +84,7 @@ export const getOrdersItemsByParams = (payload) => (dispatch) => {
       });
     }
 
-    console.log("RESSSSSSSSSSS ITEM LIST", res)
+    // console.log("RESSSSSSSSSSS ITEM LIST", res)
 
     return res;
   });
