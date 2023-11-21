@@ -21,3 +21,17 @@
   color: black;
   transition: .5s;
 }
+
+
+/* Add styles to align the header items */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+/* Add styles for the "Add User" button */
+.addUserButton {
+  margin-left: 10px; /* Adjust the margin as needed */
+}

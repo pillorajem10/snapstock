@@ -17,10 +17,13 @@ import {
   CircularProgress,
   TextField,
   Pagination,
+  Button,
+  Modal,
+  Box,
 } from '@mui/material'
 
 // sectiions
-import AddUserForm from './sections/AddUser';
+import AddUserModal from './sections/AddUserModal';
 
 //REACT ROUTER SHIT
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +34,7 @@ import styles from './index.module.css';
 //UTILS
 import { formatPriceX } from '../../utils/methods'
 
-// NAVIGATION
+//COOKIES
 import Cookies from 'js-cookie';
 
 const Page = () => {
@@ -46,7 +49,10 @@ const Page = () => {
   const [userList, setUserList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
   const [username, setUsername] = useState('');
+  const [isAddUserModalOpen, setAddUserModalOpen] = useState(false);
   const [pageSize] = useState(7);
+
+  const category = Cookies.get('category');
 
   const handleUserList = useCallback(
   (pageIndex = 1) => {
@@ -54,6 +60,7 @@ const Page = () => {
       pageIndex,
       pageSize,
       username,
+      category
     };
 
     dispatch(common.ui.setLoading());
@@ -86,6 +93,9 @@ const Page = () => {
     return (
       <TableBody style = {{ display: loading && 'none', cursor: "pointer"}} key={idx} onClick = {() => navigate(`/user/${user._id}`)}>
         <TableCell>{user.username}</TableCell>
+        <TableCell>{user.email}</TableCell>
+        <TableCell>{user.fname}</TableCell>
+        <TableCell>{user.lname}</TableCell>
         <TableCell>{user.role === 1 ? ("Admin") : ("User")}</TableCell>
       </TableBody>
     )
@@ -95,13 +105,42 @@ const Page = () => {
     handleUserList(value);
   };
 
+  const handleOpenAddUserModal = () => {
+    setAddUserModalOpen(true);
+  };
+
+  const handleCloseAddUserModal = () => {
+    setAddUserModalOpen(false);
+  };
+
   return (
     <>
-      {/*<AddUserForm/>*/}
-      <form className={styles.searchForm}>
-        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>
-        {/*<button className={styles.btn} type="submit">Search</button>*/}
-      </form>
+      <div className={styles.header}>
+        <form className={styles.searchForm}>
+          <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>
+          {/* <button className={styles.btn} type="submit">Search</button> */}
+        </form>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenAddUserModal}
+          className={styles.addUserButton}
+        >
+          Add User
+        </Button>
+      </div>
+
+      {/* Add User Modal */}
+      <Modal
+        open={isAddUserModalOpen}
+        onClose={handleCloseAddUserModal}
+        aria-labelledby="add-user-modal"
+        aria-describedby="modal-to-add-user"
+      >
+        <Box className={styles.addUserModal}>
+          <AddUserModal onClose={handleCloseAddUserModal} />
+        </Box>
+      </Modal>
       {loading ? <CircularProgress/> :
       <div>
         <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
@@ -109,6 +148,9 @@ const Page = () => {
             <TableHead>
               <TableRow style={{ marginTop:"1rem" }} >
                 <TableCell><b style={{ fontSize: "1.5rem" }}>Username</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Email</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>First Name</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Last Name</b></TableCell>
                 <TableCell><b style={{ fontSize: "1.5rem" }}>Role</b></TableCell>
               </TableRow>
             </TableHead>

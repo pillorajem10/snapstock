@@ -12,6 +12,11 @@ export async function registerFunc(payload) {
   return POST('/user', payload);
 }
 
+export async function registerEmployee(payload) {
+  return POST('/user/addemployeeuser', payload);
+}
+
+
 export async function verifyAccount(payload) {
   // console.log("ETOOOOOOOOOO YONN", payload)
   return GET(`/user/verify/${payload}`);

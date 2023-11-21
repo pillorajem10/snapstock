@@ -4,6 +4,7 @@ import { loginFunc,
   fetchUser,
   updateUserById,
   verifyAccount,
+  registerEmployee,
   registerFunc   } from '../../../services/api/user';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -123,6 +124,30 @@ export const addUser = (payload) => async (dispatch) => {
   } catch (err) {
     return dispatch({
       type: types.USER_ADD_FAIL,
+      payload: err.response.data.msg,
+    });
+  }
+};
+
+export const addEmployee = (payload) => async (dispatch) => {
+  try {
+    const res = await registerEmployee(payload);
+    const { success, data, msg } = res;
+
+    console.log('RESPONSEEEE SA REDUX', res);
+
+    if (success) {
+      dispatch({
+        type: types.EMPLOYEE_ADD_SUCCESS,
+        payload: res.data.docs,
+      });
+    }
+
+    return res; // Return the response object in both success and error cases
+
+  } catch (err) {
+    return dispatch({
+      type: types.EMPLOYEE_ADD_FAIL,
       payload: err.response.data.msg,
     });
   }
