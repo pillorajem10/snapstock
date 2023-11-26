@@ -66,6 +66,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   };
 
   const goToMyprofile = () => {
+    onClose();
     navigate(`/myprofile/${accountDeets._id}`);
   };
 
