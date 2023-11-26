@@ -1,5 +1,6 @@
 //COMPONENTS
 import Navbar from './components/Navbar'
+import Sidebar from './components/Sidebar'
 import AuthRouter from './components/AuthRouter'
 
 //REACT ROUTER
@@ -18,26 +19,35 @@ import UserDeets from './pages/UserDeets';
 import DefaultPage from './pages/DefaultPage';
 import VerifyingPage from './pages/VerifyingPage';
 
+// MUI SHITS
+import {  ThemeProvider } from '@mui/styles';
+import {  createTheme } from '@mui/system'; 
+
+const theme = createTheme();
+
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar/>
-      <AuthRouter>
-        <Routes>
-          <Route path="/" exact={true} element={<LoginPage/>}></Route>
-          <Route path="/viewinvt" element={<ViewInventory/>}></Route>
-          <Route path="/viewallorders" element={<ViewAllOrders/>}></Route>
-          <Route path="/deliveries" element={<Delivery/>}></Route>
-          <Route path="/order/:id" element={<Order/>}></Route>
-          <Route path="/viewinvt/:id" element={<Product/>}></Route>
-          <Route path="/home" element={<ViewOrders/>}></Route>
-          <Route path="/users" element={<User/>}></Route>
-          <Route path="/user/:id" element={<UserDeets/>}></Route>
-          <Route path="/verify/:token" element={<VerifyingPage/>}></Route>
-          <Route path="*" element={<DefaultPage/>} />
-        </Routes>
-      </AuthRouter>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Navbar/>
+        <AuthRouter>
+          <Routes>
+            <Route path="/" exact={true} element={<LoginPage/>}></Route>
+            <Route path="/viewinvt" element={<ViewInventory/>}></Route>
+            <Route path="/viewallorders" element={<ViewAllOrders/>}></Route>
+            <Route path="/deliveries" element={<Delivery/>}></Route>
+            <Route path="/order/:id" element={<Order/>}></Route>
+            <Route path="/viewinvt/:id" element={<Product/>}></Route>
+            <Route path="/home" element={<ViewOrders/>}></Route>
+            <Route path="/users" element={<User/>}></Route>
+            <Route path="/user/:id" element={<UserDeets/>}></Route>
+            <Route path="/verify/:token" element={<VerifyingPage/>}></Route>
+            <Route path="*" element={<DefaultPage/>} />
+          </Routes>
+        </AuthRouter>
+      </BrowserRouter>
+    </ThemeProvider>
+
   );
 }
 

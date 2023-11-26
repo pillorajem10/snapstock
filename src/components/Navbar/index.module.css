@@ -34,3 +34,8 @@
 .listings a:hover {
   color: #9E9E9E;
 }
+
+.burgerIcon{
+  margin-left: 1rem;
+  margin-top: .5rem;
+}

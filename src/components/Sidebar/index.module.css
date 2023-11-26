@@ -1,0 +1,27 @@
+.drawer {
+  width: 50;
+  background: white;
+}
+
+.listings {
+  display: flex;
+  margin-bottom: 3rem;
+  align-items: center;
+}
+
+/* Style for the links inside the container */
+.listings a {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  font-size: 1.2rem;
+  text-decoration: none;
+  color: black;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hover effect for the links */
+.listings a:hover {
+  color: #ABABAB;
+  transition: .3s;
+}

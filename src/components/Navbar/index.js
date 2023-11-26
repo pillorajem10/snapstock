@@ -1,5 +1,6 @@
 // REACT
 import React, { useState, useEffect } from 'react';
+import Sidebar from '../Sidebar'
 
 //STYLE
 import styles from './index.module.css';
@@ -15,17 +16,17 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { jkai } from '../../redux/combineActions';
 
+import MenuIcon from '@mui/icons-material/Menu'; // Import the Menu icon
+
 
 
 const Navbar = () => {
   const storedToken = Cookies.get('token');
   const role = Cookies.get('role');
   const categoryId = Cookies.get('category');
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [categoryDetails, setCategoryDetails] = useState({});
   const [name, setName] = useState('SnapStock');
 
   const handleSignOut = () => {
@@ -46,41 +47,56 @@ const Navbar = () => {
         .then((res) => {
           const { success, data } = res;
           if (success) {
-            setCategoryDetails(data);
             setName(`${data.name} SnapStock`)
           }
         })
     }
   }, []);
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
 
   return (
-    <div className={styles.navbarContainer}>
-      <div onClick={handleBackToHome} className={styles.mainName}>
-        {name}
-      </div>
-      {storedToken && (
-        <>
-          <div className={styles.listings}>
-            <Link to='/viewinvt'>Products</Link>
-          </div>
-          <div className={styles.listings}>
-            <Link to='/viewallorders'>All Orders</Link>
-          </div>
-          <div className={styles.listings}>
-            <Link to='/deliveries'>Add Stocks</Link>
-          </div>
-          {role === '1' && (
-            <div className={styles.listings}>
-              <Link to='/users'>Users</Link>
+    <>
+      <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
+      <div className={styles.navbarContainer}>
+        { storedToken && (
+          <>
+            <div className={styles.burgerIcon} onClick={toggleSidebar}>
+              <MenuIcon style={{ color: 'white' }} />
             </div>
-          )}
-          <div className={styles.listings} onClick={handleSignOut}>
-            <Link>Sign Out</Link>
-          </div>
-        </>
-      )}
-    </div>
+          </>
+        ) }
+        <div onClick={handleBackToHome} className={styles.mainName}>
+          {name}
+        </div>
+        { /*storedToken && (
+          <>
+            <div className={styles.listings}>
+              <Link to='/viewinvt'>Products</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/viewallorders'>All Orders</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/deliveries'>Add Stocks</Link>
+            </div>
+            {role === '1' && (
+              <div className={styles.listings}>
+                <Link to='/users'>Users</Link>
+              </div>
+            )}
+            <div className={styles.listings} onClick={handleSignOut}>
+              <Link>Sign Out</Link>
+            </div>
+          </>
+        ) */}
+      </div>
+    </>
   );
 }
 
