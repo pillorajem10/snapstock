@@ -31,7 +31,7 @@ export async function fetchCategory(payload) {
 
 export async function updateCategoryById(payload) {
   const { id } = payload;
-  // console.log("PAYLOADDDDDDDDDDDDDDDDDD PRODUCT", payload)
+  console.log("PAYLOADDDDDDDDDDDDDDDDDD CATEGORY", payload)
   return PUT(`/category/${id}`, payload);
 }
 

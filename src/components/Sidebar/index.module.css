@@ -25,3 +25,10 @@
   color: #ABABAB;
   transition: .3s;
 }
+
+.introName {
+  font-size: 2rem;
+  cursor: pointer;
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+}

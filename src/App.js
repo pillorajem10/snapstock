@@ -18,10 +18,11 @@ import LoginPage from './pages/LoginPage';
 import UserDeets from './pages/UserDeets';
 import DefaultPage from './pages/DefaultPage';
 import VerifyingPage from './pages/VerifyingPage';
+import Profile from './pages/Profile';
 
 // MUI SHITS
 import {  ThemeProvider } from '@mui/styles';
-import {  createTheme } from '@mui/system'; 
+import {  createTheme } from '@mui/system';
 
 const theme = createTheme();
 
@@ -35,6 +36,7 @@ function App() {
             <Route path="/" exact={true} element={<LoginPage/>}></Route>
             <Route path="/viewinvt" element={<ViewInventory/>}></Route>
             <Route path="/viewallorders" element={<ViewAllOrders/>}></Route>
+            <Route path="/myprofile/:id" element={<Profile/>}></Route>
             <Route path="/deliveries" element={<Delivery/>}></Route>
             <Route path="/order/:id" element={<Order/>}></Route>
             <Route path="/viewinvt/:id" element={<Product/>}></Route>

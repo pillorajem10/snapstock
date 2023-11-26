@@ -39,7 +39,7 @@ import {
 
 
 //REACT ROUTER DOM
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 //STYLE
 import styles from './index.module.css';
@@ -49,6 +49,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const account = Cookies.get('account');
   const storedToken = Cookies.get('token');
   const role = Cookies.get('role');
+  const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -64,8 +65,10 @@ const Sidebar = ({ isOpen, onClose }) => {
     dispatch(jkai.user.userLogout())
   };
 
-  console.log('ACCOUNT', accountDeets)
-  console.log('ACCOUNT NAME', accountDeets.fname);
+  const goToMyprofile = () => {
+    navigate(`/myprofile/${accountDeets._id}`);
+  };
+
 
   return (
     <Drawer
@@ -78,23 +81,23 @@ const Sidebar = ({ isOpen, onClose }) => {
         paper: classes.drawerPaper,
       }}
     >
-      <div>Hello, {accountDeets.fname}</div>
       <List>
+        <div className={styles.introName} onClick={goToMyprofile}>Hello, {accountDeets.fname}</div>
         <div className={styles.listings}>
-          <Link to='/home'><Home sx={{ marginRight: 3 }} />Home</Link>
+          <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
         </div>
         <div className={styles.listings}>
-          <Link to='/viewinvt'><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
+          <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
         </div>
         <div className={styles.listings}>
-          <Link to='/viewallorders'><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
+          <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
         </div>
         <div className={styles.listings}>
-          <Link to='/deliveries'><AddBox sx={{ marginRight: 3 }} /> Add Stocks</Link>
+          <Link to='/deliveries' onClick={onClose}><AddBox sx={{ marginRight: 3 }} /> Add Stocks</Link>
         </div>
         {role === '1' && (
           <div className={styles.listings}>
-            <Link to='/users'><People sx={{ marginRight: 3 }} /> Users</Link>
+            <Link to='/users' onClick={onClose}><People sx={{ marginRight: 3 }} /> Users</Link>
           </div>
         )}
         <div className={styles.listings} onClick={handleSignOut}>
