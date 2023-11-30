@@ -7,13 +7,20 @@
   cursor: pointer;
 }
 
+.logoImage {
+  width: 14rem; /* Adjust the width as needed */
+  height: 5rem; /* Adjust the height as needed */
+  margin: 10px;
+  /* Add any other styles as needed */
+}
+
 .navbarContainer {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   margin: 0;
   padding: 0;
-  height: 3.5rem;
+  height: 5rem;
   background-color: black;
   position: -webkit-sticky;
   position: sticky;

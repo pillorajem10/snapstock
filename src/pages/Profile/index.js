@@ -103,6 +103,8 @@ const Page = () => {
       fname,
       lname,
       username,
+      password,
+      repassword
     }
 
     const categoryPayload = {
@@ -205,7 +207,7 @@ const Page = () => {
       </div>*/}
       <div className={styles.forms}>
         <form className={styles.orderInfoForm} onSubmit={handleSubmitUpdateProd}>
-          <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Dont have an account? Register first.</div>
+          <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Want to update your profile? Just edit the form.</div>
           <TextField
             style={{ marginTop: 20, width: '100%' }}
             id="outlined-basic"
@@ -252,11 +254,28 @@ const Page = () => {
             variant="outlined"
             value={lname}
           />
+          {/*<TextField
+            style={{ marginTop: 20, width: '100%' }}
+            id="outlined-basic"
+            onChange={(e) => setPassword(e.target.value)}
+            label="Password:"
+            required
+            type="password"
+            variant="outlined"
+          />
+          <TextField
+            style={{ marginTop: 20, width: '100%' }}
+            id="outlined-basic"
+            onChange={(e) => setRepassword(e.target.value)}
+            label="Re type password:"
+            required
+            type="password"
+            variant="outlined"
+          />*/}
           <button className={styles.btn} type="submit">
-            Register
+            Update
           </button>
         </form>
-        <div className={styles.formLinks} onClick={(e) => setFormFormat('login')}>Have an account already? Login here.</div>
       </div>
     </>
   )

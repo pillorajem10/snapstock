@@ -16,7 +16,11 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { jkai } from '../../redux/combineActions';
 
-import MenuIcon from '@mui/icons-material/Menu'; // Import the Menu icon
+import MenuIcon from '@mui/icons-material/Menu';
+
+// LOGO
+import logoImage from './snapstocklogo2.png'; // Replace with the actual path to your image
+
 
 
 
@@ -64,7 +68,8 @@ const Navbar = () => {
     <>
       <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
       <div className={styles.navbarContainer}>
-        { storedToken && (
+        <img src={logoImage} alt="Logo" className={styles.logoImage} />
+        {/* storedToken && (
           <>
             <div className={styles.burgerIcon} onClick={toggleSidebar}>
               <MenuIcon style={{ color: 'white' }} />
