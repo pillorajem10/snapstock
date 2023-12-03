@@ -1,0 +1,73 @@
+/* index.module.css */
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  width: 100%;
+}
+
+.forms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 1s ease; /* Add a fadeIn animation */
+}
+
+.orderInfoForm {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  border: 2px solid #333; /* Add a border */
+  width: 100%;
+  max-width: 50rem;
+  text-align: center;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
+  background-color: #fff; /* Add a background color */
+}
+
+
+.btn {
+  height: 2.5rem;
+  margin-top: 1rem;
+  width: 100%;
+  border: none;
+  background-color: black; /* Set the default button background color to black */
+  color: white; /* Set the default button text color to white */
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, border 0.3s; /* Add a smooth transition for border */
+}
+
+.btn:hover {
+  background-color: white; /* Change button background color on hover to white */
+  color: black; /* Change button text color on hover to black */
+  border: 1px solid black; /* Add a thin border on hover for the outline */
+  transform: scale(1.05); /* Add a slight scale effect on hover */
+}
+
+.formLinks{
+  color: black;
+  cursor: pointer;
+}
+
+.formLinks:hover {
+  color: #ABABAB;
+  transition: .3s;
+}
+
+
+/* Define the fadeIn animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

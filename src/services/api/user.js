@@ -22,6 +22,12 @@ export async function verifyAccount(payload) {
   return GET(`/user/verify/${payload}`);
 }
 
+export async function requestNewPassoword(payload) {
+  console.log("REQUEST PASS WORD PASSWORD", payload);
+  const { id } = payload;
+  return GET(`/user/requestnewpassword/${id}`, payload);
+}
+
 
 export async function fetchUserByParams(payload) {
   const params = methods.convertQueryString(payload);
@@ -36,4 +42,10 @@ export async function updateUserById(payload) {
   const { id } = payload;
   // console.log("PAYLOADDDDDDDDDDDDDDDDDD USERRRR", payload)
   return PUT(`/user/${id}`, payload);
+}
+
+export async function changePassword(payload) {
+  const { token } = payload;
+  // console.log("PAYLOADDDDDDDDDDDDDDDDDD USERRRR", payload)
+  return POST(`/user/changepassword/${token}`, payload);
 }

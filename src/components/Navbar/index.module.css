@@ -9,8 +9,9 @@
 
 .logoImage {
   width: 14rem; /* Adjust the width as needed */
-  height: 5rem; /* Adjust the height as needed */
+  height: 3rem; /* Adjust the height as needed */
   margin: 10px;
+  cursor: pointer;
   /* Add any other styles as needed */
 }
 
@@ -20,7 +21,7 @@
   align-items: center;
   margin: 0;
   padding: 0;
-  height: 5rem;
+  height: 4rem;
   background-color: black;
   position: -webkit-sticky;
   position: sticky;

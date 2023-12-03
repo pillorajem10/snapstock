@@ -5,6 +5,8 @@ import { loginFunc,
   updateUserById,
   verifyAccount,
   registerEmployee,
+  requestNewPassoword,
+  changePassword,
   registerFunc   } from '../../../services/api/user';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -259,6 +261,24 @@ export const getUser = (payload) => (dispatch) => {
   });
 };
 
+export const requestNewPass = (payload) => (dispatch) => {
+  return requestNewPassoword(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.REQUEST_NEW_PASSWORD_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.REQUEST_NEW_PASSWORD_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
 
 //UPDATE DETAILS BY
 export const updateUser = (payload) => async (dispatch) => {
@@ -280,6 +300,30 @@ export const updateUser = (payload) => async (dispatch) => {
   } catch (err) {
     return dispatch({
       type: types.USER_UPDATE_FAIL,
+      payload: err.response.data.msg,
+    });
+  }
+};
+
+export const changePass = (payload) => async (dispatch) => {
+  try {
+    const res = await changePassword(payload);
+    const { success, data, msg } = res;
+
+    console.log('RESPONSEEEE', res);
+
+    if (success) {
+      dispatch({
+        type: types.CHANGE_PASSWORD_SUCCESS,
+        payload: res.data,
+      });
+    }
+
+    return res; // Return the response object in both success and error cases
+
+  } catch (err) {
+    return dispatch({
+      type: types.CHANGE_PASSWORD_FAIL,
       payload: err.response.data.msg,
     });
   }

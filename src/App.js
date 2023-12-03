@@ -19,6 +19,7 @@ import UserDeets from './pages/UserDeets';
 import DefaultPage from './pages/DefaultPage';
 import VerifyingPage from './pages/VerifyingPage';
 import Profile from './pages/Profile';
+import Changepassword from './pages/Changepassword';
 
 // MUI SHITS
 import {  ThemeProvider } from '@mui/styles';
@@ -37,6 +38,7 @@ function App() {
             <Route path="/viewinvt" element={<ViewInventory/>}></Route>
             <Route path="/viewallorders" element={<ViewAllOrders/>}></Route>
             <Route path="/myprofile/:id" element={<Profile/>}></Route>
+            <Route path="/changepassword/:token" element={<Changepassword/>}></Route>
             <Route path="/deliveries" element={<Delivery/>}></Route>
             <Route path="/order/:id" element={<Order/>}></Route>
             <Route path="/viewinvt/:id" element={<Product/>}></Route>

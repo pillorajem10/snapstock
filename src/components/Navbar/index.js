@@ -19,7 +19,7 @@ import { jkai } from '../../redux/combineActions';
 import MenuIcon from '@mui/icons-material/Menu';
 
 // LOGO
-import logoImage from './snapstocklogo2.png'; // Replace with the actual path to your image
+import logoImage from './snapstocklogo3W.png'; // Replace with the actual path to your image
 
 
 
@@ -68,17 +68,14 @@ const Navbar = () => {
     <>
       <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
       <div className={styles.navbarContainer}>
-        <img src={logoImage} alt="Logo" className={styles.logoImage} />
-        {/* storedToken && (
+        { storedToken && (
           <>
             <div className={styles.burgerIcon} onClick={toggleSidebar}>
               <MenuIcon style={{ color: 'white' }} />
             </div>
           </>
         ) }
-        <div onClick={handleBackToHome} className={styles.mainName}>
-          {name}
-        </div>
+        <img onClick={handleBackToHome} src={logoImage} alt="Logo" className={styles.logoImage} />
         { /*storedToken && (
           <>
             <div className={styles.listings}>

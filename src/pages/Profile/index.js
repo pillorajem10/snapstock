@@ -39,7 +39,8 @@ const Page = () => {
   const [addedStocks, setAddedStocks] = useState('');
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-  const [errMsg, setErrMsg] = useState('')
+  const [errMsg, setErrMsg] = useState('');
+  const [successMessage, setSuccessMessage] = useState('')
 
   //
   const [category, setCategory] = useState('');
@@ -118,10 +119,12 @@ const Page = () => {
       .then((res) => {
         // console.log('RESPONEEEEEEEEEE', res)
         if (res.success) {
+          console.log('RESPONSE FROM REQ USER UPDATE', res)
           setOpenSuccessSnackbar(true);
-          setTimeout(() => {
+          setSuccessMessage(res.msg);
+          /*setTimeout(() => {
             location.reload();
-          }, 2000);
+          }, 2000);*/
         } else {
           // console.log('ERRROR USER UPDATE', res.payload)
           setOpenErrorSnackbar(true);
@@ -170,6 +173,36 @@ const Page = () => {
     setOpenErrorSnackbar(false);
   };
 
+  const requestPass = () => {
+    const payload = {
+      id,
+      email
+    };
+
+    dispatch(common.ui.setLoading());
+    dispatch(jkai.user.requestNewPass(payload))
+      .then((res) => {
+        // console.log('RESPONEEEEEEEEEE', res)
+        if (res.success) {
+          console.log('RESPONSE FROM REQ NEW PASS', res)
+          // console.log('REQUEST PASSOWORD RESPONSE', res);
+          setOpenSuccessSnackbar(true);
+          setSuccessMessage(res.msg);
+        } else {
+          // console.log('ERRROR USER UPDATE', res.payload)
+          setOpenErrorSnackbar(true);
+          setErrMsg(res.payload);
+        }
+      })
+      .catch((error) => {
+        // Handle network or other errors
+        // console.error('An error occurred during UPDATING:', error);
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
+  }
+
   // console.log('USER DEETS', userDeets);
   console.log('USER CATEGORY', categoryName);
 
@@ -178,7 +211,7 @@ const Page = () => {
     <>
       <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          User updated.
+          {successMessage}
         </Alert>
       </Snackbar>
       <Snackbar open={openErrorSnackbar} autoHideDuration={2000} onClose={handleClose}>
@@ -276,6 +309,7 @@ const Page = () => {
             Update
           </button>
         </form>
+        <div className={styles.formLinks} onClick={requestPass}>Want to change your password? Click here</div>
       </div>
     </>
   )
