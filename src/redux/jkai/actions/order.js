@@ -1,5 +1,14 @@
 //api
-import { fetchOrderByParams, fetchOrder, updateOrder, addOrderItem, fetchOrderItemByParams, createOrder } from '../../../services/api/order';
+import { fetchOrderByParams,
+  fetchOrder,
+  updateOrder,
+  addOrderItem,
+  fetchOrderItemByParams,
+  createOrder,
+  fetchOrderItemById,
+  removeOrderItemById,
+  updateOrderItemById
+ } from '../../../services/api/order';
 import axios from 'axios';
 
 //types
@@ -66,6 +75,43 @@ export const getOrderDetails = (payload) => (dispatch) => {
   });
 };
 
+export const getOrderItemDetails = (payload) => (dispatch) => {
+  return fetchOrderItemById(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.ORDER_ITEM_DETAILS_SUCCESS,
+        payload: res.data,
+      });
+    } else {
+      dispatch({
+        type: types.ORDER_ITEM_DETAILS_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
+
+export const removeOrderItemDetails = (payload) => (dispatch) => {
+  return removeOrderItemById(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.ORDER_ITEM_REMOVE_SUCCESS,
+        payload: res.data,
+      });
+    } else {
+      dispatch({
+        type: types.ORDER_ITEM_REMOVE_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
 
 
 //GET LIST OF ORDER ITEM
@@ -92,37 +138,41 @@ export const getOrdersItemsByParams = (payload) => (dispatch) => {
 
 
 
-export const addItem = (payload) => () => {
+/*export const addItem = (payload) => () => {
   return addOrderItem(payload).then((res) => {
     return res;
   });
-};
+};*/
 
 
-/*
+
 //ADD ORDER ITEMS
-export const addItem = (payload) => (dispatch) => {
-  return addOrderItem(payload).then((res) => {
-    console.log("RESSSSSSSSSSS ADD ITEM", res)
+export const addItem = (payload) => async (dispatch) => {
+  try {
+    const res = await addOrderItem(payload);
+    const { success, data, msg } = res;
 
-    if (res.success) {
+    console.log('RESPONSEEEE SA REDUX', res);
+
+    if (success) {
       dispatch({
         type: types.ORDER_ADD_ITEM_SUCCESS,
-        payload: res.data,
-      });
-    } else {
-      console.log("RESSSSSSS MSG", res.msg);
-      dispatch({
-        type: types.ORDER_ADD_ITEM_FAIL,
-        payload: res.msg,
+        payload: res.data.docs,
       });
     }
 
+    return res; // Return the response object in both success and error cases
 
-    return res;
-  });
+  } catch (err) {
+    return dispatch({
+      type: types.ORDER_ADD_ITEM_FAIL,
+      payload: err.response.data.msg,
+    });
+  }
 };
-*/
+
+
+
 
 
 
@@ -144,4 +194,28 @@ export const updateOrderDetails = (payload) => (dispatch) => {
 
     return res;
   });
+};
+
+export const updateOrderItemDetails = (payload) => async (dispatch) => {
+  try {
+    const res = await updateOrderItemById(payload);
+    const { success, data, msg } = res;
+
+    console.log('RESPONSEEEE SA REDUX', res);
+
+    if (success) {
+      dispatch({
+        type: types.ORDER_ITEM_UPDATE_SUCCESS,
+        payload: res.data.docs,
+      });
+    }
+
+    return res; // Return the response object in both success and error cases
+
+  } catch (err) {
+    return dispatch({
+      type: types.ORDER_ITEM_UPDATE_FAIL,
+      payload: err.response.data.msg,
+    });
+  }
 };

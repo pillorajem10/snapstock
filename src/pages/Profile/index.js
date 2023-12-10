@@ -21,6 +21,9 @@ import MuiAlert from '@mui/material/Alert';
 //UTILS
 import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '../../utils/methods'
 
+// COOKIES
+import Cookies from 'js-cookie';
+
 //css
 import styles from './index.module.css';
 
@@ -32,6 +35,7 @@ const Page = () => {
 
   const dispatch = useDispatch();
   const { id } = useParams();
+  const role = Cookies.get('role');
 
   const [userDeets, setUserDeets] = useState({});
   const [username, setUsername] = useState('');
@@ -241,15 +245,29 @@ const Page = () => {
       <div className={styles.forms}>
         <form className={styles.orderInfoForm} onSubmit={handleSubmitUpdateProd}>
           <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>Want to update your profile? Just edit the form.</div>
-          <TextField
-            style={{ marginTop: 20, width: '100%' }}
-            id="outlined-basic"
-            onChange={(e) => setCategoryName(e.target.value)}
-            label="Business name:"
-            required
-            variant="outlined"
-            value={categoryName}
-          />
+          {role === '1' && (
+            <TextField
+              style={{ marginTop: 20, width: '100%' }}
+              id="outlined-basic"
+              onChange={(e) => setCategoryName(e.target.value)}
+              label="Business name:"
+              required
+              variant="outlined"
+              value={categoryName}
+            />
+          )}
+          {role === '0' && (
+            <TextField
+              style={{ marginTop: 20, width: '100%' }}
+              id="outlined-basic"
+              onChange={(e) => setCategoryName(e.target.value)}
+              label="Business name:"
+              required
+              disabled
+              variant="outlined"
+              value={categoryName}
+            />
+          )}
           <TextField
             style={{ marginTop: 20, width: '100%' }}
             id="outlined-basic"

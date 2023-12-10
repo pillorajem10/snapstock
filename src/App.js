@@ -11,6 +11,7 @@ import ViewInventory from './pages/ViewInventory';
 import ViewOrders from './pages/ViewOrders';
 import ViewAllOrders from './pages/ViewAllOrders';
 import Order from './pages/Order';
+import OrderItem from './pages/OrderItem';
 import Product from './pages/Product';
 import Delivery from './pages/Delivery';
 import User from './pages/User';
@@ -41,6 +42,7 @@ function App() {
             <Route path="/changepassword/:token" element={<Changepassword/>}></Route>
             <Route path="/deliveries" element={<Delivery/>}></Route>
             <Route path="/order/:id" element={<Order/>}></Route>
+            <Route path="/order/:orderId/:orderItemId" element={<OrderItem/>}></Route>
             <Route path="/viewinvt/:id" element={<Product/>}></Route>
             <Route path="/home" element={<ViewOrders/>}></Route>
             <Route path="/users" element={<User/>}></Route>

@@ -65,6 +65,7 @@ const Page = () => {
           setOpenSuccessSnackbar(true);
           setSuccessMessage(res.msg);
           setTimeout(() => {
+            dispatch(jkai.user.userLogout())
             location.reload();
           }, 2000);
         } else {

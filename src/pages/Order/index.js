@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { jkai, common } from '../../redux/combineActions';
 
 //react router dom
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 //MUI STUFFS
 import {
@@ -16,6 +16,12 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Button,
   Switch,
   TableRow,
   Paper,
@@ -23,6 +29,7 @@ import {
   Snackbar,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 //UTILS
 import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '../../utils/methods'
@@ -33,6 +40,7 @@ import Cookies from 'js-cookie';
 //css
 import styles from './index.module.css';
 
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.order);
   const {
@@ -41,6 +49,7 @@ const Page = () => {
 
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [orderDeets, setOrderDeets] = useState({});
   const [customerName, setCustomerName] = useState(null);
@@ -55,6 +64,12 @@ const Page = () => {
   const [orderItemList, setOrderItemList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
   const [pageSize] = useState(50);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const [successMessage, setSuccessMessage] = useState('')
 
   const category = Cookies.get('category');
 
@@ -80,37 +95,7 @@ const Page = () => {
     [dispatch],
   );
 
-/*
-const handleOrderItemList = useCallback(
-  (pageIndex = 1) => {
-    const payload = {
-      pageIndex,
-      pageSize,
-      orderId: id
-    }
 
-    dispatch(common.ui.setLoading());
-    dispatch(jkai.order.getOrdersItemsByParams(payload))
-      .then((res) => {
-        console.log("TUMAKBOOOOOOOOOOO")
-        const { success, data } = res;
-        if (success) {
-          setOrderItemList(data.docs);
-          setPageDetails({
-            pageIndex: data.page,
-            pageSize: data.limit,
-            totalPages: data.totalPages,
-            totalDocs: data.totalDocs
-          });
-        }
-      })
-      .finally(() => {
-        dispatch(common.ui.clearLoading());
-      });
-  },
-  [dispatch],
-  );
-*/
   const handleOrderItemList = useCallback(
     (pageIndex = 1) => {
       const payload = { pageSize, pageIndex, orderId: id };
@@ -185,23 +170,29 @@ const handleOrderItemList = useCallback(
 
   const handleSubmitAddItem = (event) => {
     event.preventDefault();
-    // console.log("DITO PO UNG PAYLOADD SA ADD ITEM 1")
+
     const payload = {
       orderId: id,
       productId,
-      qty
-    }
+      qty,
+    };
 
     dispatch(common.ui.setLoading());
     dispatch(jkai.order.addItem(payload))
       .then((res) => {
-        const { success } = res;
+        const { success } = res || {};  // Make sure 'res' is defined
         if (success) {
-          setOpenSuccessSnackbarAddItem(true)
+          setOpenSuccessSnackbarAddItem(true);
+          setSuccessMessage(res.msg)
           location.reload();
         } else {
-          setOpenErrorSnackbarAddItem(true)
+          setOpenErrorSnackbarAddItem(true);
+          setErrMsg(res.payload);
         }
+      })
+      .catch((error) => {
+        setOpenErrorSnackbarAddItem(true);
+        setErrMsg(res.payload);
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());
@@ -237,115 +228,160 @@ const handleOrderItemList = useCallback(
     if (credit === true || credit === "true") setCredit(false)
   }, [click]);
 
-  const createBanana = (item, idx) => {
-    return (
-      <TableBody style = {{
-          background: item.credit === "true" ? "yellow" : "white",
-          display: loading && 'none'
-        }} key={idx}
-      >
-        <TableCell>{item.productName}</TableCell>
-        <TableCell>{item.qty}</TableCell>
-        <TableCell>{convertMomentWithFormat(item.createdAt)}</TableCell>
-        <TableCell>{formatPriceX(item.total)}</TableCell>
-      </TableBody>
-    )
+  const handleDeleteCancel = () => {
+    // Close the confirmation dialog
+    setDeleteConfirmationOpen(false);
+    setItemToDelete(null);
   };
+
+  const handleDeleteConfirm = () => {
+    console.log('CONFRIM DELETE', itemToDelete._id);
+    const payload = {
+      orderId: itemToDelete.orderId,
+      orderItemId: itemToDelete._id
+    }
+
+    dispatch(common.ui.setLoading());
+    dispatch(jkai.order.removeOrderItemDetails(payload))
+      .then((res) => {
+        const { success } = res;
+        if (success) {
+          setOpenSuccessSnackbarAddItem(true)
+          setDeleteConfirmationOpen(false);
+          setSuccessMessage(res.msg);
+          setItemToDelete(null);
+          location.reload();
+        } else {
+          setOpenErrorSnackbarAddItem(true)
+          setDeleteConfirmationOpen(false);
+        }
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
+  };
+
+
 
   if (!orderDeets) return <CircularProgress/>;
 
-  // console.log("CREDIT STATE", credit);
-  // console.log("CREDIT OBJECT", customerName);
-  // console.log("ORDER CREDITTTTTTTTTTTT", orderDeets.credit);
-
   return (
-    loading ? <CircularProgress/> :
-    <>
-    <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
-      <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-        Order updated.
-      </Alert>
-    </Snackbar>
-    <Snackbar open={openSuccessSnackbarAddItem} autoHideDuration={2000} onClose={handleClose}>
-      <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-        Item successfully added.
-      </Alert>
-    </Snackbar>
-    <Snackbar open={openErrorSnackbarAddItem} autoHideDuration={2000} onClose={handleClose}>
-      <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-        {error}
-      </Alert>
-    </Snackbar>
-      <div className={styles.container}>
-        {/*<div className={styles.header}>Ordered By: {orderDeets.customerName}</div>*/}
-        <form className={styles.orderInfoForm} onSubmit={handleSubmit}>
-          <TextField
-            id="outlined-basic"
-            label="Ordered By:"
-            required
-            value={customerName}
-            variant="outlined"
-            onChange={(e) => setCustomerName(e.target.value)}
-          />
-          {/*<p style={{fontSize: "1.5rem", fontWeight: "bold"}}>
-            Credit: <Switch onClick={() => setClick(click + 1)} checked={credit === true || credit === "true"} size="large"/>
-          </p>*/}
-          <button className={styles.btn} type="submit">Update Order</button>
-        </form>
-      </div>
-      <div className={styles.container}>
-        <p style={{fontSize: "2rem"}}>Date ordered: <span style={{ color: "red" }}>{`${orderDeets.monthOrdered}/${orderDeets.dateOrdered}/${orderDeets.yearOrdered}`}</span></p>
-      </div>
+      loading ? <CircularProgress /> :
+        <>
+          <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+              {successMessage}
+            </Alert>
+          </Snackbar>
+          <Snackbar open={openSuccessSnackbarAddItem} autoHideDuration={2000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+              {successMessage}
+            </Alert>
+          </Snackbar>
+          <Snackbar open={openErrorSnackbarAddItem} autoHideDuration={2000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+              {errMsg}
+            </Alert>
+          </Snackbar>
+          <Dialog
+            open={deleteConfirmationOpen}
+            onClose={handleDeleteCancel}
+          >
+            <DialogTitle>Delete Item</DialogTitle>
+            <DialogContent>
+              Are you sure you want to delete this item?
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDeleteCancel}>Cancel</Button>
+              <Button onClick={handleDeleteConfirm} variant="contained" color="error">
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+          {/* Snackbar components and other UI elements */}
+          <div className={styles.container}>
+            <form className={styles.orderInfoForm} onSubmit={handleSubmit}>
+              <TextField
+                id="outlined-basic"
+                label="Ordered By:"
+                required
+                value={customerName}
+                variant="outlined"
+                onChange={(e) => setCustomerName(e.target.value)}
+              />
+              <button className={styles.btn} type="submit">Update Order</button>
+            </form>
+          </div>
+          <div className={styles.container}>
+            <p style={{ fontSize: "2rem" }}>Date ordered: <span style={{ color: "red" }}>{`${orderDeets.monthOrdered}/${orderDeets.dateOrdered}/${orderDeets.yearOrdered}`}</span></p>
+          </div>
           <TableContainer style={{ display: loading && 'none' }} component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow style={{ marginTop:"1rem" }} >
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Product</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Quantity</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Date</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow style={{ marginTop: "1rem" }} >
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Product</b></TableCell>
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Quantity</b></TableCell>
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Date</b></TableCell>
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
+                </TableRow>
+              </TableHead>
+              {
+                orderItemList && orderItemList.map((order, index) => (
+                  <TableBody
+                    onClick={() => navigate(`/order/${id}/${order._id}`)}
+                    style={{
+                      background: order.credit === "true" ? "yellow" : "white",
+                      display: loading && 'none',
+                      cursor: 'pointer'
+                    }} key={index}
+                  >
+                    <TableCell>{order.productName}</TableCell>
+                    <TableCell>{order.qty}</TableCell>
+                    <TableCell>{convertMomentWithFormat(order.createdAt)}</TableCell>
+                    <TableCell>{formatPriceX(order.total)}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={(e) => { e.stopPropagation(); setItemToDelete(order); setDeleteConfirmationOpen(true); }}>
+                        <DeleteIcon style={{ color: 'red' }} />
+                      </IconButton>
+                    </TableCell>
+                  </TableBody>
+                ))
+              }
+              <TableRow style={{ marginTop: "1rem" }}>
+                <TableCell>
+                  <b style={{ fontSize: "1.5rem" }}>
+                    Total: <span style={{ color: "#39CD35" }}>{formatPriceX(orderItemList && orderItemList.reduce((a, c) => c.total + a, 0))}</span>
+                  </b>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            {
-              orderItemList && orderItemList.map((order, index) => (
-                createBanana(order, index)
-              ))
-            }
-            <TableRow style={{ marginTop:"1rem" }}>
-              <TableCell>
-                <b style={{ fontSize: "1.5rem" }}>
-                  Total: <span style={{ color: "#39CD35" }}>{formatPriceX(orderItemList && orderItemList.reduce((a, c) => c.total + a, 0))}</span>
-                </b>
-              </TableCell>
-            </TableRow>
-          </Table>
-        </TableContainer>
-      <form className={styles.addOrderForm} onSubmit={handleSubmitAddItem}>
-        <div style={{ fontSize: "1.5rem" }}><b>Add product and quantity</b></div>
-        <div className={styles.inputField}>
-          <select required className={styles.slct} onChange={(e) => setProductId(e.target.value)}>
-            <option value=" ">Choose a product</option>
-            {productList.map((product) => (
-              <option key={product.name} value={product._id}>
-                {product.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className={styles.inputField}>
-          <TextField
-            id="outlined-basic"
-            label="Quantity"
-            required
-            variant="outlined"
-            onChange={(e) => setQty(e.target.value)}
-          />
-        </div>
-        <button className={styles.btn} type="submit">Add Item</button>
-      </form>
-
-    </>
-  )
+            </Table>
+          </TableContainer>
+          <form className={styles.addOrderForm} onSubmit={handleSubmitAddItem}>
+            <div style={{ fontSize: "1.5rem" }}><b>Add product and quantity</b></div>
+            <div className={styles.inputField}>
+              <select required className={styles.slct} onChange={(e) => setProductId(e.target.value)}>
+                <option value=" ">Choose a product</option>
+                {productList.map((product) => (
+                  <option key={product.name} value={product._id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.inputField}>
+              <TextField
+                id="outlined-basic"
+                label="Quantity"
+                required
+                variant="outlined"
+                onChange={(e) => setQty(e.target.value)}
+              />
+            </div>
+            <button className={styles.btn} type="submit">Add Item</button>
+          </form>
+        </>
+    );
 }
 
 export default Page
