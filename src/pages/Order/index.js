@@ -299,17 +299,43 @@ const Page = () => {
             </DialogActions>
           </Dialog>
           {/* Snackbar components and other UI elements */}
-          <div className={styles.container}>
+          <div className={styles.formContainer}>
             <form className={styles.orderInfoForm} onSubmit={handleSubmit}>
+              <div style={{ fontSize: "1.5rem" }}><b>Update customer</b></div>
               <TextField
                 id="outlined-basic"
                 label="Ordered By:"
                 required
+                style={{ marginTop: 20 }}
                 value={customerName}
                 variant="outlined"
                 onChange={(e) => setCustomerName(e.target.value)}
               />
               <button className={styles.btn} type="submit">Update Order</button>
+            </form>
+
+            <form className={styles.addOrderForm} onSubmit={handleSubmitAddItem}>
+              <div style={{ fontSize: "1.5rem" }}><b>Add product and quantity</b></div>
+              <div className={styles.inputField}>
+                <select required className={styles.slct} onChange={(e) => setProductId(e.target.value)}>
+                  <option value=" ">Choose a product</option>
+                  {productList.map((product) => (
+                    <option key={product.name} value={product._id}>
+                      {product.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.inputField}>
+                <TextField
+                  id="outlined-basic"
+                  label="Quantity"
+                  required
+                  variant="outlined"
+                  onChange={(e) => setQty(e.target.value)}
+                />
+              </div>
+              <button className={styles.btn} type="submit">Add Item</button>
             </form>
           </div>
           <div className={styles.container}>
@@ -357,29 +383,6 @@ const Page = () => {
               </TableRow>
             </Table>
           </TableContainer>
-          <form className={styles.addOrderForm} onSubmit={handleSubmitAddItem}>
-            <div style={{ fontSize: "1.5rem" }}><b>Add product and quantity</b></div>
-            <div className={styles.inputField}>
-              <select required className={styles.slct} onChange={(e) => setProductId(e.target.value)}>
-                <option value=" ">Choose a product</option>
-                {productList.map((product) => (
-                  <option key={product.name} value={product._id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className={styles.inputField}>
-              <TextField
-                id="outlined-basic"
-                label="Quantity"
-                required
-                variant="outlined"
-                onChange={(e) => setQty(e.target.value)}
-              />
-            </div>
-            <button className={styles.btn} type="submit">Add Item</button>
-          </form>
         </>
     );
 }

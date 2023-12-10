@@ -69,7 +69,7 @@ const Page = () => {
             <TextField
               id="outlined-basic"
               label="Name of product"
-              style={{ width: "25rem" }}
+              style={{ width: "100%" }}
               required
               variant="outlined"
               onChange={(e) => setName(e.target.value)}
@@ -79,7 +79,7 @@ const Page = () => {
             <TextField
               id="outlined-basic"
               label="Price"
-              style={{ width: "25rem" }}
+              style={{ width: "100%" }}
               required
               variant="outlined"
               onChange={(e) => setPrice(e.target.value)}
@@ -89,7 +89,7 @@ const Page = () => {
             <TextField
               id="outlined-basic"
               label="Quantity"
-              style={{ width: "25rem" }}
+              style={{ width: "100%" }}
               required
               variant="outlined"
               onChange={(e) => setStocks(e.target.value)}

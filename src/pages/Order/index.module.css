@@ -8,24 +8,30 @@
   margin-top: 1rem;
 }
 
+.formContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
 .addOrderForm {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  margin-left: 1rem;
-  border: solid;
-  width: 25rem;
-  border-radius: 16px;
-  padding: 1rem;
-  text-align: center;
+  width: 20rem;
+  align-items: center;
+  margin: 1%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .orderInfoForm {
-  margin-top: .2rem;
-  margin-bottom: 2rem;
-  border: solid;
   width: 20rem;
-  border-radius: 16px;
-  padding: 1rem;
+  align-items: center;
+  margin: 1%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .inputField {
