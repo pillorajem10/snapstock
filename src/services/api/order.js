@@ -37,6 +37,11 @@ export async function removeOrderItemById(payload) {
   return DELETE(`/order/orderitemdeletebyid/${orderId}/${orderItemId}`);
 }
 
+export async function removeOrderById(payload) {
+  console.log('DELETE PAYLOADD', payload);
+  return DELETE(`/order/${payload}`);
+}
+
 export async function updateOrderItemById(payload) {
   const { orderId, orderItemId } = payload;
   console.log('UPDATE PAYLOADD', payload);

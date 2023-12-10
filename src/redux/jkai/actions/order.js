@@ -7,7 +7,8 @@ import { fetchOrderByParams,
   createOrder,
   fetchOrderItemById,
   removeOrderItemById,
-  updateOrderItemById
+  updateOrderItemById,
+  removeOrderById
  } from '../../../services/api/order';
 import axios from 'axios';
 
@@ -110,6 +111,30 @@ export const removeOrderItemDetails = (payload) => (dispatch) => {
 
     return res;
   });
+};
+
+export const removeOrderDetails = (payload) => async (dispatch) => {
+  try {
+    const res = await removeOrderById(payload);
+    const { success, data, msg } = res;
+
+    console.log('RESPONSEEEE SA REDUX', res);
+
+    if (success) {
+      dispatch({
+        type: types.ORDER_REMOVE_SUCCESS,
+        payload: res.data.docs,
+      });
+    }
+
+    return res; // Return the response object in both success and error cases
+
+  } catch (err) {
+    return dispatch({
+      type: types.ORDER_REMOVE_FAIL,
+      payload: err.response.data.msg,
+    });
+  }
 };
 
 

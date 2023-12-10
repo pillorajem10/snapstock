@@ -17,11 +17,20 @@ import {
   TableContainer,
   TableHead,
   TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Button,
   TableRow,
   Paper,
   CircularProgress,
   Pagination,
+  Snackbar
 } from '@mui/material'
+import MuiAlert from '@mui/material/Alert';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // sectiions
 import AddOrderForm from './sections/AddOrder';
@@ -47,7 +56,13 @@ const Page = () => {
   const [orderList, setOrderList] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [pageDetails, setPageDetails] = useState(null);
+  const [deleteOrderId, setDeleteOrderId] = useState(null);
   const [pageSize] = useState(10);
+
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const [successMessage, setSuccessMessage] = useState('')
 
   const category = Cookies.get('category');
 
@@ -90,26 +105,45 @@ const Page = () => {
   [dispatch, customerName, pageSize],
 );
 
+  const handleDeleteClick = (orderId) => {
+    setDeleteOrderId(orderId);
+  };
+
+
+  const handleDeleteConfirm = async () => {
+    try {
+      dispatch(common.ui.setLoading());
+
+      const res = await dispatch(jkai.order.removeOrderDetails(deleteOrderId));
+
+      if (res.success) {
+        console.log('SUCCESSSSSSSSSSSSSSSS')
+        setOpenSuccessSnackbar(true);
+        setSuccessMessage(res.msg);
+      } else {
+        setOpenErrorSnackbar(true);
+      }
+    } catch (error) {
+      console.error('Error during delete:', error);
+      setOpenSuccessSnackbar(true);
+    } finally {
+      setDeleteOrderId(null);
+      dispatch(common.ui.clearLoading());
+      handleOrderList(); // Refresh the order list after deletion
+    }
+  };
+
+
+
+  const handleDeleteCancel = () => {
+    // Reset the deleteOrderId state if deletion is canceled
+    setDeleteOrderId(null);
+  };
 
   useEffect(() =>{
     handleOrderList();
   },[handleOrderList])
 
-  const createBanana = (order, idx) => {
-    return (
-      <TableBody style = {{
-          display: loading && 'none',
-          background: order.credit === "true" ? "yellow" : "white",
-          cursor: "pointer"
-        }} key={idx}
-        onClick = {() => navigate(`/order/${order._id}`)}
-      >
-        <TableCell>{order.customerName}</TableCell>
-        <TableCell>{`${order.monthOrdered}/${order.dateOrdered}/${order.yearOrdered}`}</TableCell>
-        <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}>{formatPriceX(order.totalPrice)}</TableCell>
-      </TableBody>
-    )
-  };
 
   const handleChangePageIndex = (event, value) => {
     handleOrderList(value);
@@ -117,50 +151,115 @@ const Page = () => {
 
   const filteredCreditArray = orderList && orderList.filter(order => order.credit === "false" || order.credit === false);
 
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSuccessSnackbar(false);
+    setOpenErrorSnackbar(false);
+  };
+
   return (
     <>
-      <AddOrderForm/>
+      <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openErrorSnackbar} autoHideDuration={2000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {errMsg}
+        </Alert>
+      </Snackbar>
+      <Dialog open={!!deleteOrderId} onClose={handleDeleteCancel}>
+       <DialogTitle>Confirm Deletion</DialogTitle>
+       <DialogContent>
+         Are you sure you want to delete this order?
+       </DialogContent>
+       <DialogActions>
+         <Button onClick={handleDeleteCancel}>Cancel</Button>
+         <Button onClick={handleDeleteConfirm} variant="contained" color="error">
+           Delete
+         </Button>
+       </DialogActions>
+      </Dialog>
+      <AddOrderForm />
       <form className={styles.searchForm}>
-        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search orders by customer name" size="small"/>
-        {/*<button className={styles.btn} type="submit">Search</button>*/}
-      </form>
-      {loading ? <CircularProgress color="inherit"/> :
-      <div>
-        <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow style={{ marginTop:"1rem" }} >
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Ordered By</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Date Ordered</b></TableCell>
-                <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
-                {/* <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell> */}
-              </TableRow>
-            </TableHead>
-            {orderList.map((order, index) => (
-              createBanana(order, index)
-            ))}
-          </Table>
-          <TableRow style={{ marginTop:"1rem" }}>
-            <TableCell>
-              <b style={{ fontSize: "1.5rem" }}>
-                Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0))}</span>
-              </b>
-            </TableCell>
-          </TableRow>
-        </TableContainer>
-
-        <Pagination
-          style = {{ display: loading && 'none', marginTop: "1rem", marginBottom: "1rem" }}
-          count={pageDetails && pageDetails.totalPages}
-          page={pageDetails && pageDetails.pageIndex}
-          defaultPage={1}
-          color="primary"
-          size="large"
-          onChange={handleChangePageIndex}
+        <TextField
+          style={{ width: "20rem", border: "double", borderRadius: "16px" }}
+          onChange={(e) => setCustomerName(e.target.value)}
+          placeholder="Search orders by customer name"
+          size="small"
         />
-      </div>}
+      </form>
+      {loading ? <CircularProgress color="inherit" /> :
+        <div>
+          <TableContainer style={{ display: loading && 'none' }} component={Paper}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow style={{ marginTop: "1rem" }} >
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Ordered By</b></TableCell>
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Date Ordered</b></TableCell>
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orderList.map((order, index) => (
+                  <TableRow
+                    style={{
+                      display: loading && 'none',
+                      background: order.credit === "true" ? "yellow" : "white",
+                      cursor: "pointer"
+                    }}
+                    key={index}
+                    onClick={() => navigate(`/order/${order._id}`)}
+                  >
+                    <TableCell>{order.customerName}</TableCell>
+                    <TableCell>{`${order.monthOrdered}/${order.dateOrdered}/${order.yearOrdered}`}</TableCell>
+                    <TableCell>
+                      {formatPriceX(order.totalPrice)}
+                    </TableCell>
+                    <TableCell>
+                      <DeleteIcon
+                        style={{ color: 'red', cursor: 'pointer' }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click event from triggering
+                          handleDeleteClick(order._id);
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableRow style={{ marginTop: "1rem" }}>
+                <TableCell>
+                  <b style={{ fontSize: "1.5rem" }}>
+                    Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0))}</span>
+                  </b>
+                </TableCell>
+              </TableRow>
+            </Table>
+          </TableContainer>
+
+          <Pagination
+            style={{ display: loading && 'none', marginTop: "1rem", marginBottom: "1rem" }}
+            count={pageDetails && pageDetails.totalPages}
+            page={pageDetails && pageDetails.pageIndex}
+            defaultPage={1}
+            color="primary"
+            size="large"
+            onChange={handleChangePageIndex}
+          />
+        </div>
+      }
     </>
-  )
+  );
 }
 
 export default Page
