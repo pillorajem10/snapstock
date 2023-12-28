@@ -19,7 +19,10 @@ import {
 import MuiAlert from '@mui/material/Alert';
 
 //UTILS
-import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '../../utils/methods'
+import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '../../utils/methods';
+
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 //css
 import styles from './index.module.css';
@@ -32,6 +35,8 @@ const Page = () => {
 
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
+  const userRole = Cookies.get('role');
 
   const [userDeets, setUserDeets] = useState({});
   const [username, setUsername] = useState('');
@@ -52,6 +57,10 @@ const Page = () => {
 
 
   useEffect(() => {
+    if (userRole !== '1') {
+      navigate('/home');
+    }
+
     dispatch(common.ui.setLoading());
     dispatch(jkai.user.getUser(id))
       .then((res) => {

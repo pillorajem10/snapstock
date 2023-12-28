@@ -197,6 +197,9 @@ const Page = () => {
                   Login
                 </button>
               </form>
+              <div className={styles.formLinks}>
+                Forgot password? Click here.
+              </div>
             </div>
           </div>
         ) : (

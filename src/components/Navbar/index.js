@@ -21,9 +21,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 // LOGO
 import logoImage from './snapstocklogo3W.png'; // Replace with the actual path to your image
 
-
-
-
 const Navbar = () => {
   const storedToken = Cookies.get('token');
   const role = Cookies.get('role');
@@ -31,6 +28,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [name, setName] = useState('SnapStock');
 
   const handleSignOut = () => {
@@ -57,12 +55,10 @@ const Navbar = () => {
     }
   }, []);
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
 
   return (
     <>
@@ -76,27 +72,12 @@ const Navbar = () => {
           </>
         ) }
         <img onClick={handleBackToHome} src={logoImage} alt="Logo" className={styles.logoImage} />
-        { /*storedToken && (
-          <>
-            <div className={styles.listings}>
-              <Link to='/viewinvt'>Products</Link>
-            </div>
-            <div className={styles.listings}>
-              <Link to='/viewallorders'>All Orders</Link>
-            </div>
-            <div className={styles.listings}>
-              <Link to='/deliveries'>Add Stocks</Link>
-            </div>
-            {role === '1' && (
-              <div className={styles.listings}>
-                <Link to='/users'>Users</Link>
-              </div>
-            )}
-            <div className={styles.listings} onClick={handleSignOut}>
-              <Link>Sign Out</Link>
-            </div>
-          </>
-        ) */}
+        <div className={styles.listings}>
+          <Link to='/about'>About Us</Link>
+        </div>
+        <div className={styles.listings}>
+          <Link to='/services'>Services</Link>
+        </div>
       </div>
     </>
   );

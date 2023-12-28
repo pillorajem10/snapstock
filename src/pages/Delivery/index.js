@@ -31,6 +31,8 @@ import styles from './index.module.css';
 
 // sectiions
 import AddDeliveryForm from './sections/AddDelivery';
+import Cookies from 'js-cookie';
+
 
 //UTILS
 import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
@@ -40,6 +42,8 @@ const Page = () => {
   const {
     ui: { loading },
   } = useSelector((state) => state.common);
+  const role = Cookies.get('role');
+
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -90,6 +94,10 @@ const Page = () => {
 
 
   useEffect(() =>{
+    if (role === '0') {
+      navigate('/home');
+    }
+    
     handleDeliveryList();
   },[handleDeliveryList])
 

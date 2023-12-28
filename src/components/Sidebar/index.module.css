@@ -1,11 +1,20 @@
 .drawer {
-  width: 50;
-  background: white;
+  width: 300px;
+  background: #ffffff; /* White background */
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+}
+
+.introContainer {
+  cursor: pointer;
+  margin-left: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .listings {
   display: flex;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   align-items: center;
 }
 
@@ -13,22 +22,38 @@
 .listings a {
   display: flex;
   align-items: center;
-  margin-left: 1rem;
+  padding: 1rem;
   font-size: 1.2rem;
   text-decoration: none;
-  color: black;
+  color: #000000; /* Black text color */
   transition: background-color 0.3s, color 0.3s;
 }
 
 /* Hover effect for the links */
 .listings a:hover {
-  color: #ABABAB;
-  transition: .3s;
+  color: #ABABAB; /* Light gray on hover */
+  background-color: #f5f5f5; /* Slight background color change on hover */
+  transition: 0.3s;
 }
 
 .introName {
   font-size: 2rem;
   cursor: pointer;
-  margin-left: 1rem;
-  margin-bottom: 1rem;
+  margin: 1rem;
+}
+
+/* Divider between sections */
+.listings:not(:last-child) {
+  border-bottom: 1px solid #e0e0e0; /* Light gray divider */
+  padding-bottom: 0.5rem;
+}
+
+/* Sign Out link style */
+.listings.signOut {
+  cursor: pointer;
+  margin-top: auto; /* Push to the bottom */
+}
+
+.listings.signOut a {
+  color: #ff4d4f; /* Red color for sign out */
 }

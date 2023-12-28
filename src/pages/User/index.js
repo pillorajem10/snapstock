@@ -66,6 +66,7 @@ const Page = () => {
   const [pageSize] = useState(7);
 
   const category = Cookies.get('category');
+  const role = Cookies.get('role');
 
   const handleUserList = useCallback(
   (pageIndex = 1) => {
@@ -99,6 +100,10 @@ const Page = () => {
 
 
   useEffect(() =>{
+    if (role !== '1') {
+      navigate('/home');
+    }
+
     handleUserList();
   },[handleUserList])
 

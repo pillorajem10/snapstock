@@ -22,6 +22,8 @@ import DefaultPage from './pages/DefaultPage';
 import VerifyingPage from './pages/VerifyingPage';
 import Profile from './pages/Profile';
 import Changepassword from './pages/Changepassword';
+import AboutUs from './pages/AboutUs';
+import Services from './pages/Services';
 
 // MUI SHITS
 import {  ThemeProvider } from '@mui/styles';
@@ -38,24 +40,27 @@ function App() {
             <Navbar/>
           </header>
           <main className="grid">
-            <AuthRouter>
-              <Routes>
-                <Route path="/" exact={true} element={<LoginPage/>}></Route>
-                <Route path="/viewinvt" element={<ViewInventory/>}></Route>
-                <Route path="/viewallorders" element={<ViewAllOrders/>}></Route>
-                <Route path="/myprofile/:id" element={<Profile/>}></Route>
-                <Route path="/changepassword/:token" element={<Changepassword/>}></Route>
-                <Route path="/deliveries" element={<Delivery/>}></Route>
-                <Route path="/order/:id" element={<Order/>}></Route>
-                <Route path="/order/:orderId/:orderItemId" element={<OrderItem/>}></Route>
-                <Route path="/viewinvt/:id" element={<Product/>}></Route>
-                <Route path="/home" element={<ViewOrders/>}></Route>
-                <Route path="/users" element={<User/>}></Route>
-                <Route path="/user/:id" element={<UserDeets/>}></Route>
-                <Route path="/verify/:token" element={<VerifyingPage/>}></Route>
-                <Route path="*" element={<DefaultPage/>} />
-              </Routes>
-            </AuthRouter>
+            <Routes>
+
+              {/* ROUTES OS PAGES THAT DOESNT NEED TO BE LOGGED IN */}
+              <Route path="/" exact={true} element={<LoginPage/>} />
+              <Route path="/about" element={<AboutUs/>} />
+              <Route path="/services" element={<Services/>} />
+              <Route path="/changepassword/:token" element={<Changepassword/>} />
+              <Route path="*" element={<DefaultPage/>} />
+
+              {/* ROUTES OS PAGES THAT NEED TO BE LOGGED IN */}
+              <Route path="/viewinvt" element={<AuthRouter><ViewInventory/></AuthRouter>} />
+              <Route path="/myprofile/:id" element={<AuthRouter><Profile/></AuthRouter>} />
+              <Route path="/deliveries" element={<AuthRouter><Delivery/></AuthRouter>} />
+              <Route path="/order/:id" element={<AuthRouter><Order/></AuthRouter>} />
+              <Route path="/order/:orderId/:orderItemId" element={<AuthRouter><OrderItem/></AuthRouter>} />
+              <Route path="/viewinvt/:id" element={<AuthRouter><Product/></AuthRouter>} />
+              <Route path="/home" element={<AuthRouter><ViewOrders/></AuthRouter>} />
+              <Route path="/users" element={<AuthRouter><User/></AuthRouter>} />
+              <Route path="/user/:id" element={<AuthRouter><UserDeets/></AuthRouter>} />
+              <Route path="/verify/:token" element={<AuthRouter><VerifyingPage/></AuthRouter>} />
+            </Routes>
           </main>
           <footer className="footer"><Footer/></footer>
         </div>

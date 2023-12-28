@@ -24,6 +24,9 @@ import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '..
 //css
 import styles from './index.module.css';
 
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.product);
   const {
@@ -32,6 +35,8 @@ const Page = () => {
 
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
+  const role = Cookies.get('role');
 
   const [productDeets, setProductDeets] = useState({});
   const [name, setName] = useState('');
@@ -46,6 +51,10 @@ const Page = () => {
 
 
   useEffect(() => {
+    if (role === '0') {
+      navigate('/home');
+    }
+
     dispatch(common.ui.setLoading());
     dispatch(jkai.product.getProduct(id))
       .then((res) => {

@@ -2,22 +2,17 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-const AuthRouter = ({ children, requireAuth = true }) => {
+const AuthRouter = ({ children }) => {
   const navigate = useNavigate();
+  const token = Cookies.get('token');
 
   useEffect(() => {
-    const token = Cookies.get('token');
-    const role = Cookies.get('role');
-
-    if (requireAuth && !token) {
+    if (!token) {
       navigate('/');
-    } /* else if (requireAuth && role === '0') {
-      navigate('/home');
-    } */
+    }
+  }, [navigate, token]);
 
-  }, [navigate, requireAuth]);
-
-  return requireAuth ? <>{children}</> : null;
+  return <>{children}</>;
 };
 
 export default AuthRouter;

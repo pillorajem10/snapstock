@@ -32,6 +32,7 @@ import {
   ShoppingCart,
   ListAlt,
   AddBox,
+  AccountCircle,
   People,
   ExitToApp
 } from '@mui/icons-material';
@@ -86,7 +87,10 @@ const Sidebar = ({ isOpen, onClose }) => {
         {/* SIDEBAR OWNER ROLE */}
         {role === '1' && (
           <>
-            <div className={styles.introName} onClick={goToMyprofile}>Hello, {accountDeets.fname}</div>
+            <div className={styles.introContainer} onClick={goToMyprofile}>
+              <AccountCircle sx={{ fontSize: 50}} /> {/* Add profile icon */}
+              <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+            </div>
             <div className={styles.listings}>
               <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
             </div>
