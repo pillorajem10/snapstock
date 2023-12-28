@@ -176,14 +176,26 @@ const Page = () => {
           {errMsg}
         </Alert>
       </Snackbar>
-      {role === '2' || role === '1' && (
+      { (role === '2' || role === '1') && (
         <>
           <AddProductForm />
         </>
       )}
-      <form className={styles.searchForm}>
-        <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
-      </form>
+
+      { (role === '2' || role === '1') ? (
+        <>
+          <form className={styles.searchForm}>
+            <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
+          </form>
+          </>
+      ) : (
+        <>
+          <form className={styles.searchForm1}>
+            <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
+          </form>
+        </>
+      )}
+
       {loading ? <CircularProgress /> :
         <div>
           <TableContainer style={{ display: loading && 'none' }} component={Paper}>
