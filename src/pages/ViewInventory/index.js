@@ -64,6 +64,7 @@ const Page = () => {
   const [pageSize] = useState(7);
 
   const category = Cookies.get('category');
+  const role = Cookies.get('role');
 
   const handleProductList = useCallback(
   (pageIndex = 1) => {
@@ -175,7 +176,11 @@ const Page = () => {
           {errMsg}
         </Alert>
       </Snackbar>
-      <AddProductForm />
+      {role === '2' || role === '1' && (
+        <>
+          <AddProductForm />
+        </>
+      )}
       <form className={styles.searchForm}>
         <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
       </form>
@@ -188,27 +193,33 @@ const Page = () => {
                   <TableCell><b style={{ fontSize: "1.5rem" }}>Name</b></TableCell>
                   <TableCell><b style={{ fontSize: "1.5rem" }}>Stock</b></TableCell>
                   <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell>
-                  <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
+                  {role === '2' || role === '1' && (
+                    <>
+                      <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
+                    </>
+                  )}
                 </TableRow>
               </TableHead>
               {productList.map((product, index) => (
                 <TableRow
-                  style={{ display: loading && 'none', cursor: "pointer" }}
+                  style={{ display: loading && 'none', cursor: role === '0' ? 'default' : 'pointer' }}
                   key={index}
-                  onClick={() => navigate(`/viewinvt/${product._id}`)}
+                  onClick={() => role !== '0' && navigate(`/viewinvt/${product._id}`)}
                 >
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.stocks}</TableCell>
                   <TableCell>{formatPriceX(product.price)}</TableCell>
-                  <TableCell>
-                    <DeleteIcon
-                      style={{ color: 'red', cursor: 'pointer' }}
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent row click event from triggering
-                        handleDeleteClick(product._id);
-                      }}
-                    />
-                  </TableCell>
+                  {role === '2' || role === '1' && (
+                    <TableCell>
+                      <DeleteIcon
+                        style={{ color: 'red', cursor: 'pointer' }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click event from triggering
+                          handleDeleteClick(product._id);
+                        }}
+                      />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </Table>

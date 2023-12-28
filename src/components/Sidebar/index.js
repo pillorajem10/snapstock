@@ -138,6 +138,9 @@ const Sidebar = ({ isOpen, onClose }) => {
               <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
             </div>
             <div className={styles.listings}>
+              <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
+            </div>
+            <div className={styles.listings}>
               <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
             </div>
             <div className={styles.listings} onClick={handleSignOut}>
