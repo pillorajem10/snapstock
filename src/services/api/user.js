@@ -1,7 +1,7 @@
 // utils
 import * as methods from '../../utils/methods';
 
-import { GET, POST, PUT } from '../request';
+import { GET, POST, PUT, DELETE } from '../request';
 
 
 export async function loginFunc(payload) {
@@ -48,4 +48,8 @@ export async function changePassword(payload) {
   const { token } = payload;
   // console.log("PAYLOADDDDDDDDDDDDDDDDDD USERRRR", payload)
   return POST(`/user/changepassword/${token}`, payload);
+}
+
+export async function deleteUserById(payload) {
+  return DELETE(`/user/${payload}`);
 }

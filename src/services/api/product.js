@@ -1,7 +1,7 @@
 // utils
 import * as methods from '../../utils/methods';
 
-import { GET, POST, PUT } from '../request';
+import { GET, POST, PUT, DELETE } from '../request';
 
 /*
 export async function fetchProductByParams() {
@@ -39,6 +39,10 @@ export async function updateProductById(payload) {
 export async function addStocksById(payload) {
   const { id } = payload;
   return POST(`/product/${id}`, payload);
+}
+
+export async function deleteProductById(payload) {
+  return DELETE(`/product/${payload}`);
 }
 
 /*

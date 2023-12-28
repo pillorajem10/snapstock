@@ -83,27 +83,68 @@ const Sidebar = ({ isOpen, onClose }) => {
       }}
     >
       <List>
-        <div className={styles.introName} onClick={goToMyprofile}>Hello, {accountDeets.fname}</div>
-        <div className={styles.listings}>
-          <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
-        </div>
-        <div className={styles.listings}>
-          <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
-        </div>
-        <div className={styles.listings}>
-          <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
-        </div>
-        <div className={styles.listings}>
-          <Link to='/deliveries' onClick={onClose}><AddBox sx={{ marginRight: 3 }} /> Add Stocks</Link>
-        </div>
+        {/* SIDEBAR OWNER ROLE */}
         {role === '1' && (
-          <div className={styles.listings}>
-            <Link to='/users' onClick={onClose}><People sx={{ marginRight: 3 }} /> Users</Link>
-          </div>
+          <>
+            <div className={styles.introName} onClick={goToMyprofile}>Hello, {accountDeets.fname}</div>
+            <div className={styles.listings}>
+              <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/deliveries' onClick={onClose}><AddBox sx={{ marginRight: 3 }} /> Add Stocks</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/users' onClick={onClose}><People sx={{ marginRight: 3 }} /> Users</Link>
+            </div>
+            <div className={styles.listings} onClick={handleSignOut}>
+              <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
+            </div>
+          </>
         )}
-        <div className={styles.listings} onClick={handleSignOut}>
-          <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
-        </div>
+
+        {/* SIDEBAR MANAGER ROLE */}
+        {role === '2' && (
+          <>
+            <div className={styles.introName} onClick={goToMyprofile}>Hello, {accountDeets.fname}</div>
+            <div className={styles.listings}>
+              <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/deliveries' onClick={onClose}><AddBox sx={{ marginRight: 3 }} /> Add Stocks</Link>
+            </div>
+            <div className={styles.listings} onClick={handleSignOut}>
+              <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
+            </div>
+          </>
+        )}
+
+        {/* SIDEBAR MANAGER ROLE */}
+        {role === '0' && (
+          <>
+            <div className={styles.introName} onClick={goToMyprofile}>Hello, {accountDeets.fname}</div>
+            <div className={styles.listings}>
+              <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
+            </div>
+            <div className={styles.listings} onClick={handleSignOut}>
+              <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
+            </div>
+          </>
+        )}
       </List>
     </Drawer>
   );

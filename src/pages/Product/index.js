@@ -52,6 +52,9 @@ const Page = () => {
         const { success, data } = res;
         if (success) {
           setProductDeets(data);
+
+          setName(data.name);
+          setPrice(data.price);
         }
       })
       .finally(() => {
@@ -126,25 +129,24 @@ const Page = () => {
         </Alert>
       </Snackbar>
       <div style={{margin: 20}}>
-        <div style={{fontSize: "1.5rem", fontWeight: "bold"}}>Name: <span style={{ color: "red" }}>{productDeets.name}</span></div>
-        <div style={{fontSize: "1.5rem", fontWeight: "bold"}}>Stocks: <span style={{ color: "red" }}>{productDeets.stocks}</span></div>
-        <div style={{fontSize: "1.5rem", fontWeight: "bold"}}>Price: <span style={{ color: "red" }}>{formatPriceX(productDeets.price)}</span></div>
         <div className={styles.forms}>
           <form className={styles.orderInfoForm} onSubmit={handleSubmitUpdateProd}>
             <div style={{fontSize: "1.5rem", fontWeight: "bold"}}>Update Product</div>
             <TextField
-             style={{marginTop: 20}}
+             style={{marginTop: 20, width: "100%"}}
               id="outlined-basic"
               onChange={(e) => setName(e.target.value)}
               label="Name:"
+              value={name}
               required
               variant="outlined"
             />
             <TextField
-              style={{marginTop: 20}}
+              style={{marginTop: 20, width: "100%"}}
               id="outlined-basic"
               onChange={(e) => setPrice(e.target.value)}
               label="Price:"
+              value={price}
               required
               variant="outlined"
             />

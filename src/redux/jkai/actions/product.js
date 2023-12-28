@@ -1,6 +1,6 @@
 //api
 import { fetchProductByParams, fetchProduct, updateProductById,
-addStocksById, addNewProduct } from '../../../services/api/product';
+addStocksById, addNewProduct, deleteProductById } from '../../../services/api/product';
 
 //types
 import * as types from '../types';
@@ -78,6 +78,24 @@ export const updateProduct = (payload) => (dispatch) => {
     } else {
       dispatch({
         type: types.PRODUCT_UPDATE_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
+export const removeProduct = (payload) => (dispatch) => {
+  return deleteProductById(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.PRODUCT_DELETE_SUCCESS,
+        payload: res.data,
+      });
+    } else {
+      dispatch({
+        type: types.PRODUCT_DELETE_FAIL,
         payload: res.msg,
       });
     }

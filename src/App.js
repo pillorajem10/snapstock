@@ -2,6 +2,7 @@
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import AuthRouter from './components/AuthRouter'
+import Footer from './components/Footer'
 
 //REACT ROUTER
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -32,25 +33,32 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <Navbar/>
-        <AuthRouter>
-          <Routes>
-            <Route path="/" exact={true} element={<LoginPage/>}></Route>
-            <Route path="/viewinvt" element={<ViewInventory/>}></Route>
-            <Route path="/viewallorders" element={<ViewAllOrders/>}></Route>
-            <Route path="/myprofile/:id" element={<Profile/>}></Route>
-            <Route path="/changepassword/:token" element={<Changepassword/>}></Route>
-            <Route path="/deliveries" element={<Delivery/>}></Route>
-            <Route path="/order/:id" element={<Order/>}></Route>
-            <Route path="/order/:orderId/:orderItemId" element={<OrderItem/>}></Route>
-            <Route path="/viewinvt/:id" element={<Product/>}></Route>
-            <Route path="/home" element={<ViewOrders/>}></Route>
-            <Route path="/users" element={<User/>}></Route>
-            <Route path="/user/:id" element={<UserDeets/>}></Route>
-            <Route path="/verify/:token" element={<VerifyingPage/>}></Route>
-            <Route path="*" element={<DefaultPage/>} />
-          </Routes>
-        </AuthRouter>
+        <div className="grid-container">
+          <header>
+            <Navbar/>
+          </header>
+          <main className="grid">
+            <AuthRouter>
+              <Routes>
+                <Route path="/" exact={true} element={<LoginPage/>}></Route>
+                <Route path="/viewinvt" element={<ViewInventory/>}></Route>
+                <Route path="/viewallorders" element={<ViewAllOrders/>}></Route>
+                <Route path="/myprofile/:id" element={<Profile/>}></Route>
+                <Route path="/changepassword/:token" element={<Changepassword/>}></Route>
+                <Route path="/deliveries" element={<Delivery/>}></Route>
+                <Route path="/order/:id" element={<Order/>}></Route>
+                <Route path="/order/:orderId/:orderItemId" element={<OrderItem/>}></Route>
+                <Route path="/viewinvt/:id" element={<Product/>}></Route>
+                <Route path="/home" element={<ViewOrders/>}></Route>
+                <Route path="/users" element={<User/>}></Route>
+                <Route path="/user/:id" element={<UserDeets/>}></Route>
+                <Route path="/verify/:token" element={<VerifyingPage/>}></Route>
+                <Route path="*" element={<DefaultPage/>} />
+              </Routes>
+            </AuthRouter>
+          </main>
+          <footer className="footer"><Footer/></footer>
+        </div>
       </BrowserRouter>
     </ThemeProvider>
 

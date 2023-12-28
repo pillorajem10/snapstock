@@ -103,8 +103,7 @@ const Page = () => {
       >
         <TableCell>{delivery.productName}</TableCell>
         <TableCell>{delivery.qty}</TableCell>
-        <TableCell>{`${delivery.monthDelivered}/${delivery.dateDelivered}/${delivery.yearDelivered}`}</TableCell>
-        <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}>{formatPriceX(delivery.total)}</TableCell>
+        <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}>{`${delivery.monthDelivered}/${delivery.dateDelivered}/${delivery.yearDelivered}`}</TableCell>
       </TableBody>
     )
   };
@@ -128,10 +127,10 @@ const Page = () => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow style={{ marginTop:"1rem" }} >
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Delivered By</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Quantity</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Date Delivered</b></TableCell>
-                <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Product</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Quantity added</b></TableCell>
+                <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Date of re-stocking</b></TableCell>
+                {/*<TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>*/}
                 {/* <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell> */}
               </TableRow>
             </TableHead>

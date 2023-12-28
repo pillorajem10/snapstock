@@ -43,6 +43,7 @@ const AddUserSection = ({ onClose }) => {
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState ('');
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [errMsg, setErrMsg] = useState('');
@@ -65,6 +66,7 @@ const AddUserSection = ({ onClose }) => {
     console.log('ADD USER');
 
     const payload = {
+      role,
       category,
       email,
       username,
@@ -154,6 +156,18 @@ const AddUserSection = ({ onClose }) => {
         >
           <form onSubmit={handleAddUser} className={styles.addDeliveryForm}>
             <div style={{ fontSize: "1.5rem" }}><b>Add New User</b></div>
+            <div className={styles.inputField}>
+              <select
+                className={styles.slct}
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                required
+              >
+                <option value=" ">Choose role</option>
+                <option value="2">Manager</option>
+                <option value="0">Employee</option>
+              </select>
+            </div>
             <div className={styles.inputField}>
               <TextField
                 id="outlined-basic"

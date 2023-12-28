@@ -327,7 +327,7 @@ const Page = () => {
             Update
           </button>
         </form>
-        <div className={styles.formLinks} onClick={requestPass}>Want to change your password? Click here</div>
+        <div className={styles.formLinks} onClick={requestPass}>Want to change your password? Click here.</div>
       </div>
     </>
   )
