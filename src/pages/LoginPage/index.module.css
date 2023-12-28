@@ -2,10 +2,41 @@
 
 .container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  margin: 0;
+  margin-top: -.98rem;
+  padding: 0;
+  justify-content: space-between;
+  align-items: flex-start;
 }
+
+.leftContainer {
+  flex: 1;
+  height: 100%;
+}
+
+
+.rightContainer {
+  flex: 1;
+  padding: 20px;
+}
+
+.noMargin {
+  margin: 0;
+}
+
+.logoImage {
+  max-width: 100%;
+}
+
+.fullLogo {
+  max-width: 55%;
+}
+
+/* ... (other styles) ... */
+
+
+
+/* ... (other styles) ... */
 
 .forms {
   display: flex;
@@ -17,12 +48,11 @@
 .orderInfoForm {
   margin-top: 1rem;
   margin-bottom: 2rem;
-  border: 2px solid #333; /* Add a border */
   width: 100%;
   max-width: 25rem;
   text-align: center;
   border-radius: 16px;
-  padding: 2rem;
+  padding: 4rem;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
   background-color: #fff; /* Add a background color */
 }
@@ -58,6 +88,9 @@
   transition: .3s;
 }
 
+.array0message {
+  margin-left: 100rem;;
+}
 
 /* Define the fadeIn animation */
 @keyframes fadeIn {
