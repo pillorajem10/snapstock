@@ -40,6 +40,9 @@ import Cookies from 'js-cookie';
 //css
 import styles from './index.module.css';
 
+// LOADING
+import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
+
 
 const Page = () => {
   const { error } = useSelector(state => state.jkai.order);
@@ -266,7 +269,7 @@ const Page = () => {
   if (!orderDeets) return <CircularProgress/>;
 
   return (
-      loading ? <CircularProgress /> :
+      loading ? <LoadingSpinner /> :
         <>
           <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
             <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>

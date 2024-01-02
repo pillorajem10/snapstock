@@ -41,6 +41,9 @@ import styles from './index.module.css';
 //UTILS
 import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
 
+// LoadingSpinner
+import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
+
 //COOKIES
 import Cookies from 'js-cookie';
 
@@ -197,7 +200,7 @@ const Page = () => {
           size="small"
         />
       </form>
-      {loading ? <CircularProgress color="inherit" /> :
+      {loading ? <LoadingSpinner /> :
         <div>
           <TableContainer style={{ display: loading && 'none' }} component={Paper}>
             <Table aria-label="simple table">

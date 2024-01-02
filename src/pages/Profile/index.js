@@ -179,7 +179,6 @@ const Page = () => {
 
   const requestPass = () => {
     const payload = {
-      id,
       email
     };
 

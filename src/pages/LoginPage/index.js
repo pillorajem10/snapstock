@@ -147,6 +147,10 @@ const Page = () => {
     setOpenErrorSnackbar(false);
   };
 
+  const forgotPass = () => {
+    navigate('/forgotpassword')
+  }
+
 
   return (
     <div className={styles.container}>
@@ -197,7 +201,7 @@ const Page = () => {
                   Login
                 </button>
               </form>
-              <div className={styles.formLinks}>
+              <div onClick={forgotPass} className={styles.formLinks}>
                 Forgot password? Click here.
               </div>
             </div>

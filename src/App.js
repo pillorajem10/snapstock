@@ -21,9 +21,10 @@ import UserDeets from './pages/UserDeets';
 import DefaultPage from './pages/DefaultPage';
 import VerifyingPage from './pages/VerifyingPage';
 import Profile from './pages/Profile';
-import Changepassword from './pages/Changepassword';
 import AboutUs from './pages/AboutUs';
 import Services from './pages/Services';
+import ForgotPassword from './pages/ForgotPassword';
+import Changepassword from './pages/Changepassword';
 
 // MUI SHITS
 import {  ThemeProvider } from '@mui/styles';
@@ -46,6 +47,7 @@ function App() {
               <Route path="/" exact={true} element={<LoginPage/>} />
               <Route path="/about" element={<AboutUs/>} />
               <Route path="/services" element={<Services/>} />
+              <Route path="/forgotpassword" element={<ForgotPassword />} />
               <Route path="/changepassword/:token" element={<Changepassword/>} />
               <Route path="*" element={<DefaultPage/>} />
 
@@ -59,6 +61,7 @@ function App() {
               <Route path="/home" element={<AuthRouter><ViewOrders/></AuthRouter>} />
               <Route path="/users" element={<AuthRouter><User/></AuthRouter>} />
               <Route path="/user/:id" element={<AuthRouter><UserDeets/></AuthRouter>} />
+              <Route path="/viewallorders" element={<AuthRouter><ViewAllOrders/></AuthRouter>} />
               <Route path="/verify/:token" element={<AuthRouter><VerifyingPage/></AuthRouter>} />
             </Routes>
           </main>

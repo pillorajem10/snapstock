@@ -27,6 +27,9 @@ import Cookies from 'js-cookie';
 //css
 import styles from './index.module.css';
 
+// LOADING
+import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.user);
   const {
@@ -199,7 +202,7 @@ const Page = () => {
   console.log('Role', role);
 
   return (
-    loading ? <CircularProgress/> :
+    loading ? <LoadingSpinner /> :
     <>
       <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
@@ -270,7 +273,7 @@ const Page = () => {
             />
             <button className={styles.btn} type="submit">Update</button>
           </form>
-          <div className={styles.formLinks} onClick={requestPass}>This user forgot his/her password? Click here.</div>
+          {/*<div className={styles.formLinks} onClick={requestPass}>This user forgot his/her password? Click here.</div>*/}
           {/*<form className={styles.orderInfoForm} onSubmit={handleSubmitAddStocks}>
             <div style={{fontSize: "1.5rem", fontWeight: "bold"}}>Add stocks</div>
             <TextField

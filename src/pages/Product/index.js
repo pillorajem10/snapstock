@@ -24,6 +24,9 @@ import { formatPriceX, evaluateBooleanFields, convertMomentWithFormat } from '..
 //css
 import styles from './index.module.css';
 
+// LOADING
+import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
+
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -130,7 +133,7 @@ const Page = () => {
 
 
   return (
-    loading ? <CircularProgress/> :
+    loading ? <LoadingSpinner /> :
     <>
       <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>

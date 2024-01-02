@@ -44,6 +44,9 @@ import { formatPriceX } from '../../utils/methods'
 //COOKIES
 import Cookies from 'js-cookie';
 
+// LOADING
+import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.product);
   const {
@@ -196,7 +199,7 @@ const Page = () => {
         </>
       )}
 
-      {loading ? <CircularProgress /> :
+      {loading ? <LoadingSpinner /> :
         <div>
           <TableContainer style={{ display: loading && 'none' }} component={Paper}>
             <Table aria-label="simple table">

@@ -26,6 +26,9 @@ import {
 // sectiions
 // import AddDeliveryForm from './sections/AddDelivery';
 
+// LOADING 
+import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
+
 //STYLE
 import styles from './index.module.css';
 
@@ -97,7 +100,7 @@ const Page = () => {
     if (role === '0') {
       navigate('/home');
     }
-    
+
     handleDeliveryList();
   },[handleDeliveryList])
 
@@ -129,7 +132,7 @@ const Page = () => {
         <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search deliveries by customer name" size="small"/>
         {/*<button className={styles.btn} type="submit">Search</button>*/}
       </form>
-      {loading ? <CircularProgress color="inherit"/> :
+      {loading ? <LoadingSpinner/> :
       <div>
         <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
           <Table aria-label="simple table">

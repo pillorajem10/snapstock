@@ -35,6 +35,9 @@ import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
 //COOKIES
 import Cookies from 'js-cookie';
 
+// LOADING
+import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
+
 const Page = () => {
   const { error } = useSelector(state => state.jkai.order);
   const {
@@ -123,7 +126,7 @@ const Page = () => {
         <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search orders by customer name" size="small"/>
         {/*<button className={styles.btn} type="submit">Search</button>*/}
       </form>
-      {loading ? <CircularProgress color="inherit"/> :
+      {loading ? <LoadingSpinner /> :
       <div>
         <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
           <Table aria-label="simple table">

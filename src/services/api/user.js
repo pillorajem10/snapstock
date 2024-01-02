@@ -24,8 +24,7 @@ export async function verifyAccount(payload) {
 
 export async function requestNewPassoword(payload) {
   console.log("REQUEST PASS WORD PASSWORD", payload);
-  const { id } = payload;
-  return GET(`/user/requestnewpassword/${id}`, payload);
+  return POST(`/user/requestnewpassword`, payload);
 }
 
 
