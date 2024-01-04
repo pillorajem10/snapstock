@@ -88,7 +88,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         {role === '1' && (
           <>
             <div className={styles.introContainer} onClick={goToMyprofile}>
-              <AccountCircle sx={{ fontSize: 50}} /> {/* Add profile icon */}
+              <AccountCircle sx={{ fontSize: 50}} />
               <div className={styles.introName}>Hello, {accountDeets.fname}</div>
             </div>
             <div className={styles.listings}>
@@ -115,7 +115,10 @@ const Sidebar = ({ isOpen, onClose }) => {
         {/* SIDEBAR MANAGER ROLE */}
         {role === '2' && (
           <>
-            <div className={styles.introName} onClick={goToMyprofile}>Hello, {accountDeets.fname}</div>
+            <div className={styles.introContainer} onClick={goToMyprofile}>
+              <AccountCircle sx={{ fontSize: 50}} />
+              <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+            </div>
             <div className={styles.listings}>
               <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
             </div>
@@ -137,7 +140,10 @@ const Sidebar = ({ isOpen, onClose }) => {
         {/* SIDEBAR MANAGER ROLE */}
         {role === '0' && (
           <>
-            <div className={styles.introName} onClick={goToMyprofile}>Hello, {accountDeets.fname}</div>
+            <div className={styles.introContainer} onClick={goToMyprofile}>
+              <AccountCircle sx={{ fontSize: 50}} />
+              <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+            </div>
             <div className={styles.listings}>
               <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
             </div>
