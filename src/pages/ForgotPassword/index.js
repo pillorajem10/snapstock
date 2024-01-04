@@ -141,7 +141,7 @@ const Page = () => {
                 variant="outlined"
               />
               <button className={styles.btn} type="submit">
-                Login
+                Submit
               </button>
             </form>
             <div onClick={backTologinPage} className={styles.formLinks}>

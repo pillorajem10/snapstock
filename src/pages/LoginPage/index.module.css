@@ -52,14 +52,14 @@
   max-width: 25rem;
   text-align: center;
   border-radius: 16px;
-  padding: 4rem;
+  padding: 1.5rem;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
   background-color: #fff; /* Add a background color */
 }
 
 
 .btn {
-  height: 2.5rem;
+  height: 2rem;
   margin-top: 1rem;
   width: 100%;
   border: none;

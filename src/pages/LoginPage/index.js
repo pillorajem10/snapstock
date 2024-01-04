@@ -9,6 +9,10 @@ import { jkai, common } from '../../redux/combineActions';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
+// CAPTCHA
+import ReCAPTCHA from "react-google-recaptcha";
+
+// COOKIES
 import Cookies from 'js-cookie';
 
 //MUI STUFFS
@@ -54,6 +58,7 @@ const Page = () => {
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [errMsg, setErrMsg] = useState('');
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -109,6 +114,7 @@ const Page = () => {
       username,
       fname,
       lname,
+      'g-recaptcha-response': recaptchaValue,
       password,
       repassword
     };
@@ -294,6 +300,12 @@ const Page = () => {
                       variant="outlined"
                     />
                   </div>
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <ReCAPTCHA
+                    sitekey="6LeSrT8pAAAAAP1Tq-a0Btz-5HZ3UO-kDjdSQ0LZ"
+                    onChange={(value) => setRecaptchaValue(value)}
+                  />
                 </div>
 
                 <button className={styles.btn} type="submit">
