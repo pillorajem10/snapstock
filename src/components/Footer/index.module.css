@@ -6,3 +6,21 @@
   width: 100%;
   margin-top: auto;
 }
+
+
+.footerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footerContent a {
+  text-decoration: none;
+  display: flex;
+  color: white;
+}
+
+.footerContent a:hover {
+  color: gray;
+  transition: .5s
+}

@@ -43,6 +43,7 @@
 
 .listings a:hover {
   color: #9E9E9E;
+  transition: .5s
 }
 
 .burgerIcon{

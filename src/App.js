@@ -25,6 +25,7 @@ import AboutUs from './pages/AboutUs';
 import Services from './pages/Services';
 import ForgotPassword from './pages/ForgotPassword';
 import Changepassword from './pages/Changepassword';
+import ContactUs from './pages/ContactUs';
 
 // MUI SHITS
 import {  ThemeProvider } from '@mui/styles';
@@ -47,6 +48,7 @@ function App() {
               <Route path="/" exact={true} element={<LoginPage/>} />
               <Route path="/about" element={<AboutUs/>} />
               <Route path="/services" element={<Services/>} />
+              <Route path="/contactus" element={<ContactUs/>} />
               <Route path="/forgotpassword" element={<ForgotPassword />} />
               <Route path="/changepassword/:token" element={<Changepassword/>} />
               <Route path="*" element={<DefaultPage/>} />
