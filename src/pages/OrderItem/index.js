@@ -196,7 +196,7 @@ const Page = () => {
               style={{marginTop: 20}}
               id="outlined-basic"
               onChange={(e) => setQty(e.target.value)}
-              label="Price:"
+              label="Quantity:"
               required
               variant="outlined"
               value={qty}

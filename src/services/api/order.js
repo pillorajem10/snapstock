@@ -53,3 +53,8 @@ export async function fetchOrderItemByParams(payload) {
   const { orderId } = payload;
   return GET(`/order/orderItem/${orderId}?${params}`);
 }
+
+
+export async function generatePdfReport(payload) {
+  return POST(`/order/generatepdf`, payload);
+}

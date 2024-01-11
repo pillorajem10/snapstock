@@ -39,13 +39,18 @@ import AddOrderForm from './sections/AddOrder';
 import styles from './index.module.css';
 
 //UTILS
-import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
+import { formatPriceX, formatPriceY, convertMomentWithFormat } from '../../utils/methods'
 
 // LoadingSpinner
 import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
 
 //COOKIES
 import Cookies from 'js-cookie';
+
+// xlsx
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 
 const Page = () => {
   const { error } = useSelector(state => state.jkai.order);
@@ -65,7 +70,8 @@ const Page = () => {
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [errMsg, setErrMsg] = useState('');
-  const [successMessage, setSuccessMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('');
+
 
   const category = Cookies.get('category');
 
@@ -167,6 +173,96 @@ const Page = () => {
     setOpenErrorSnackbar(false);
   };
 
+  const handleDownloadExcel = () => {
+    const payload = {
+      orderList,
+      fomattedDateNow,
+      totalOrder, // Include totalOrder in the payload
+    };
+
+    dispatch(common.ui.setLoading());
+
+    fetch('http://localhost:4000/order/generateexcel', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Orders_Report_${fomattedDateNow}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(error => {
+        console.error('Error downloading Excel:', error);
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
+  };
+
+
+
+
+  const totalOrder = formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0));
+
+  // Client-side code
+  const handleDownloadPDF = () => {
+    event.preventDefault();
+
+    const payload = {
+      orderList,
+      totalOrder,
+      fomattedDateNow
+    };
+
+    dispatch(common.ui.setLoading());
+
+    // Use fetch to make the request
+    fetch('http://localhost:4000/order/generatepdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return response.blob();
+    })
+    .then(blob => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Orders_Report_${fomattedDateNow}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    })
+    .catch(error => {
+      console.error('Error downloading PDF:', error);
+    })
+    .finally(() => {
+      dispatch(common.ui.clearLoading());
+    });
+  };
+
+
   return (
     <>
       <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
@@ -192,14 +288,24 @@ const Page = () => {
        </DialogActions>
       </Dialog>
       <AddOrderForm />
-      <form className={styles.searchForm}>
-        <TextField
-          style={{ width: "20rem", border: "double", borderRadius: "16px" }}
-          onChange={(e) => setCustomerName(e.target.value)}
-          placeholder="Search orders by customer name"
-          size="small"
-        />
-      </form>
+      <div className={styles.upperForm}>
+        <form className={styles.searchForm}>
+          <TextField
+            style={{ width: "20rem", border: "double", borderRadius: "16px" }}
+            onChange={(e) => setCustomerName(e.target.value)}
+            placeholder="Search orders by customer name"
+            size="small"
+          />
+        </form>
+        <div className={styles.reportButtons}>
+          <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="contained" color="primary">
+            Generate Orders Report PDF
+          </Button>
+          <Button onClick={handleDownloadExcel} variant="contained" color="primary">
+            Generate Report Excel
+          </Button>
+        </div>
+      </div>
       {loading ? <LoadingSpinner /> :
         <div>
           <TableContainer style={{ display: loading && 'none' }} component={Paper}>

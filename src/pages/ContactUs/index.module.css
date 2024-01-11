@@ -4,14 +4,13 @@
 }
 
 .aboutUsParagraph {
-  font-size: 1rem;
+  font-size: 1.3rem;
 }
 
 .rightContainer {
   margin-top: -2.5rem;
   width: 50%;
-  padding: 2rem;
-  font-size: 1rem;
+  padding: 2.5rem;
   font-family: 'Roboto', sans-serif;
 }
 

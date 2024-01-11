@@ -8,7 +8,8 @@ import { fetchOrderByParams,
   fetchOrderItemById,
   removeOrderItemById,
   updateOrderItemById,
-  removeOrderById
+  removeOrderById,
+  generatePdfReport
  } from '../../../services/api/order';
 import axios from 'axios';
 
@@ -47,6 +48,25 @@ export const addOrder = (payload) => (dispatch) => {
     } else {
       dispatch({
         type: types.ORDER_ADD_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
+//ADD ORDER
+export const generatePdf = (payload) => (dispatch) => {
+  return generatePdfReport(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.ORDDER_GENERATE_PDF_REPORT_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.ORDDER_GENERATE_PDF_REPORT_FAIL,
         payload: res.msg,
       });
     }

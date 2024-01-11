@@ -13,6 +13,15 @@ export const formatPriceX = (price, key = '') => {
   return key === '' ? `₱${formattedPrice}` : `${key}₱ ${formattedPrice}`;
 };
 
+export const formatPriceY = (price, key = '') => {
+  const formattedPrice = parseFloat(price)
+    .toFixed(2)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  return key === '' ? `${formattedPrice}` : `${key} ${formattedPrice}`;
+};
+
 /**
  * convert object to query string
  * @param {*} params
