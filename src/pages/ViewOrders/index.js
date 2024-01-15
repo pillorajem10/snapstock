@@ -182,7 +182,7 @@ const Page = () => {
 
     dispatch(common.ui.setLoading());
 
-    fetch('http://localhost:4000/order/generateexcel', {
+    fetch('http://localhost:4000/order/report/generateexcel', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -231,7 +231,7 @@ const Page = () => {
     dispatch(common.ui.setLoading());
 
     // Use fetch to make the request
-    fetch('http://localhost:4000/order/generatepdf', {
+    fetch('http://localhost:4000/order/report/generatepdf', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -298,11 +298,11 @@ const Page = () => {
           />
         </form>
         <div className={styles.reportButtons}>
-          <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="contained" color="primary">
+          <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
             Generate Orders Report PDF
           </Button>
           <Button onClick={handleDownloadExcel} variant="contained" color="primary">
-            Generate Report Excel
+            Generate Orders Report Excel
           </Button>
         </div>
       </div>

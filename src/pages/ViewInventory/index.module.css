@@ -3,6 +3,13 @@
   margin-left: 1rem;
 }
 
+.upperForm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 3%;
+}
+
 .searchForm1 {
   margin-left: 1rem;
 }

@@ -39,7 +39,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './index.module.css';
 
 //UTILS
-import { formatPriceX } from '../../utils/methods'
+import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
 
 //COOKIES
 import Cookies from 'js-cookie';
@@ -68,6 +68,7 @@ const Page = () => {
 
   const category = Cookies.get('category');
   const role = Cookies.get('role');
+  const fomattedDateNow = convertMomentWithFormat(Date.now());
 
   const handleProductList = useCallback(
   (pageIndex = 1) => {
@@ -155,6 +156,89 @@ const Page = () => {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
+  // Client-side code
+  const handleDownloadPDF = () => {
+    event.preventDefault();
+
+    const payload = {
+      productList,
+      fomattedDateNow
+    };
+
+    dispatch(common.ui.setLoading());
+
+    // Use fetch to make the request
+    fetch('http://localhost:4000/product/report/generatepdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return response.blob();
+    })
+    .then(blob => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Product_Inventory_Report_${fomattedDateNow}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    })
+    .catch(error => {
+      console.error('Error downloading PDF:', error);
+    })
+    .finally(() => {
+      dispatch(common.ui.clearLoading());
+    });
+  };
+
+  const handleDownloadExcel = () => {
+    const payload = {
+      productList,
+      fomattedDateNow
+    };
+
+    dispatch(common.ui.setLoading());
+
+    fetch('http://localhost:4000/product/report/generateexcel', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Product_Inventory_Report_${fomattedDateNow}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(error => {
+        console.error('Error downloading Excel:', error);
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
+  };
+
+
   return (
     <>
       <Dialog open={!!deleteUserId} onClose={handleDeleteCancel}>
@@ -185,19 +269,42 @@ const Page = () => {
         </>
       )}
 
-      { (role === '2' || role === '1') ? (
+      {/* (role === '2' || role === '1') ? (
         <>
           <form className={styles.searchForm}>
             <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
           </form>
-          </>
+        </>
       ) : (
         <>
           <form className={styles.searchForm1}>
             <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
           </form>
         </>
-      )}
+      )*/}
+      <div className={styles.upperForm}>
+        { (role === '2' || role === '1') ? (
+          <>
+            <form className={styles.searchForm}>
+              <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
+            </form>
+            </>
+        ) : (
+          <>
+            <form className={styles.searchForm1}>
+              <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
+            </form>
+          </>
+        )}
+        <div className={styles.reportButtons}>
+          <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
+            Generate Orders Report PDF
+          </Button>
+          <Button onClick={handleDownloadExcel} variant="contained" color="primary">
+            Generate Orders Report Excel
+          </Button>
+        </div>
+      </div>
 
       {loading ? <LoadingSpinner /> :
         <div>
