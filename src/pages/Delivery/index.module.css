@@ -7,7 +7,6 @@
 }
 
 .searchForm {
-  margin-top: 2rem;
   margin-left: 1rem;
 }
 
@@ -28,4 +27,11 @@
   background-color: white;
   color: black;
   transition: .5s;
+}
+
+.upperForm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 3%;
 }

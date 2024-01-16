@@ -21,12 +21,17 @@ import {
   Paper,
   CircularProgress,
   Pagination,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button
 } from '@mui/material'
 
 // sectiions
 // import AddDeliveryForm from './sections/AddDelivery';
 
-// LOADING 
+// LOADING
 import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
 
 //STYLE
@@ -46,31 +51,33 @@ const Page = () => {
     ui: { loading },
   } = useSelector((state) => state.common);
   const role = Cookies.get('role');
+  const daysArray = Array.from({ length: 31 }, (_, index) => index + 1);
+  const currentYear = new Date().getFullYear();
+  const yearsArray = Array.from({ length: currentYear - 1999 + 1 }, (_, index) => 1999 + index);
 
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [orderList, setDeliveryList] = useState([]);
-  const [customerName, setCustomerName] = useState('');
+  const [productName, setProductName] = useState('');
   const [pageDetails, setPageDetails] = useState(null);
   const [pageSize] = useState(7);
+  const [monthDelivered, setMonthDelivered] = useState('');
+  const [dateDelivered, setDateDelivered] = useState('');
+  const [yearDelivered, setYearDelivered] = useState('');
 
   const fomattedDateNow = convertMomentWithFormat(Date.now());
-
-  const monthDelivered = +fomattedDateNow.split('/')[0];
-  const dateDelivered = +fomattedDateNow.split('/')[1];
-  const yearDelivered = +fomattedDateNow.split('/')[2];
 
   const handleDeliveryList = useCallback(
   (pageIndex = 1) => {
     const payload = {
       pageIndex,
       pageSize,
-      customerName
-      // monthDelivered,
-      // dateDelivered,
-      // yearDelivered,
+      productName,
+      monthDelivered,
+      dateDelivered,
+      yearDelivered,
     }
 
     dispatch(common.ui.setLoading());
@@ -92,7 +99,7 @@ const Page = () => {
         dispatch(common.ui.clearLoading());
       });
   },
-  [dispatch, customerName, pageSize],
+  [dispatch, productName, pageSize, monthDelivered, dateDelivered, yearDelivered],
 );
 
 
@@ -123,15 +130,89 @@ const Page = () => {
     handleDeliveryList(value);
   };
 
-  // const filteredCreditArray = orderList && orderList.filter(delivery => delivery.credit === "false" || delivery.credit === false);
+  const handleChangeMonth = (event) => {
+    setMonthDelivered(event.target.value);
+  };
+
+  const handleChangeDay = (event) => {
+    setDateDelivered(event.target.value);
+  };
+
+  const handleChangeYear = (event) => {
+    setYearDelivered(event.target.value);
+  };
+
+  const handleClearFilters = () => {
+    setProductName('');
+    setMonthDelivered('');
+    setDateDelivered('');
+    setYearDelivered('');
+  };
 
   return (
     <>
       <AddDeliveryForm/>
-      <form className={styles.searchForm}>
-        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search deliveries by customer name" size="small"/>
-        {/*<button className={styles.btn} type="submit">Search</button>*/}
-      </form>
+      <div className={styles.upperForm}>
+        <form className={styles.searchForm}>
+          <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setProductName(e.target.value)} placeholder="Search deliveries by product name" size="small"/>
+          {/*<button className={styles.btn} type="submit">Search</button>*/}
+        </form>
+        <FormControl style={{ width: 150 }}>
+          <InputLabel id="monthLabel">Month</InputLabel>
+          <Select
+            labelId="monthLabel"
+            id="month"
+            value={monthDelivered}
+            onChange={handleChangeMonth}
+          >
+            <MenuItem value={1}>January</MenuItem>
+            <MenuItem value={2}>February</MenuItem>
+            <MenuItem value={3}>March</MenuItem>
+            <MenuItem value={4}>April</MenuItem>
+            <MenuItem value={5}>May</MenuItem>
+            <MenuItem value={6}>June</MenuItem>
+            <MenuItem value={7}>July</MenuItem>
+            <MenuItem value={8}>August</MenuItem>
+            <MenuItem value={9}>September</MenuItem>
+            <MenuItem value={10}>October</MenuItem>
+            <MenuItem value={11}>November</MenuItem>
+            <MenuItem value={12}>December</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl style={{ width: 150 }}>
+          <InputLabel id="dayLabel">Day</InputLabel>
+          <Select
+            labelId="dayLabel"
+            id="day"
+            value={dateDelivered}
+            onChange={handleChangeDay}
+          >
+            {daysArray.map((day) => (
+              <MenuItem key={day} value={day}>
+                {day}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl style={{ width: 150 }}>
+          <InputLabel id="yearLabel">Year</InputLabel>
+          <Select
+            labelId="yearLabel"
+            id="year"
+            value={yearDelivered}
+            onChange={handleChangeYear}
+          >
+            {yearsArray.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+          Clear Filters
+        </Button>
+      </div>
       {loading ? <LoadingSpinner/> :
       <div>
         <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
