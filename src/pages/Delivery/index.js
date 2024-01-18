@@ -149,6 +149,88 @@ const Page = () => {
     setYearDelivered('');
   };
 
+  const handleDownloadPDF = () => {
+    event.preventDefault();
+
+    const payload = {
+      orderList,
+      fomattedDateNow
+    };
+
+    dispatch(common.ui.setLoading());
+
+    // Use fetch to make the request
+    fetch('http://localhost:4000/delivery/report/generatepdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return response.blob();
+    })
+    .then(blob => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Re-stock_Inventory_Report_${fomattedDateNow}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    })
+    .catch(error => {
+      console.error('Error downloading PDF:', error);
+    })
+    .finally(() => {
+      dispatch(common.ui.clearLoading());
+    });
+  };
+
+  const handleDownloadExcel = () => {
+    const payload = {
+      orderList,
+      fomattedDateNow
+    };
+
+    dispatch(common.ui.setLoading());
+
+    fetch('http://localhost:4000/delivery/report/generateexcel', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Re-stock_Inventory_Report_${fomattedDateNow}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(error => {
+        console.error('Error downloading Excel:', error);
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
+  };
+
+
   return (
     <>
       <AddDeliveryForm/>
@@ -157,7 +239,7 @@ const Page = () => {
           <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setProductName(e.target.value)} placeholder="Search deliveries by product name" size="small"/>
           {/*<button className={styles.btn} type="submit">Search</button>*/}
         </form>
-        <FormControl style={{ width: 150 }}>
+        <FormControl style={{ width: 250 }}>
           <InputLabel id="monthLabel">Month</InputLabel>
           <Select
             labelId="monthLabel"
@@ -179,7 +261,7 @@ const Page = () => {
             <MenuItem value={12}>December</MenuItem>
           </Select>
         </FormControl>
-        <FormControl style={{ width: 150 }}>
+        <FormControl style={{ width: 250 }}>
           <InputLabel id="dayLabel">Day</InputLabel>
           <Select
             labelId="dayLabel"
@@ -194,7 +276,7 @@ const Page = () => {
             ))}
           </Select>
         </FormControl>
-        <FormControl style={{ width: 150 }}>
+        <FormControl style={{ width: 250 }}>
           <InputLabel id="yearLabel">Year</InputLabel>
           <Select
             labelId="yearLabel"
@@ -211,6 +293,14 @@ const Page = () => {
         </FormControl>
         <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
           Clear Filters
+        </Button>
+      </div>
+      <div className={styles.reportButtons}>
+        <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
+          Generate Orders Report PDF
+        </Button>
+        <Button onClick={handleDownloadExcel} variant="contained" color="primary">
+          Generate Orders Report Excel
         </Button>
       </div>
       {loading ? <LoadingSpinner/> :

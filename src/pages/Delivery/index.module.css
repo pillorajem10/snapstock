@@ -35,3 +35,9 @@
   justify-content: space-between;
   padding-right: 3%;
 }
+
+.reportButtons {
+ margin-left: 1rem;
+ margin-top: 1rem;
+ float: right;
+}
