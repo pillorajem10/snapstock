@@ -25,8 +25,17 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Button
+  Button,
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
 } from '@mui/material'
+
+import MuiAlert from '@mui/material/Alert';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // sectiions
 // import AddDeliveryForm from './sections/AddDelivery';
@@ -66,6 +75,25 @@ const Page = () => {
   const [monthDelivered, setMonthDelivered] = useState('');
   const [dateDelivered, setDateDelivered] = useState('');
   const [yearDelivered, setYearDelivered] = useState('');
+  const [deleteDeliveryId, setDeleteDeliveryId] = useState(null);
+
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSuccessSnackbar(false);
+    setOpenErrorSnackbar(false);
+  };
 
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
@@ -111,20 +139,6 @@ const Page = () => {
     handleDeliveryList();
   },[handleDeliveryList])
 
-  const createBanana = (delivery, idx) => {
-    return (
-      <TableBody style = {{
-          display: loading && 'none',
-          cursor: "pointer"
-        }} key={idx}
-        /*onClick = {() => navigate(`/delivery/${delivery._id}`)}*/
-      >
-        <TableCell>{delivery.productName}</TableCell>
-        <TableCell>{delivery.qty}</TableCell>
-        <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}>{`${delivery.monthDelivered}/${delivery.dateDelivered}/${delivery.yearDelivered}`}</TableCell>
-      </TableBody>
-    )
-  };
 
   const handleChangePageIndex = (event, value) => {
     handleDeliveryList(value);
@@ -230,9 +244,63 @@ const Page = () => {
       });
   };
 
+  const handleDeleteClick = (deliveryId) => {
+    setDeleteDeliveryId(deliveryId);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      dispatch(common.ui.setLoading());
+
+      const res = await dispatch(jkai.delivery.removeDelivery(deleteDeliveryId));
+
+      if (res.success) {
+        console.log('SUCCESSSSSSSSSSSSSSSS')
+        setOpenSuccessSnackbar(true);
+        setSuccessMessage(res.msg);
+      } else {
+        setOpenErrorSnackbar(true);
+      }
+    } catch (error) {
+      console.error('Error during delete:', error);
+    } finally {
+      setDeleteDeliveryId(null);
+      dispatch(common.ui.clearLoading());
+      handleDeliveryList(); // Refresh the delivery list after deletion
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    // Reset the deleteDeliveryId state if deletion is canceled
+    setDeleteDeliveryId(null);
+  };
+
+
 
   return (
     <>
+      <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openErrorSnackbar} autoHideDuration={2000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {errMsg}
+        </Alert>
+      </Snackbar>
+      <Dialog open={!!deleteDeliveryId} onClose={handleDeleteCancel}>
+       <DialogTitle>Confirm Deletion</DialogTitle>
+       <DialogContent>
+         Are you sure you want to delete this Re-stock product?
+       </DialogContent>
+       <DialogActions>
+         <Button onClick={handleDeleteCancel}>Cancel</Button>
+         <Button onClick={handleDeleteConfirm} variant="contained" color="error">
+           Delete
+         </Button>
+       </DialogActions>
+      </Dialog>
       <AddDeliveryForm/>
       <div className={styles.upperForm}>
         <form className={styles.searchForm}>
@@ -297,10 +365,10 @@ const Page = () => {
       </div>
       <div className={styles.reportButtons}>
         <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
-          Generate Orders Report PDF
+          Generate Re-stocking Report PDF
         </Button>
         <Button onClick={handleDownloadExcel} variant="contained" color="primary">
-          Generate Orders Report Excel
+          Generate Re-stocking Report Excel
         </Button>
       </div>
       {loading ? <LoadingSpinner/> :
@@ -311,13 +379,36 @@ const Page = () => {
               <TableRow style={{ marginTop:"1rem" }} >
                 <TableCell><b style={{ fontSize: "1.5rem" }}>Product</b></TableCell>
                 <TableCell><b style={{ fontSize: "1.5rem" }}>Quantity added</b></TableCell>
-                <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Date of re-stocking</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Date of re-stocking</b></TableCell>
+                <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
                 {/*<TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>*/}
                 {/* <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell> */}
               </TableRow>
             </TableHead>
             {orderList.map((delivery, index) => (
-              createBanana(delivery, index)
+              <TableBody
+                style={{
+                  display: loading && 'none',
+                  cursor: "pointer"
+                }}
+                key={index}
+                onClick={() => navigate(`/delivery/${delivery._id}`)}
+              >
+                <TableCell>{delivery.productName}</TableCell>
+                <TableCell>{delivery.qty}</TableCell>
+                <TableCell>{`${delivery.monthDelivered}/${delivery.dateDelivered}/${delivery.yearDelivered}`}</TableCell>
+                <TableCell>
+                  <IconButton
+                    style={{ color: 'red', cursor: 'pointer' }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent row click event from triggering
+                      handleDeleteClick(delivery._id);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableBody>
             ))}
           </Table>
           {/*<TableRow style={{ marginTop:"1rem" }}>

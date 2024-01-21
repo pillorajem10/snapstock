@@ -298,10 +298,10 @@ const Page = () => {
         )}
         <div className={styles.reportButtons}>
           <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
-            Generate Orders Report PDF
+            Generate Inventory Report PDF
           </Button>
           <Button onClick={handleDownloadExcel} variant="contained" color="primary">
-            Generate Orders Report Excel
+            Generate Inventory Report Excel
           </Button>
         </div>
       </div>

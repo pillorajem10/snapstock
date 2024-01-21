@@ -4,6 +4,7 @@ import {
   createDelivery,
   fetchDeliveryById,
   updateDeliveryById,
+  deleteDeliveryById,
 } from '../../../services/api/delivery';
 
 //types
@@ -83,6 +84,27 @@ export const updateDeliveryDetails = (payload) => (dispatch) => {
     } else {
       dispatch({
         type: types.DELIVERY_UPDATE_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
+
+
+
+export const removeDelivery = (payload) => (dispatch) => {
+  return deleteDeliveryById(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.DELIVERY_REMOVE_SUCCESS,
+        payload: res.data,
+      });
+    } else {
+      dispatch({
+        type: types.DELIVERY_REMOVE_FAIL,
         payload: res.msg,
       });
     }

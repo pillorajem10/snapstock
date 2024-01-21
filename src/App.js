@@ -14,6 +14,7 @@ import ViewAllOrders from './pages/ViewAllOrders';
 import Order from './pages/Order';
 import OrderItem from './pages/OrderItem';
 import Product from './pages/Product';
+import DeliveryDeets from './pages/DeliveryDeets';
 import Delivery from './pages/Delivery';
 import User from './pages/User';
 import LoginPage from './pages/LoginPage';
@@ -60,6 +61,7 @@ function App() {
               <Route path="/order/:id" element={<AuthRouter><Order/></AuthRouter>} />
               <Route path="/order/:orderId/:orderItemId" element={<AuthRouter><OrderItem/></AuthRouter>} />
               <Route path="/viewinvt/:id" element={<AuthRouter><Product/></AuthRouter>} />
+              <Route path="/delivery/:id" element={<AuthRouter><DeliveryDeets/></AuthRouter>} />
               <Route path="/home" element={<AuthRouter><ViewOrders/></AuthRouter>} />
               <Route path="/users" element={<AuthRouter><User/></AuthRouter>} />
               <Route path="/user/:id" element={<AuthRouter><UserDeets/></AuthRouter>} />
