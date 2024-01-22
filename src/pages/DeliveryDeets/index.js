@@ -1,5 +1,5 @@
 // react
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -40,10 +40,13 @@ const Page = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const role = Cookies.get('role');
+  const category = Cookies.get('category');
 
   const [productDeets, setProductDeets] = useState({});
   const [productName, setProductName] = useState('');
   const [qty, setQty] = useState('');
+  const [productList, setProductList] = useState([]);
+  const [productId, setProductId] = useState('');
   const [addedStocks, setAddedStocks] = useState('');
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
 
@@ -64,8 +67,8 @@ const Page = () => {
         const { success, data } = res;
         if (success) {
           setProductDeets(data);
-
           setProductName(data.productName);
+          setProductId(data.productId._id);
           setQty(data.qty);
         }
       })
@@ -77,16 +80,15 @@ const Page = () => {
   const handleSubmitUpdateProd = (event) => {
     event.preventDefault();
 
-    const forIntPrice = parseInt(qty)
-
     const payload = {
       id,
       productName,
-      qty: forIntPrice
+      productId,
+      qty
     }
 
     dispatch(common.ui.setLoading());
-    dispatch(jkai.product.updateProduct(payload))
+    dispatch(jkai.delivery.updateDeliveryDetails(payload))
       .then((res) => {
         const { success, data } = res;
         if (success) {
@@ -95,7 +97,7 @@ const Page = () => {
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());
-        location.reload();
+        // location.reload();
       });
   };
 
@@ -131,6 +133,30 @@ const Page = () => {
     setOpenSuccessSnackbar(false);
   };
 
+  const handleProductList = useCallback(
+    () => {
+      const payload = {
+        pageIndex: 1,
+        pageSize: 100,
+        category
+      }
+      dispatch(jkai.product.getProductsByParams(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setProductList(data.docs);
+          }
+        })
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    handleProductList();
+  }, [handleProductList])
+
+  console.log('productId', productId)
+
 
   return (
     loading ? <LoadingSpinner /> :
@@ -144,15 +170,29 @@ const Page = () => {
         <div className={styles.forms}>
           <form className={styles.orderInfoForm} onSubmit={handleSubmitUpdateProd}>
             <div style={{fontSize: "1.5rem", fontWeight: "bold"}}>Update Re-stock</div>
-            <TextField
-             style={{marginTop: 20, width: "100%"}}
-              id="outlined-basic"
-              onChange={(e) => setProductName(e.target.value)}
-              label="Product:"
-              value={productName}
-              required
-              variant="outlined"
-            />
+            <div className={styles.inputField}>
+              <select
+                required
+                className={styles.slct}
+                onChange={(e) => {
+                  const selectedProductId = e.target.value;
+                  const selectedProduct = productList.find(product => product._id === selectedProductId);
+
+                  if (selectedProduct) {
+                    setProductId(selectedProductId);
+                    setProductName(selectedProduct.name);
+                  }
+                }}
+                value={productId}
+              >
+                <option value=" ">Choose a product</option>
+                {productList.map((product) => (
+                  <option key={product.name} value={product._id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <TextField
               style={{marginTop: 20, width: "100%"}}
               id="outlined-basic"
