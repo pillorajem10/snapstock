@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
 
 // MUI
-import { Drawer, List, ListItem, ListItemText } from '@mui/material';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Badge,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 //redux
 import { useDispatch } from 'react-redux';
 import { jkai } from '../../redux/combineActions';
+
+// SOCKET IO
+import io from 'socket.io-client';
 
 // COOKIES
 import Cookies from 'js-cookie';
@@ -23,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+  },
+  notificationsDialog: {
+    minWidth: '300px',
   },
 }));
 
@@ -55,12 +72,27 @@ const Sidebar = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
 
   const [accountDeets, setAccountDeets] = useState({});
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
 
   useEffect(() => {
     if (storedToken) {
-     setAccountDeets(JSON.parse(account));
+      setAccountDeets(JSON.parse(account));
     }
-  }, [account]);
+
+    const socket = io('http://localhost:4000');
+
+    socket.on('newOrder', (message) => {
+      const updatedNotifications = [...notifications, message];
+      setNotifications(updatedNotifications);
+      setUnreadCount(unreadCount + 1);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [account, notifications, unreadCount]);
 
   const handleSignOut = () => {
     dispatch(jkai.user.userLogout())
@@ -71,6 +103,14 @@ const Sidebar = ({ isOpen, onClose }) => {
     navigate(`/myprofile/${accountDeets._id}`);
   };
 
+  const handleAccountCircleClick = () => {
+    setUnreadCount(0);
+    setShowNotificationsDialog(true);
+  };
+
+  const handleNotificationsDialogClose = () => {
+    setShowNotificationsDialog(false);
+  };
 
   return (
     <Drawer
@@ -83,13 +123,43 @@ const Sidebar = ({ isOpen, onClose }) => {
         paper: classes.drawerPaper,
       }}
     >
+      <Dialog
+        open={showNotificationsDialog}
+        onClose={handleNotificationsDialogClose}
+        classes={{ paper: classes.notificationsDialog }}
+      >
+        <DialogTitle>Notifications</DialogTitle>
+        <DialogContent>
+          <List>
+            {notifications.slice().reverse().map((notification, index) => (
+              <ListItem key={index}>
+                <ListItemText
+                  primary={notification}
+                  primaryTypographyProps={{
+                    style: { fontWeight: index < unreadCount ? 'bold' : 'normal' },
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleNotificationsDialogClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <List>
         {/* SIDEBAR OWNER ROLE */}
         {role === '1' && (
           <>
-            <div className={styles.introContainer} onClick={goToMyprofile}>
-              <AccountCircle sx={{ fontSize: 50}} />
-              <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+            <div className={styles.introContainer}>
+              <Badge badgeContent={unreadCount} color="primary">
+                <AccountCircle sx={{ fontSize: 50 }} onClick={handleAccountCircleClick} />
+              </Badge>
+              <div onClick={goToMyprofile}>
+                <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+              </div>
             </div>
             <div className={styles.listings}>
               <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
@@ -115,9 +185,13 @@ const Sidebar = ({ isOpen, onClose }) => {
         {/* SIDEBAR MANAGER ROLE */}
         {role === '2' && (
           <>
-            <div className={styles.introContainer} onClick={goToMyprofile}>
-              <AccountCircle sx={{ fontSize: 50}} />
-              <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+            <div className={styles.introContainer}>
+              <Badge badgeContent={unreadCount} color="primary">
+                <AccountCircle sx={{ fontSize: 50 }} onClick={handleAccountCircleClick} />
+              </Badge>
+              <div onClick={goToMyprofile}>
+                <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+              </div>
             </div>
             <div className={styles.listings}>
               <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
@@ -140,9 +214,13 @@ const Sidebar = ({ isOpen, onClose }) => {
         {/* SIDEBAR MANAGER ROLE */}
         {role === '0' && (
           <>
-            <div className={styles.introContainer} onClick={goToMyprofile}>
-              <AccountCircle sx={{ fontSize: 50}} />
-              <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+            <div className={styles.introContainer}> 
+              <Badge badgeContent={unreadCount} color="primary">
+                <AccountCircle sx={{ fontSize: 50 }} onClick={handleAccountCircleClick} />
+              </Badge>
+              <div onClick={goToMyprofile}>
+                <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+              </div>
             </div>
             <div className={styles.listings}>
               <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
