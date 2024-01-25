@@ -67,6 +67,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const account = Cookies.get('account');
   const storedToken = Cookies.get('token');
   const role = Cookies.get('role');
+  const category = Cookies.get('category');
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -75,6 +76,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
+  const [pageSize] = useState(7);
 
   useEffect(() => {
     if (storedToken) {
@@ -82,6 +84,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     }
 
     const socket = io('http://localhost:4000');
+
+    socket.emit('joinRoom', category);
 
     socket.on('newOrder', (message) => {
       const updatedNotifications = [...notifications, message];
@@ -92,7 +96,25 @@ const Sidebar = ({ isOpen, onClose }) => {
     return () => {
       socket.disconnect();
     };
-  }, [account, notifications, unreadCount]);
+  }, [account, notifications, unreadCount, storedToken, category]);
+
+  // Separate useEffect for fetching past notifications
+  useEffect(() => {
+    const fetchPastNotifications = async () => {
+      try {
+        const response = await dispatch(jkai.notification.getNotificationsByParams({ pageIndex: 1, pageSize, category }));
+        const { success, data } = response;
+        if (success) {
+          setNotifications(data.docs);
+        }
+      } catch (error) {
+        console.error('Error fetching past notifications:', error);
+      }
+    };
+
+    // Fetch past notifications when the component mounts
+    fetchPastNotifications();
+  }, [dispatch, pageSize, category]);
 
   const handleSignOut = () => {
     dispatch(jkai.user.userLogout())
@@ -130,18 +152,18 @@ const Sidebar = ({ isOpen, onClose }) => {
       >
         <DialogTitle>Notifications</DialogTitle>
         <DialogContent>
-          <List>
-            {notifications.slice().reverse().map((notification, index) => (
-              <ListItem key={index}>
-                <ListItemText
-                  primary={notification}
-                  primaryTypographyProps={{
-                    style: { fontWeight: index < unreadCount ? 'bold' : 'normal' },
-                  }}
-                />
-              </ListItem>
-            ))}
-          </List>
+        <List>
+          {notifications.slice().reverse().map((notification, index) => (
+            <ListItem key={index}>
+              <ListItemText
+                primary={typeof notification === 'string' ? notification : notification.message}
+                primaryTypographyProps={{
+                  style: { fontWeight: index < unreadCount ? 'bold' : 'normal' },
+                }}
+              />
+            </ListItem>
+          ))}
+        </List>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleNotificationsDialogClose} color="primary">
@@ -214,7 +236,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         {/* SIDEBAR MANAGER ROLE */}
         {role === '0' && (
           <>
-            <div className={styles.introContainer}> 
+            <div className={styles.introContainer}>
               <Badge badgeContent={unreadCount} color="primary">
                 <AccountCircle sx={{ fontSize: 50 }} onClick={handleAccountCircleClick} />
               </Badge>
