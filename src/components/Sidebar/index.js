@@ -71,6 +71,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
+  const baseUrl = process.env.REACT_APP_SERVER === 'LOCAL' ? 'http://localhost:4000' : 'https://snapstock.site/api';
 
   const [accountDeets, setAccountDeets] = useState({});
   const [notifications, setNotifications] = useState([]);
@@ -78,12 +79,13 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
   const [pageSize] = useState(7);
 
+
   useEffect(() => {
     if (storedToken) {
       setAccountDeets(JSON.parse(account));
     }
 
-    const socket = io('http://localhost:4000');
+    const socket = io(baseUrl);
 
     socket.emit('joinRoom', category);
 

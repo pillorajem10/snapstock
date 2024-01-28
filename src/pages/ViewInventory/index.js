@@ -56,6 +56,8 @@ const Page = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const baseUrl = process.env.REACT_APP_SERVER === 'LOCAL' ? 'http://localhost:4000' : 'https://snapstock.site/api';
+
   const [productList, setProductList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
   const [name, setName] = useState('');
@@ -168,7 +170,7 @@ const Page = () => {
     dispatch(common.ui.setLoading());
 
     // Use fetch to make the request
-    fetch('http://localhost:4000/product/report/generatepdf', {
+    fetch(`${baseUrl}/product/report/generatepdf`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -207,7 +209,7 @@ const Page = () => {
 
     dispatch(common.ui.setLoading());
 
-    fetch('http://localhost:4000/product/report/generateexcel', {
+    fetch(`${baseUrl}/product/report/generateexcel`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

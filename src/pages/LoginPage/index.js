@@ -45,6 +45,7 @@ const Page = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
+  const captchaSiteKey = process.env.REACT_APP_CAPTCHA_SITE_KEY;
 
   const [productDeets, setProductDeets] = useState({});
   const [username, setUsername] = useState('');
@@ -303,7 +304,7 @@ const Page = () => {
                 </div>
                 <div style={{ marginTop: 10 }}>
                   <ReCAPTCHA
-                    sitekey="6LeSrT8pAAAAAP1Tq-a0Btz-5HZ3UO-kDjdSQ0LZ"
+                    sitekey={captchaSiteKey}
                     onChange={(value) => setRecaptchaValue(value)}
                   />
                 </div>

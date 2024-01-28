@@ -12,8 +12,8 @@ axios.defaults.headers.common.Authorization = storedToken === undefined ? null :
 
 // console.log('BEARERRRR TOKEN', axios.defaults.headers.common.Authorization)
 
-// const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3007' : 'https://hapichair.com/api-v1';
-const baseUrl = 'http://localhost:4000';
+const baseUrl = process.env.REACT_APP_SERVER === 'LOCAL' ? 'http://localhost:4000' : 'https://snapstock.site/api';
+
 
 
 /**
