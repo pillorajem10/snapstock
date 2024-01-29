@@ -71,7 +71,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
-  const baseUrl = process.env.REACT_APP_SERVER === 'LOCAL' ? 'http://localhost:4000' : 'https://snapstock.site/api';
+  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
 
   const [accountDeets, setAccountDeets] = useState({});
   const [notifications, setNotifications] = useState([]);
@@ -81,13 +81,21 @@ const Sidebar = ({ isOpen, onClose }) => {
 
 
   useEffect(() => {
+    console.log('baseUrl', baseUrl);
     if (storedToken) {
       setAccountDeets(JSON.parse(account));
     }
 
     const socket = io(baseUrl);
 
-    socket.emit('joinRoom', category);
+    socket.emit('joinRoom', category, (acknowledgmentData) => {
+      console.log('ACKKNOW', acknowledgmentData)
+      if (acknowledgmentData && acknowledgmentData.success) {
+          console.log(`Successfully joined room ${category}`);
+      } else {
+          console.error(`Failed to join room ${category}`);
+      }
+    });
 
     socket.on('newOrder', (message) => {
       const updatedNotifications = [...notifications, message];
