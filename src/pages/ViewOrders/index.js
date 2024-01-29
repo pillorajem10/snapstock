@@ -61,7 +61,7 @@ const Page = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const baseUrl = process.env.REACT_APP_SERVER === 'LOCAL' ? 'http://localhost:4000' : 'https://snapstock.site/api';
+  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
 
   const [orderList, setOrderList] = useState([]);
   const [customerName, setCustomerName] = useState('');
