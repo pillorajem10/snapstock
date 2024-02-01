@@ -86,9 +86,17 @@ const Sidebar = ({ isOpen, onClose }) => {
       setAccountDeets(JSON.parse(account));
     }
 
-    const socket = io('http://snapstock.site', {
-      path: '/api/socket.io',  // Specify the correct path here
-    });
+    let socket;
+
+    if (process.env.NODE_ENV === 'development') {
+      // In development environment, use the base URL without a specific path
+      socket = io(baseUrl);
+    } else {
+      // In other environments, use the specified path
+      socket = io(baseUrl, {
+        path: '/api/socket.io',  // Specify the correct path here
+      });
+    }
 
     socket.emit('joinRoom', category, (acknowledgmentData) => {
       console.log('ACKKNOW', acknowledgmentData)
