@@ -94,7 +94,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     } else {
       // In other environments, use the specified path
       socket = io(baseUrl, {
-        path: '/api/socket.io',  // Specify the correct path here
+        path: '/socket.io',  // Specify the correct path here
       });
     }
 
