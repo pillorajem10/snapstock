@@ -86,7 +86,9 @@ const Sidebar = ({ isOpen, onClose }) => {
       setAccountDeets(JSON.parse(account));
     }
 
-    const socket = io(baseUrl);
+    const socket = io('http://snapstock.site', {
+      path: '/api/socket.io',  // Specify the correct path here
+    });
 
     socket.emit('joinRoom', category, (acknowledgmentData) => {
       console.log('ACKKNOW', acknowledgmentData)
