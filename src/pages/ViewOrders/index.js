@@ -267,27 +267,39 @@ const Page = () => {
 
   return (
     <>
-      <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+      <Snackbar
+        open={openSuccessSnackbar}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           {successMessage}
         </Alert>
       </Snackbar>
-      <Snackbar open={openErrorSnackbar} autoHideDuration={2000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+      <Snackbar
+        open={openErrorSnackbar}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
           {errMsg}
         </Alert>
       </Snackbar>
       <Dialog open={!!deleteOrderId} onClose={handleDeleteCancel}>
-       <DialogTitle>Confirm Deletion</DialogTitle>
-       <DialogContent>
-         Are you sure you want to delete this order?
-       </DialogContent>
-       <DialogActions>
-         <Button onClick={handleDeleteCancel}>Cancel</Button>
-         <Button onClick={handleDeleteConfirm} variant="contained" color="error">
-           Delete
-         </Button>
-       </DialogActions>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this order?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            variant="contained"
+            color="error"
+          >
+            Delete
+          </Button>
+        </DialogActions>
       </Dialog>
       <AddOrderForm />
       <div className={styles.upperForm}>
@@ -300,45 +312,65 @@ const Page = () => {
           />
         </form>
         <div className={styles.reportButtons}>
-          <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
+          <Button
+            style={{ marginRight: 20 }}
+            onClick={handleDownloadPDF}
+            variant="outlined"
+            color="primary"
+          >
             Generate Orders Report PDF
           </Button>
-          <Button onClick={handleDownloadExcel} variant="contained" color="primary">
+          <Button
+            onClick={handleDownloadExcel}
+            variant="contained"
+            color="primary"
+          >
             Generate Orders Report Excel
           </Button>
         </div>
       </div>
-      {loading ? <LoadingSpinner /> :
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
         <div>
-          <TableContainer style={{ display: loading && 'none' }} component={Paper}>
+          <TableContainer
+            style={{ display: loading && "none" }}
+            component={Paper}
+          >
             <Table aria-label="simple table">
               <TableHead>
-                <TableRow style={{ marginTop: "1rem" }} >
-                  <TableCell><b style={{ fontSize: "1.5rem" }}>Ordered By</b></TableCell>
-                  <TableCell><b style={{ fontSize: "1.5rem" }}>Date Ordered</b></TableCell>
-                  <TableCell><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
-                  <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
+                <TableRow style={{ marginTop: "1rem" }}>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Ordered By</b>
+                  </TableCell>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Date Ordered</b>
+                  </TableCell>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Total</b>
+                  </TableCell>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Action</b>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {orderList.map((order, index) => (
                   <TableRow
                     style={{
-                      display: loading && 'none',
+                      display: loading && "none",
                       background: order.credit === "true" ? "yellow" : "white",
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     key={index}
                     onClick={() => navigate(`/order/${order._id}`)}
                   >
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell>{`${order.monthOrdered}/${order.dateOrdered}/${order.yearOrdered}`}</TableCell>
-                    <TableCell>
-                      {formatPriceX(order.totalPrice)}
-                    </TableCell>
+                    <TableCell>{formatPriceX(order.totalPrice)}</TableCell>
                     <TableCell>
                       <DeleteIcon
-                        style={{ color: 'red', cursor: 'pointer' }}
+                        style={{ color: "red", cursor: "pointer" }}
                         onClick={(e) => {
                           e.stopPropagation(); // Prevent row click event from triggering
                           handleDeleteClick(order._id);
@@ -351,24 +383,38 @@ const Page = () => {
               <TableRow style={{ marginTop: "1rem" }}>
                 <TableCell>
                   <b style={{ fontSize: "1.5rem" }}>
-                    Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0))}</span>
+                    Total for the day:{" "}
+                    <span style={{ color: "#39CD35" }}>
+                      {formatPriceX(
+                        filteredCreditArray.reduce(
+                          (a, c) => c.totalPrice + a,
+                          0
+                        )
+                      )}
+                    </span>
                   </b>
                 </TableCell>
               </TableRow>
             </Table>
           </TableContainer>
 
-          <Pagination
-            style={{ display: loading && 'none', marginTop: "1rem", marginBottom: "1rem" }}
-            count={pageDetails && pageDetails.totalPages}
-            page={pageDetails && pageDetails.pageIndex}
-            defaultPage={1}
-            color="primary"
-            size="large"
-            onChange={handleChangePageIndex}
-          />
+          {pageDetails && pageDetails.totalPages && (
+            <Pagination
+              style={{
+                display: loading && "none",
+                marginTop: "1rem",
+                marginBottom: "1rem",
+              }}
+              count={pageDetails && pageDetails.totalPages}
+              page={pageDetails && pageDetails.pageIndex}
+              defaultPage={1}
+              color="primary"
+              size="large"
+              onChange={handleChangePageIndex}
+            />
+          )}
         </div>
-      }
+      )}
     </>
   );
 }

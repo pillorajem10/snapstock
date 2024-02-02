@@ -16,14 +16,31 @@ import {
 import { makeStyles } from '@mui/styles';
 
 //redux
-import { useDispatch } from 'react-redux';
-import { jkai } from '../../redux/combineActions';
+import { useDispatch, useSelector } from "react-redux";
+import { jkai } from "../../redux/combineActions";
 
 // SOCKET IO
-import io from 'socket.io-client';
+import socket from "../../services/socketService";
 
 // COOKIES
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+
+// MUI ICONS
+import {
+  Home,
+  ShoppingCart,
+  ListAlt,
+  AddBox,
+  AccountCircle,
+  People,
+  ExitToApp,
+} from "@mui/icons-material";
+
+//REACT ROUTER DOM
+import { Link, useNavigate } from "react-router-dom";
+
+//STYLE
+import styles from "./index.module.css";
 
 // MUI USE STYLE SHIT
 const useStyles = makeStyles((theme) => ({
@@ -39,39 +56,18 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   notificationsDialog: {
-    minWidth: '300px',
+    minWidth: "300px",
   },
 }));
 
-// MUI ICONS
-import {
-  Home,
-  ShoppingCart,
-  ListAlt,
-  AddBox,
-  AccountCircle,
-  People,
-  ExitToApp
-} from '@mui/icons-material';
-
-
-
-//REACT ROUTER DOM
-import { Link, useNavigate } from 'react-router-dom';
-
-//STYLE
-import styles from './index.module.css';
-
-
 const Sidebar = ({ isOpen, onClose }) => {
-  const account = Cookies.get('account');
-  const storedToken = Cookies.get('token');
-  const role = Cookies.get('role');
-  const category = Cookies.get('category');
+  const account = Cookies.get("account");
+  const storedToken = Cookies.get("token");
+  const role = Cookies.get("role");
+  const category = Cookies.get("category");
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
-  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
 
   const [accountDeets, setAccountDeets] = useState({});
   const [notifications, setNotifications] = useState([]);
@@ -79,42 +75,50 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
   const [pageSize] = useState(7);
 
+  const { jkai } = useSelector((state) => {
+    console.log("[(x_-) SIDEBAR STATE] ", state);
+    return state;
+  });
+
+  const ordah = jkai.order.order;
 
   useEffect(() => {
-    console.log('baseUrl', baseUrl);
+    console.log("[(x_-) USE EFFECT2] ");
+    // console.log("baseUrl", baseUrl);
+
     if (storedToken) {
       setAccountDeets(JSON.parse(account));
     }
 
-    let socket;
+    // const socket = io(baseUrl);
 
-    if (process.env.NODE_ENV === 'development') {
-      // In development environment, use the base URL without a specific path
-      socket = io(baseUrl);
-    } else {
-      // In other environments, use the specified path
-      socket = io(baseUrl, {
-        path: '/api/socket.io',  // Specify the correct path here
-      });
-    }
+    // socket.emit("joinRoom", category, (acknowledgmentData) => {
+    //   console.log("[(x_-) USE EFFECT socketEMITJOINROOM category] ", category);
+    //   console.log(
+    //     "[(x_-) USE EFFECT socketEMITJOINROOM acknowledgmentData] ",
+    //     acknowledgmentData
+    //   );
 
-    socket.emit('joinRoom', category, (acknowledgmentData) => {
-      console.log('ACKKNOW', acknowledgmentData)
-      if (acknowledgmentData && acknowledgmentData.success) {
-          console.log(`Successfully joined room ${category}`);
-      } else {
-          console.error(`Failed to join room ${category}`);
-      }
-    });
+    //   // console.log('ACKKNOW', acknowledgmentData)
+    //   if (acknowledgmentData && acknowledgmentData.success) {
+    //     console.log("[(x_-) USE EFFECT socketEMITJOINROOM SUCCESS] ", category);
+    //     // console.log(`Successfully joined room ${category}`);
+    //   } else {
+    //     console.log("[(x_-) USE EFFECT socketEMITJOINROOM FAIL] ", category);
+    //     // console.error(`Failed to join room ${category}`);
+    //   }
+    // });
 
-    socket.on('newOrder', (message) => {
-      const updatedNotifications = [...notifications, message];
-      setNotifications(updatedNotifications);
-      setUnreadCount(unreadCount + 1);
-    });
+    // socket.on("newOrder", (message) => {
+    //   console.log("[(x_-) USE EFFECT socketONNEWORD message] ", message);
+    //   const updatedNotifications = [...notifications, message];
+    //   setNotifications(updatedNotifications);
+    //   setUnreadCount(unreadCount + 1);
+    // });
 
     return () => {
-      socket.disconnect();
+      // console.log("[(x_-) USE EFFECT GARBAGE SOCKET DISCO] ");
+      // socket.disconnect();
     };
   }, [account, notifications, unreadCount, storedToken, category]);
 
@@ -122,13 +126,19 @@ const Sidebar = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchPastNotifications = async () => {
       try {
-        const response = await dispatch(jkai.notification.getNotificationsByParams({ pageIndex: 1, pageSize, category }));
+        const response = await dispatch(
+          jkai.notification.getNotificationsByParams({
+            pageIndex: 1,
+            pageSize,
+            category,
+          })
+        );
         const { success, data } = response;
         if (success) {
           setNotifications(data.docs);
         }
       } catch (error) {
-        console.error('Error fetching past notifications:', error);
+        console.error("Error fetching past notifications:", error);
       }
     };
 
@@ -137,7 +147,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   }, [dispatch, pageSize, category]);
 
   const handleSignOut = () => {
-    dispatch(jkai.user.userLogout())
+    dispatch(jkai.user.userLogout());
   };
 
   const goToMyprofile = () => {
@@ -153,6 +163,22 @@ const Sidebar = ({ isOpen, onClose }) => {
   const handleNotificationsDialogClose = () => {
     setShowNotificationsDialog(false);
   };
+
+  useEffect(() => {
+    console.log("[(x_-) USE EFFECT] ");
+
+    socket.on("newOrder", (message) => {
+      console.log("[(x_-) USE EFFECT socketONNEWORD message] ", message);
+      const updatedNotifications = [...notifications, message];
+      setNotifications(updatedNotifications);
+      setUnreadCount(unreadCount + 1);
+    });
+
+    return () => {
+      console.log("[(x_-) USE EFFECT GARBAGE SOCKET DISCO] ");
+      socket.disconnect();
+    };
+  }, [ordah]);
 
   return (
     <Drawer
@@ -172,18 +198,27 @@ const Sidebar = ({ isOpen, onClose }) => {
       >
         <DialogTitle>Notifications</DialogTitle>
         <DialogContent>
-        <List>
-          {notifications.slice().reverse().map((notification, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={typeof notification === 'string' ? notification : notification.message}
-                primaryTypographyProps={{
-                  style: { fontWeight: index < unreadCount ? 'bold' : 'normal' },
-                }}
-              />
-            </ListItem>
-          ))}
-        </List>
+          <List>
+            {notifications
+              .slice()
+              .reverse()
+              .map((notification, index) => (
+                <ListItem key={index}>
+                  <ListItemText
+                    primary={
+                      typeof notification === "string"
+                        ? notification
+                        : notification.message
+                    }
+                    primaryTypographyProps={{
+                      style: {
+                        fontWeight: index < unreadCount ? "bold" : "normal",
+                      },
+                    }}
+                  />
+                </ListItem>
+              ))}
+          </List>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleNotificationsDialogClose} color="primary">
@@ -193,88 +228,139 @@ const Sidebar = ({ isOpen, onClose }) => {
       </Dialog>
       <List>
         {/* SIDEBAR OWNER ROLE */}
-        {role === '1' && (
+        {role === "1" && (
           <>
             <div className={styles.introContainer}>
               <Badge badgeContent={unreadCount} color="primary">
-                <AccountCircle sx={{ fontSize: 50 }} onClick={handleAccountCircleClick} />
+                <AccountCircle
+                  sx={{ fontSize: 50 }}
+                  onClick={handleAccountCircleClick}
+                />
               </Badge>
               <div onClick={goToMyprofile}>
-                <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+                <div className={styles.introName}>
+                  Hello, {accountDeets.fname}
+                </div>
               </div>
             </div>
             <div className={styles.listings}>
-              <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
+              <Link to="/home" onClick={onClose}>
+                <Home sx={{ marginRight: 3 }} />
+                Home
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
+              <Link to="/viewinvt" onClick={onClose}>
+                <ShoppingCart sx={{ marginRight: 3 }} /> Products
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
+              <Link to="/viewallorders" onClick={onClose}>
+                <ListAlt sx={{ marginRight: 3 }} /> All Orders
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/deliveries' onClick={onClose}><AddBox sx={{ marginRight: 3 }} /> Add Stocks</Link>
+              <Link to="/deliveries" onClick={onClose}>
+                <AddBox sx={{ marginRight: 3 }} /> Add Stocks
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/users' onClick={onClose}><People sx={{ marginRight: 3 }} /> Users</Link>
+              <Link to="/users" onClick={onClose}>
+                <People sx={{ marginRight: 3 }} /> Users
+              </Link>
             </div>
             <div className={styles.listings} onClick={handleSignOut}>
-              <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
+              <Link>
+                <ExitToApp sx={{ marginRight: 3 }} />
+                Sign Out
+              </Link>
             </div>
           </>
         )}
 
         {/* SIDEBAR MANAGER ROLE */}
-        {role === '2' && (
+        {role === "2" && (
           <>
             <div className={styles.introContainer}>
               <Badge badgeContent={unreadCount} color="primary">
-                <AccountCircle sx={{ fontSize: 50 }} onClick={handleAccountCircleClick} />
+                <AccountCircle
+                  sx={{ fontSize: 50 }}
+                  onClick={handleAccountCircleClick}
+                />
               </Badge>
               <div onClick={goToMyprofile}>
-                <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+                <div className={styles.introName}>
+                  Hello, {accountDeets.fname}
+                </div>
               </div>
             </div>
             <div className={styles.listings}>
-              <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
+              <Link to="/home" onClick={onClose}>
+                <Home sx={{ marginRight: 3 }} />
+                Home
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
+              <Link to="/viewinvt" onClick={onClose}>
+                <ShoppingCart sx={{ marginRight: 3 }} /> Products
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
+              <Link to="/viewallorders" onClick={onClose}>
+                <ListAlt sx={{ marginRight: 3 }} /> All Orders
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/deliveries' onClick={onClose}><AddBox sx={{ marginRight: 3 }} /> Add Stocks</Link>
+              <Link to="/deliveries" onClick={onClose}>
+                <AddBox sx={{ marginRight: 3 }} /> Add Stocks
+              </Link>
             </div>
             <div className={styles.listings} onClick={handleSignOut}>
-              <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
+              <Link>
+                <ExitToApp sx={{ marginRight: 3 }} />
+                Sign Out
+              </Link>
             </div>
           </>
         )}
 
         {/* SIDEBAR MANAGER ROLE */}
-        {role === '0' && (
+        {role === "0" && (
           <>
             <div className={styles.introContainer}>
               <Badge badgeContent={unreadCount} color="primary">
-                <AccountCircle sx={{ fontSize: 50 }} onClick={handleAccountCircleClick} />
+                <AccountCircle
+                  sx={{ fontSize: 50 }}
+                  onClick={handleAccountCircleClick}
+                />
               </Badge>
               <div onClick={goToMyprofile}>
-                <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+                <div className={styles.introName}>
+                  Hello, {accountDeets.fname}
+                </div>
               </div>
             </div>
             <div className={styles.listings}>
-              <Link to='/home' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
+              <Link to="/home" onClick={onClose}>
+                <Home sx={{ marginRight: 3 }} />
+                Home
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Products</Link>
+              <Link to="/viewinvt" onClick={onClose}>
+                <ShoppingCart sx={{ marginRight: 3 }} /> Products
+              </Link>
             </div>
             <div className={styles.listings}>
-              <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
+              <Link to="/viewallorders" onClick={onClose}>
+                <ListAlt sx={{ marginRight: 3 }} /> All Orders
+              </Link>
             </div>
             <div className={styles.listings} onClick={handleSignOut}>
-              <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
+              <Link>
+                <ExitToApp sx={{ marginRight: 3 }} />
+                Sign Out
+              </Link>
             </div>
           </>
         )}

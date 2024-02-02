@@ -186,7 +186,8 @@ const Page = () => {
         const { success } = res || {};  // Make sure 'res' is defined
         if (success) {
           setOpenSuccessSnackbarAddItem(true);
-          setSuccessMessage(res.msg)
+          setSuccessMessage(res.msg);
+          // handleOrderItemList();
           location.reload();
         } else {
           setOpenErrorSnackbarAddItem(true);

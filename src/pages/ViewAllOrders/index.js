@@ -123,46 +123,73 @@ const Page = () => {
   return (
     <>
       <form className={styles.searchForm}>
-        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search orders by customer name" size="small"/>
+        <TextField
+          style={{ width: "20rem", border: "double", borderRadius: "16px" }}
+          onChange={(e) => setCustomerName(e.target.value)}
+          placeholder="Search orders by customer name"
+          size="small"
+        />
         {/*<button className={styles.btn} type="submit">Search</button>*/}
       </form>
-      {loading ? <LoadingSpinner /> :
-      <div>
-        <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow style={{ marginTop:"1rem" }} >
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Ordered By</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Date Ordered</b></TableCell>
-                <TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>
-                {/* <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell> */}
-              </TableRow>
-            </TableHead>
-            {orderList.map((order, index) => (
-              createBanana(order, index)
-            ))}
-          </Table>
-          {/*<TableRow style={{ marginTop:"1rem" }}>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <div>
+          <TableContainer
+            style={{ display: loading && "none" }}
+            component={Paper}
+          >
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow style={{ marginTop: "1rem" }}>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Ordered By</b>
+                  </TableCell>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Date Ordered</b>
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "stretch",
+                    }}
+                  >
+                    <b style={{ fontSize: "1.5rem" }}>Total</b>
+                  </TableCell>
+                  {/* <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell> */}
+                </TableRow>
+              </TableHead>
+              {orderList.map((order, index) => createBanana(order, index))}
+            </Table>
+            {/*<TableRow style={{ marginTop:"1rem" }}>
             <TableCell>
               <b style={{ fontSize: "1.5rem" }}>
                 Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0))}</span>
               </b>
             </TableCell>
           </TableRow>*/}
-        </TableContainer>
+          </TableContainer>
 
-        <Pagination
-          style = {{ display: loading && 'none', marginTop: "1rem", marginBottom: "1rem" }}
-          count={pageDetails && pageDetails.totalPages}
-          page={pageDetails && pageDetails.pageIndex}
-          defaultPage={1}
-          color="primary"
-          size="large"
-          onChange={handleChangePageIndex}
-        />
-      </div>}
+          {pageDetails && pageDetails.totalPages && (
+            <Pagination
+              style={{
+                display: loading && "none",
+                marginTop: "1rem",
+                marginBottom: "1rem",
+              }}
+              count={pageDetails && pageDetails.totalPages}
+              page={pageDetails && pageDetails.pageIndex}
+              defaultPage={1}
+              color="primary"
+              size="large"
+              onChange={handleChangePageIndex}
+            />
+          )}
+        </div>
+      )}
     </>
-  )
+  );
 }
 
 export default Page

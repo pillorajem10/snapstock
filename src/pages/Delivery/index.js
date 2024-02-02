@@ -281,32 +281,49 @@ const Page = () => {
 
   return (
     <>
-      <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+      <Snackbar
+        open={openSuccessSnackbar}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           {successMessage}
         </Alert>
       </Snackbar>
-      <Snackbar open={openErrorSnackbar} autoHideDuration={2000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+      <Snackbar
+        open={openErrorSnackbar}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
           {errMsg}
         </Alert>
       </Snackbar>
       <Dialog open={!!deleteDeliveryId} onClose={handleDeleteCancel}>
-       <DialogTitle>Confirm Deletion</DialogTitle>
-       <DialogContent>
-         Are you sure you want to delete this Re-stock product?
-       </DialogContent>
-       <DialogActions>
-         <Button onClick={handleDeleteCancel}>Cancel</Button>
-         <Button onClick={handleDeleteConfirm} variant="contained" color="error">
-           Delete
-         </Button>
-       </DialogActions>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this Re-stock product?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            variant="contained"
+            color="error"
+          >
+            Delete
+          </Button>
+        </DialogActions>
       </Dialog>
-      <AddDeliveryForm/>
+      <AddDeliveryForm />
       <div className={styles.upperForm}>
         <form className={styles.searchForm}>
-          <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setProductName(e.target.value)} placeholder="Search deliveries by product name" size="small"/>
+          <TextField
+            style={{ width: "20rem", border: "double", borderRadius: "16px" }}
+            onChange={(e) => setProductName(e.target.value)}
+            placeholder="Search deliveries by product name"
+            size="small"
+          />
           {/*<button className={styles.btn} type="submit">Search</button>*/}
         </form>
         <FormControl style={{ width: 250 }}>
@@ -361,79 +378,112 @@ const Page = () => {
             ))}
           </Select>
         </FormControl>
-        <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={handleClearFilters}
+        >
           Clear Filters
         </Button>
       </div>
       <div className={styles.reportButtons}>
-        <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
+        <Button
+          style={{ marginRight: 20 }}
+          onClick={handleDownloadPDF}
+          variant="outlined"
+          color="primary"
+        >
           Generate Re-stocking Report PDF
         </Button>
-        <Button onClick={handleDownloadExcel} variant="contained" color="primary">
+        <Button
+          onClick={handleDownloadExcel}
+          variant="contained"
+          color="primary"
+        >
           Generate Re-stocking Report Excel
         </Button>
       </div>
-      {loading ? <LoadingSpinner/> :
-      <div>
-        <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow style={{ marginTop:"1rem" }} >
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Product</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Quantity added</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Date of re-stocking</b></TableCell>
-                <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
-                {/*<TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>*/}
-                {/* <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell> */}
-              </TableRow>
-            </TableHead>
-            {orderList.map((delivery, index) => (
-              <TableBody
-                style={{
-                  display: loading && 'none',
-                  cursor: "pointer"
-                }}
-                key={index}
-                onClick={() => navigate(`/delivery/${delivery._id}`)}
-              >
-                <TableCell>{delivery.productName}</TableCell>
-                <TableCell>{delivery.qty}</TableCell>
-                <TableCell>{`${delivery.monthDelivered}/${delivery.dateDelivered}/${delivery.yearDelivered}`}</TableCell>
-                <TableCell>
-                  <IconButton
-                    style={{ color: 'red', cursor: 'pointer' }}
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent row click event from triggering
-                      handleDeleteClick(delivery._id);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableBody>
-            ))}
-          </Table>
-          {/*<TableRow style={{ marginTop:"1rem" }}>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <div>
+          <TableContainer
+            style={{ display: loading && "none" }}
+            component={Paper}
+          >
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow style={{ marginTop: "1rem" }}>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Product</b>
+                  </TableCell>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Quantity added</b>
+                  </TableCell>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Date of re-stocking</b>
+                  </TableCell>
+                  <TableCell>
+                    <b style={{ fontSize: "1.5rem" }}>Action</b>
+                  </TableCell>
+                  {/*<TableCell style={{display: "flex", justifyContent: "flex-end", alignItems: "stretch"}}><b style={{ fontSize: "1.5rem" }}>Total</b></TableCell>*/}
+                  {/* <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell> */}
+                </TableRow>
+              </TableHead>
+              {orderList.map((delivery, index) => (
+                <TableBody
+                  style={{
+                    display: loading && "none",
+                    cursor: "pointer",
+                  }}
+                  key={index}
+                  onClick={() => navigate(`/delivery/${delivery._id}`)}
+                >
+                  <TableCell>{delivery.productName}</TableCell>
+                  <TableCell>{delivery.qty}</TableCell>
+                  <TableCell>{`${delivery.monthDelivered}/${delivery.dateDelivered}/${delivery.yearDelivered}`}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      style={{ color: "red", cursor: "pointer" }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent row click event from triggering
+                        handleDeleteClick(delivery._id);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableBody>
+              ))}
+            </Table>
+            {/*<TableRow style={{ marginTop:"1rem" }}>
             <TableCell>
               <b style={{ fontSize: "1.5rem" }}>
                 Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.total + a, 0))}</span>
               </b>
             </TableCell>
           </TableRow>*/}
-        </TableContainer>
+          </TableContainer>
 
-        <Pagination
-          style = {{ display: loading && 'none', marginTop: "1rem", marginBottom: "1rem" }}
-          count={pageDetails && pageDetails.totalPages}
-          page={pageDetails && pageDetails.pageIndex}
-          defaultPage={1}
-          color="primary"
-          size="large"
-          onChange={handleChangePageIndex}
-        />
-      </div>}
+          {pageDetails && pageDetails.totalPages && (
+            <Pagination
+              style={{
+                display: loading && "none",
+                marginTop: "1rem",
+                marginBottom: "1rem",
+              }}
+              count={pageDetails && pageDetails.totalPages}
+              page={pageDetails && pageDetails.pageIndex}
+              defaultPage={1}
+              color="primary"
+              size="large"
+              onChange={handleChangePageIndex}
+            />
+          )}
+        </div>
+      )}
     </>
-  )
+  );
 }
 
 export default Page
