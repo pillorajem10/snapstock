@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from "react";
 
 // MUI
 import {
@@ -11,9 +11,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
+  Button,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
@@ -75,76 +75,35 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
   const [pageSize] = useState(7);
 
-  const { jkai } = useSelector((state) => {
-    console.log("[(x_-) SIDEBAR STATE] ", state);
-    return state;
-  });
-
-  const ordah = jkai.order.order;
-
   useEffect(() => {
-    console.log("[(x_-) USE EFFECT2] ");
-    // console.log("baseUrl", baseUrl);
-
     if (storedToken) {
       setAccountDeets(JSON.parse(account));
     }
 
-    // const socket = io(baseUrl);
-
-    // socket.emit("joinRoom", category, (acknowledgmentData) => {
-    //   console.log("[(x_-) USE EFFECT socketEMITJOINROOM category] ", category);
-    //   console.log(
-    //     "[(x_-) USE EFFECT socketEMITJOINROOM acknowledgmentData] ",
-    //     acknowledgmentData
-    //   );
-
-    //   // console.log('ACKKNOW', acknowledgmentData)
-    //   if (acknowledgmentData && acknowledgmentData.success) {
-    //     console.log("[(x_-) USE EFFECT socketEMITJOINROOM SUCCESS] ", category);
-    //     // console.log(`Successfully joined room ${category}`);
-    //   } else {
-    //     console.log("[(x_-) USE EFFECT socketEMITJOINROOM FAIL] ", category);
-    //     // console.error(`Failed to join room ${category}`);
-    //   }
-    // });
-
-    // socket.on("newOrder", (message) => {
-    //   console.log("[(x_-) USE EFFECT socketONNEWORD message] ", message);
-    //   const updatedNotifications = [...notifications, message];
-    //   setNotifications(updatedNotifications);
-    //   setUnreadCount(unreadCount + 1);
-    // });
-
-    return () => {
-      // console.log("[(x_-) USE EFFECT GARBAGE SOCKET DISCO] ");
-      // socket.disconnect();
-    };
+    return () => {};
   }, [account, notifications, unreadCount, storedToken, category]);
 
-  // Separate useEffect for fetching past notifications
-  useEffect(() => {
-    const fetchPastNotifications = async () => {
-      try {
-        const response = await dispatch(
-          jkai.notification.getNotificationsByParams({
-            pageIndex: 1,
-            pageSize,
-            category,
-          })
-        );
-        const { success, data } = response;
-        if (success) {
-          setNotifications(data.docs);
-        }
-      } catch (error) {
-        console.error("Error fetching past notifications:", error);
+  const fetchPastNotifications = useCallback(async () => {
+    try {
+      const response = await dispatch(
+        jkai.notification.getNotificationsByParams({
+          pageIndex: 1,
+          pageSize,
+          category,
+        })
+      );
+      const { success, data } = response;
+      if (success) {
+        setNotifications(data.docs);
       }
-    };
-
-    // Fetch past notifications when the component mounts
-    fetchPastNotifications();
+    } catch (error) {
+      console.error("Error fetching past notifications:", error);
+    }
   }, [dispatch, pageSize, category]);
+
+  useEffect(() => {
+    fetchPastNotifications();
+  }, [fetchPastNotifications]);
 
   const handleSignOut = () => {
     dispatch(jkai.user.userLogout());
@@ -165,20 +124,22 @@ const Sidebar = ({ isOpen, onClose }) => {
   };
 
   useEffect(() => {
-    console.log("[(x_-) USE EFFECT] ");
+    socket.emit("joinRoom", category, (acknowledgmentData) => {
+      if (acknowledgmentData && acknowledgmentData.success) {
+        console.log(`Successfully joined room ${category}`);
+      } else {
+        console.error(`Failed to join room ${category}`);
+      }
+    });
 
     socket.on("newOrder", (message) => {
-      console.log("[(x_-) USE EFFECT socketONNEWORD message] ", message);
       const updatedNotifications = [...notifications, message];
       setNotifications(updatedNotifications);
       setUnreadCount(unreadCount + 1);
     });
 
-    return () => {
-      console.log("[(x_-) USE EFFECT GARBAGE SOCKET DISCO] ");
-      socket.disconnect();
-    };
-  }, [ordah]);
+    return () => {};
+  }, []);
 
   return (
     <Drawer

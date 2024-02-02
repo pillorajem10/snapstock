@@ -53,7 +53,7 @@ import { saveAs } from 'file-saver';
 
 
 const Page = () => {
-  const { error } = useSelector(state => state.jkai.order);
+  const { error } = useSelector((state) => state.jkai.order);
   const {
     ui: { loading },
   } = useSelector((state) => state.common);
@@ -61,65 +61,66 @@ const Page = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
+  const baseUrl =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:4000"
+      : "https://snapstock.site/api";
 
   const [orderList, setOrderList] = useState([]);
-  const [customerName, setCustomerName] = useState('');
+  const [customerName, setCustomerName] = useState("");
   const [pageDetails, setPageDetails] = useState(null);
   const [deleteOrderId, setDeleteOrderId] = useState(null);
   const [pageSize] = useState(10);
 
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [errMsg, setErrMsg] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-
-  const category = Cookies.get('category');
+  const category = Cookies.get("category");
 
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
-  const monthOrdered = +fomattedDateNow.split('/')[0];
-  const dateOrdered = +fomattedDateNow.split('/')[1];
-  const yearOrdered = +fomattedDateNow.split('/')[2];
+  const monthOrdered = +fomattedDateNow.split("/")[0];
+  const dateOrdered = +fomattedDateNow.split("/")[1];
+  const yearOrdered = +fomattedDateNow.split("/")[2];
 
   const handleOrderList = useCallback(
-  (pageIndex = 1) => {
-    const payload = {
-      pageIndex,
-      pageSize,
-      customerName,
-      monthOrdered,
-      dateOrdered,
-      yearOrdered,
-      category
-    }
+    (pageIndex = 1) => {
+      const payload = {
+        pageIndex,
+        pageSize,
+        customerName,
+        monthOrdered,
+        dateOrdered,
+        yearOrdered,
+        category,
+      };
 
-    dispatch(common.ui.setLoading());
-    dispatch(jkai.order.getOrdersByParams(payload))
-      .then((res) => {
-        const { success, data } = res;
-        if (success) {
-          setOrderList(data.docs);
-          setPageDetails({
-            pageIndex: data.page,
-            pageSize: data.limit,
-            totalPages: data.totalPages,
-            totalDocs: data.totalDocs
-          });
-        }
-      })
-      .finally(() => {
-        dispatch(common.ui.clearLoading());
-      });
-  },
-  [dispatch, customerName, pageSize],
-);
+      dispatch(common.ui.setLoading());
+      dispatch(jkai.order.getOrdersByParams(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setOrderList(data.docs);
+            setPageDetails({
+              pageIndex: data.page,
+              pageSize: data.limit,
+              totalPages: data.totalPages,
+              totalDocs: data.totalDocs,
+            });
+          }
+        })
+        .finally(() => {
+          dispatch(common.ui.clearLoading());
+        });
+    },
+    [dispatch, customerName, pageSize]
+  );
 
   const handleDeleteClick = (orderId) => {
     setDeleteOrderId(orderId);
   };
-
 
   const handleDeleteConfirm = async () => {
     try {
@@ -128,14 +129,14 @@ const Page = () => {
       const res = await dispatch(jkai.order.removeOrderDetails(deleteOrderId));
 
       if (res.success) {
-        console.log('SUCCESSSSSSSSSSSSSSSS')
+        console.log("SUCCESSSSSSSSSSSSSSSS");
         setOpenSuccessSnackbar(true);
         setSuccessMessage(res.msg);
       } else {
         setOpenErrorSnackbar(true);
       }
     } catch (error) {
-      console.error('Error during delete:', error);
+      console.error("Error during delete:", error);
       setOpenSuccessSnackbar(true);
     } finally {
       setDeleteOrderId(null);
@@ -144,30 +145,31 @@ const Page = () => {
     }
   };
 
-
-
   const handleDeleteCancel = () => {
     // Reset the deleteOrderId state if deletion is canceled
     setDeleteOrderId(null);
   };
 
-  useEffect(() =>{
+  useEffect(() => {
     handleOrderList();
-  },[handleOrderList])
-
+  }, [handleOrderList]);
 
   const handleChangePageIndex = (event, value) => {
     handleOrderList(value);
   };
 
-  const filteredCreditArray = orderList && orderList.filter(order => order.credit === "false" || order.credit === false);
+  const filteredCreditArray =
+    orderList &&
+    orderList.filter(
+      (order) => order.credit === "false" || order.credit === false
+    );
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -185,40 +187,39 @@ const Page = () => {
     dispatch(common.ui.setLoading());
 
     fetch(`${baseUrl}/order/report/generateexcel`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         return response.blob();
       })
-      .then(blob => {
+      .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = url;
         a.download = `Orders_Report_${fomattedDateNow}.xlsx`;
         document.body.appendChild(a);
         a.click();
         a.remove();
       })
-      .catch(error => {
-        console.error('Error downloading Excel:', error);
+      .catch((error) => {
+        console.error("Error downloading Excel:", error);
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());
       });
   };
 
-
-
-
-  const totalOrder = formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0));
+  const totalOrder = formatPriceX(
+    filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0)
+  );
 
   // Client-side code
   const handleDownloadPDF = () => {
@@ -227,43 +228,42 @@ const Page = () => {
     const payload = {
       orderList,
       totalOrder,
-      fomattedDateNow
+      fomattedDateNow,
     };
 
     dispatch(common.ui.setLoading());
 
     // Use fetch to make the request
     fetch(`${baseUrl}/order/report/generatepdf`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-      return response.blob();
-    })
-    .then(blob => {
-      const url = window.URL.createObjectURL(new Blob([blob]));
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Orders_Report_${fomattedDateNow}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    })
-    .catch(error => {
-      console.error('Error downloading PDF:', error);
-    })
-    .finally(() => {
-      dispatch(common.ui.clearLoading());
-    });
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Orders_Report_${fomattedDateNow}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((error) => {
+        console.error("Error downloading PDF:", error);
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
   };
-
 
   return (
     <>

@@ -9,12 +9,9 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 axios.defaults.headers.post.Accept = 'application/json';
 axios.defaults.headers.common.Authorization = storedToken === undefined ? null : bearerToken;
 
-
 // console.log('BEARERRRR TOKEN', axios.defaults.headers.common.Authorization)
 
 const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
-
-
 
 /**
  * handle check request method

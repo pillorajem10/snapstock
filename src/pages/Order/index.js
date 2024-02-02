@@ -187,8 +187,8 @@ const Page = () => {
         if (success) {
           setOpenSuccessSnackbarAddItem(true);
           setSuccessMessage(res.msg);
-          // handleOrderItemList();
-          location.reload();
+          handleOrderItemList();
+          // location.reload();
         } else {
           setOpenErrorSnackbarAddItem(true);
           setErrMsg(res.payload);

@@ -55,41 +55,46 @@ import Cookies from 'js-cookie';
 import { formatPriceX, convertMomentWithFormat } from '../../utils/methods'
 
 const Page = () => {
-  const { error } = useSelector(state => state.jkai.delivery);
+  const { error } = useSelector((state) => state.jkai.delivery);
   const {
     ui: { loading },
   } = useSelector((state) => state.common);
-  const role = Cookies.get('role');
+  const role = Cookies.get("role");
   const daysArray = Array.from({ length: 31 }, (_, index) => index + 1);
   const currentYear = new Date().getFullYear();
-  const yearsArray = Array.from({ length: currentYear - 1999 + 1 }, (_, index) => 1999 + index);
-
+  const yearsArray = Array.from(
+    { length: currentYear - 1999 + 1 },
+    (_, index) => 1999 + index
+  );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
- const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
+  const baseUrl =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:4000"
+      : "https://snapstock.site/api";
 
   const [orderList, setDeliveryList] = useState([]);
-  const [productName, setProductName] = useState('');
+  const [productName, setProductName] = useState("");
   const [pageDetails, setPageDetails] = useState(null);
   const [pageSize] = useState(7);
-  const [monthDelivered, setMonthDelivered] = useState('');
-  const [dateDelivered, setDateDelivered] = useState('');
-  const [yearDelivered, setYearDelivered] = useState('');
+  const [monthDelivered, setMonthDelivered] = useState("");
+  const [dateDelivered, setDateDelivered] = useState("");
+  const [yearDelivered, setYearDelivered] = useState("");
   const [deleteDeliveryId, setDeleteDeliveryId] = useState(null);
 
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [errMsg, setErrMsg] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -100,47 +105,52 @@ const Page = () => {
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
   const handleDeliveryList = useCallback(
-  (pageIndex = 1) => {
-    const payload = {
-      pageIndex,
-      pageSize,
+    (pageIndex = 1) => {
+      const payload = {
+        pageIndex,
+        pageSize,
+        productName,
+        monthDelivered,
+        dateDelivered,
+        yearDelivered,
+      };
+
+      dispatch(common.ui.setLoading());
+      dispatch(jkai.delivery.getDeliveriesByParams(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setDeliveryList(data.docs);
+            // console.log("DATAA DOVS", data.docs)
+            setPageDetails({
+              pageIndex: data.page,
+              pageSize: data.limit,
+              totalPages: data.totalPages,
+              totalDocs: data.totalDocs,
+            });
+          }
+        })
+        .finally(() => {
+          dispatch(common.ui.clearLoading());
+        });
+    },
+    [
+      dispatch,
       productName,
+      pageSize,
       monthDelivered,
       dateDelivered,
       yearDelivered,
-    }
+    ]
+  );
 
-    dispatch(common.ui.setLoading());
-    dispatch(jkai.delivery.getDeliveriesByParams(payload))
-      .then((res) => {
-        const { success, data } = res;
-        if (success) {
-          setDeliveryList(data.docs);
-          // console.log("DATAA DOVS", data.docs)
-          setPageDetails({
-            pageIndex: data.page,
-            pageSize: data.limit,
-            totalPages: data.totalPages,
-            totalDocs: data.totalDocs
-          });
-        }
-      })
-      .finally(() => {
-        dispatch(common.ui.clearLoading());
-      });
-  },
-  [dispatch, productName, pageSize, monthDelivered, dateDelivered, yearDelivered],
-);
-
-
-  useEffect(() =>{
-    if (role === '0') {
-      navigate('/home');
+  useEffect(() => {
+    if (role === "0") {
+      navigate("/home");
     }
 
     handleDeliveryList();
-  },[handleDeliveryList])
-
+  }, [handleDeliveryList]);
 
   const handleChangePageIndex = (event, value) => {
     handleDeliveryList(value);
@@ -159,10 +169,10 @@ const Page = () => {
   };
 
   const handleClearFilters = () => {
-    setProductName('');
-    setMonthDelivered('');
-    setDateDelivered('');
-    setYearDelivered('');
+    setProductName("");
+    setMonthDelivered("");
+    setDateDelivered("");
+    setYearDelivered("");
   };
 
   const handleDownloadPDF = () => {
@@ -170,76 +180,76 @@ const Page = () => {
 
     const payload = {
       orderList,
-      fomattedDateNow
+      fomattedDateNow,
     };
 
     dispatch(common.ui.setLoading());
 
     // Use fetch to make the request
     fetch(`${baseUrl}/delivery/report/generatepdf`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      return response.blob();
-    })
-    .then(blob => {
-      const url = window.URL.createObjectURL(new Blob([blob]));
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Re-stock_Inventory_Report_${fomattedDateNow}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    })
-    .catch(error => {
-      console.error('Error downloading PDF:', error);
-    })
-    .finally(() => {
-      dispatch(common.ui.clearLoading());
-    });
-  };
-
-  const handleDownloadExcel = () => {
-    const payload = {
-      orderList,
-      fomattedDateNow
-    };
-
-    dispatch(common.ui.setLoading());
-
-    fetch(`${baseUrl}/order/report/generateexcel`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         return response.blob();
       })
-      .then(blob => {
+      .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
-        const a = document.createElement('a');
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Re-stock_Inventory_Report_${fomattedDateNow}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((error) => {
+        console.error("Error downloading PDF:", error);
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
+  };
+
+  const handleDownloadExcel = () => {
+    const payload = {
+      orderList,
+      fomattedDateNow,
+    };
+
+    dispatch(common.ui.setLoading());
+
+    fetch(`${baseUrl}/order/report/generateexcel`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement("a");
         a.href = url;
         a.download = `Re-stock_Inventory_Report_${fomattedDateNow}.xlsx`;
         document.body.appendChild(a);
         a.click();
         a.remove();
       })
-      .catch(error => {
-        console.error('Error downloading Excel:', error);
+      .catch((error) => {
+        console.error("Error downloading Excel:", error);
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());
@@ -254,17 +264,19 @@ const Page = () => {
     try {
       dispatch(common.ui.setLoading());
 
-      const res = await dispatch(jkai.delivery.removeDelivery(deleteDeliveryId));
+      const res = await dispatch(
+        jkai.delivery.removeDelivery(deleteDeliveryId)
+      );
 
       if (res.success) {
-        console.log('SUCCESSSSSSSSSSSSSSSS')
+        console.log("SUCCESSSSSSSSSSSSSSSS");
         setOpenSuccessSnackbar(true);
         setSuccessMessage(res.msg);
       } else {
         setOpenErrorSnackbar(true);
       }
     } catch (error) {
-      console.error('Error during delete:', error);
+      console.error("Error during delete:", error);
     } finally {
       setDeleteDeliveryId(null);
       dispatch(common.ui.clearLoading());
@@ -276,8 +288,6 @@ const Page = () => {
     // Reset the deleteDeliveryId state if deletion is canceled
     setDeleteDeliveryId(null);
   };
-
-
 
   return (
     <>

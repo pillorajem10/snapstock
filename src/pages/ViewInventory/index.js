@@ -48,7 +48,7 @@ import Cookies from 'js-cookie';
 import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
 
 const Page = () => {
-  const { error } = useSelector(state => state.jkai.product);
+  const { error } = useSelector((state) => state.jkai.product);
   const {
     ui: { loading },
   } = useSelector((state) => state.common);
@@ -56,57 +56,58 @@ const Page = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
+  const baseUrl =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:4000"
+      : "https://snapstock.site/api";
 
   const [productList, setProductList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [deleteUserId, setDeleteProductId] = useState(null);
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
-  const [successMessage, setSuccessMessage] = useState('')
+  const [errMsg, setErrMsg] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [pageSize] = useState(7);
 
-  const category = Cookies.get('category');
-  const role = Cookies.get('role');
+  const category = Cookies.get("category");
+  const role = Cookies.get("role");
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
   const handleProductList = useCallback(
-  (pageIndex = 1) => {
-    const payload = {
-      pageIndex,
-      pageSize,
-      name,
-      category
-    };
+    (pageIndex = 1) => {
+      const payload = {
+        pageIndex,
+        pageSize,
+        name,
+        category,
+      };
 
-    dispatch(common.ui.setLoading());
-    dispatch(jkai.product.getProductsByParams(payload))
-      .then((res) => {
-        const { success, data } = res;
-        if (success) {
-          setProductList(data.docs);
-          setPageDetails({
-            pageIndex: data.page,
-            pageSize: data.limit,
-            totalPages: data.totalPages,
-            totalDocs: data.totalDocs
-          });
-        }
-      })
-      .finally(() => {
-        dispatch(common.ui.clearLoading());
-      });
-  },
-  [dispatch, pageSize, name],
-);
+      dispatch(common.ui.setLoading());
+      dispatch(jkai.product.getProductsByParams(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setProductList(data.docs);
+            setPageDetails({
+              pageIndex: data.page,
+              pageSize: data.limit,
+              totalPages: data.totalPages,
+              totalDocs: data.totalDocs,
+            });
+          }
+        })
+        .finally(() => {
+          dispatch(common.ui.clearLoading());
+        });
+    },
+    [dispatch, pageSize, name]
+  );
 
-
-  useEffect(() =>{
+  useEffect(() => {
     handleProductList();
-  },[handleProductList]);
-
+  }, [handleProductList]);
 
   const handleDeleteClick = (orderId) => {
     setDeleteProductId(orderId);
@@ -124,14 +125,14 @@ const Page = () => {
       const res = await dispatch(jkai.product.removeProduct(deleteUserId));
 
       if (res.success) {
-        console.log('SUCCESSSSSSSSSSSSSSSS')
+        console.log("SUCCESSSSSSSSSSSSSSSS");
         setOpenSuccessSnackbar(true);
         setSuccessMessage(res.msg);
       } else {
         setOpenErrorSnackbar(true);
       }
     } catch (error) {
-      console.error('Error during delete:', error);
+      console.error("Error during delete:", error);
       setOpenSuccessSnackbar(true);
     } finally {
       setDeleteProductId(null);
@@ -141,14 +142,13 @@ const Page = () => {
   };
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
     setOpenSuccessSnackbar(false);
     setOpenErrorSnackbar(false);
   };
-
 
   const handleChangePageIndex = (event, value) => {
     handleProductList(value);
@@ -164,82 +164,81 @@ const Page = () => {
 
     const payload = {
       productList,
-      fomattedDateNow
+      fomattedDateNow,
     };
 
     dispatch(common.ui.setLoading());
 
     // Use fetch to make the request
     fetch(`${baseUrl}/product/report/generatepdf`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      return response.blob();
-    })
-    .then(blob => {
-      const url = window.URL.createObjectURL(new Blob([blob]));
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Product_Inventory_Report_${fomattedDateNow}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    })
-    .catch(error => {
-      console.error('Error downloading PDF:', error);
-    })
-    .finally(() => {
-      dispatch(common.ui.clearLoading());
-    });
-  };
-
-  const handleDownloadExcel = () => {
-    const payload = {
-      productList,
-      fomattedDateNow
-    };
-
-    dispatch(common.ui.setLoading());
-
-    fetch(`${baseUrl}/product/report/generateexcel`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         return response.blob();
       })
-      .then(blob => {
+      .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = url;
-        a.download = `Product_Inventory_Report_${fomattedDateNow}.xlsx`;
+        a.download = `Product_Inventory_Report_${fomattedDateNow}.pdf`;
         document.body.appendChild(a);
         a.click();
         a.remove();
       })
-      .catch(error => {
-        console.error('Error downloading Excel:', error);
+      .catch((error) => {
+        console.error("Error downloading PDF:", error);
       })
       .finally(() => {
         dispatch(common.ui.clearLoading());
       });
   };
 
+  const handleDownloadExcel = () => {
+    const payload = {
+      productList,
+      fomattedDateNow,
+    };
+
+    dispatch(common.ui.setLoading());
+
+    fetch(`${baseUrl}/product/report/generateexcel`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Product_Inventory_Report_${fomattedDateNow}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((error) => {
+        console.error("Error downloading Excel:", error);
+      })
+      .finally(() => {
+        dispatch(common.ui.clearLoading());
+      });
+  };
 
   return (
     <>
