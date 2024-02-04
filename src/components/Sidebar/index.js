@@ -20,7 +20,7 @@ import { useDispatch } from 'react-redux';
 import { jkai } from '../../redux/combineActions';
 
 // SOCKET IO
-import io from 'socket.io-client';
+import socketIOClient from 'socket.io-client';
 
 // COOKIES
 import Cookies from 'js-cookie';
@@ -71,7 +71,10 @@ const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
-  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site';
+  const baseUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:4000"
+    : "https://snapstock.site";
 
   const [accountDeets, setAccountDeets] = useState({});
   const [notifications, setNotifications] = useState([]);
@@ -86,19 +89,29 @@ const Sidebar = ({ isOpen, onClose }) => {
       setAccountDeets(JSON.parse(account));
     }
 
-    const socket = io(baseUrl);
+    const socket = socketIOClient(baseUrl); // Replace with your server URL
 
+    socket.on("connect", (v) => {
+      console.log("[connect v] ", v, process.env.NODE_ENV);
+    });
 
-    socket.emit('joinRoom', ({ category, acknowledgmentData }) => {
-      console.log('ACKKNOW', acknowledgmentData)
+    socket.on("joinRoom", ({ category, acknowledgmentData }) => {
       if (acknowledgmentData && acknowledgmentData.success) {
-          console.log(`Successfully joined room ${category}`);
+        console.log(`Successfully joined room ${category}`);
       } else {
-          console.error(`Failed to join room ${category}`);
+        console.error(`Failed to join room ${category}`);
       }
     });
 
-    socket.on('newOrder', (message) => {
+    socket.emit("joinRoom", category, (acknowledgmentData) => {
+      if (acknowledgmentData && acknowledgmentData.success) {
+        console.log(`Successfully joined room ${category}`);
+      } else {
+        console.error(`Failed to join room ${category}`);
+      }
+    });
+
+    socket.on("newOrder", (message) => {
       const updatedNotifications = [...notifications, message];
       setNotifications(updatedNotifications);
       setUnreadCount(unreadCount + 1);
