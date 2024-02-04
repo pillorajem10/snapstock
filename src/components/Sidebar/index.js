@@ -20,8 +20,8 @@ import { useDispatch } from 'react-redux';
 import { jkai } from '../../redux/combineActions';
 
 // SOCKET IO
-import socketIOClient from 'socket.io-client';
-
+// import socketIOClient from 'socket.io-client';
+import socket from "../../services/socketService";
 // COOKIES
 import Cookies from 'js-cookie';
 
@@ -89,19 +89,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       setAccountDeets(JSON.parse(account));
     }
 
-    const socket = socketIOClient(baseUrl); // Replace with your server URL
-
-    socket.on("connect", (v) => {
-      console.log("[connect v] ", v, process.env.NODE_ENV);
-    });
-
-    socket.on("joinRoom", ({ category, acknowledgmentData }) => {
-      if (acknowledgmentData && acknowledgmentData.success) {
-        console.log(`Successfully joined room ${category}`);
-      } else {
-        console.error(`Failed to join room ${category}`);
-      }
-    });
+    // const socket = socketIOClient(baseUrl); // Replace with your server URL
 
     socket.emit("joinRoom", category, (acknowledgmentData) => {
       if (acknowledgmentData && acknowledgmentData.success) {
@@ -117,9 +105,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       setUnreadCount(unreadCount + 1);
     });
 
-    return () => {
-      socket.disconnect();
-    };
+    return () => {};
   }, [account, notifications, unreadCount, storedToken, category]);
 
   // Separate useEffect for fetching past notifications
