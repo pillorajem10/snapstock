@@ -89,7 +89,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     const socket = io(baseUrl);
 
 
-    socket.emit('joinRoom', category, (acknowledgmentData) => {
+    socket.emit('joinRoom', ({ category, acknowledgmentData }) => {
       console.log('ACKKNOW', acknowledgmentData)
       if (acknowledgmentData && acknowledgmentData.success) {
           console.log(`Successfully joined room ${category}`);
