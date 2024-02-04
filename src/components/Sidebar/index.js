@@ -71,7 +71,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
-  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
+  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site';
 
   const [accountDeets, setAccountDeets] = useState({});
   const [notifications, setNotifications] = useState([]);
@@ -86,17 +86,8 @@ const Sidebar = ({ isOpen, onClose }) => {
       setAccountDeets(JSON.parse(account));
     }
 
-    let socket;
+    const socket = io(baseUrl);
 
-    if (process.env.NODE_ENV === 'development') {
-      // In development environment, use the base URL without a specific path
-      socket = io(baseUrl);
-    } else {
-      // In other environments, use the specified path
-      socket = io(baseUrl, {
-        path: '/api/socket.io',  // Specify the correct path here
-      });
-    }
 
     socket.emit('joinRoom', category, (acknowledgmentData) => {
       console.log('ACKKNOW', acknowledgmentData)
