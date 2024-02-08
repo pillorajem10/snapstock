@@ -62,6 +62,11 @@ import { Link, useNavigate } from 'react-router-dom';
 //STYLE
 import styles from './index.module.css';
 
+// NOTIFICATION SOUND
+import notificationSound from './notifSound.mp3';
+import { Howl, Howler } from 'howler';
+
+
 
 const Sidebar = ({ isOpen, onClose }) => {
   const account = Cookies.get('account');
@@ -81,6 +86,12 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
   const [pageSize] = useState(10);
+  // const [audio] = useState(new Audio(notificationSound));
+
+  const sound = new Howl({
+    src: [notificationSound],
+  });
+
 
   const handleNotifList = useCallback(
     () => {
@@ -133,6 +144,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       setUnreadCount(unreadCount + 1);
 
       handleNotifList();
+      sound.play();
     });
 
     return () => {};
