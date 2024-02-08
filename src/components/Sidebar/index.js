@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 // MUI
 import {
@@ -80,11 +80,39 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
-  const [pageSize] = useState(7);
+  const [pageSize] = useState(10);
+
+  const handleNotifList = useCallback(
+    () => {
+      const userDeets = storedToken ? JSON.parse(account): null;
+      const userDeetsId = storedToken ? userDeets._id : null;
+
+      const payload = {
+        pageIndex: 1,
+        pageSize: 100,
+        category,
+        user: userDeetsId
+      }
+      dispatch(jkai.notification.getNotificationsByParams(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setNotifications(data.docs);
+
+            const unreadPastNotifsCount = data.docs.reduce((count, notification) => {
+              return notification.unread ? count + 1 : count;
+            }, 0);
+
+            setUnreadCount(unreadCount + unreadPastNotifsCount);
+          }
+        })
+    },
+    [dispatch],
+  );
+
 
 
   useEffect(() => {
-    console.log('baseUrl', baseUrl);
     if (storedToken) {
       setAccountDeets(JSON.parse(account));
     }
@@ -103,28 +131,13 @@ const Sidebar = ({ isOpen, onClose }) => {
       const updatedNotifications = [...notifications, message];
       setNotifications(updatedNotifications);
       setUnreadCount(unreadCount + 1);
+
+      handleNotifList();
     });
 
     return () => {};
-  }, [account, notifications, unreadCount, storedToken, category]);
+  }, [notifications]);
 
-  // Separate useEffect for fetching past notifications
-  useEffect(() => {
-    const fetchPastNotifications = async () => {
-      try {
-        const response = await dispatch(jkai.notification.getNotificationsByParams({ pageIndex: 1, pageSize, category }));
-        const { success, data } = response;
-        if (success) {
-          setNotifications(data.docs);
-        }
-      } catch (error) {
-        console.error('Error fetching past notifications:', error);
-      }
-    };
-
-    // Fetch past notifications when the component mounts
-    fetchPastNotifications();
-  }, [dispatch, pageSize, category]);
 
   const handleSignOut = () => {
     dispatch(jkai.user.userLogout())
@@ -136,13 +149,40 @@ const Sidebar = ({ isOpen, onClose }) => {
   };
 
   const handleAccountCircleClick = () => {
+    // Reset unread count
     setUnreadCount(0);
+
+    // Show notifications dialog
     setShowNotificationsDialog(true);
+
+    // Find IDs of notifications with unread: true
+    const unreadNotificationIds = notifications.reduce((ids, notification) => {
+      if (notification.unread) {
+        ids.push(notification._id); // Assuming _id is the ID field of your notification
+      }
+      return ids;
+    }, []);
+
+    // Construct payload for updating notifications
+    const payload = {
+      ids: unreadNotificationIds,
+      updateData: {
+        unread: false
+      }
+    };
+
+    // Dispatch action to update notifications
+    dispatch(jkai.notification.updateNotif(payload));
   };
 
   const handleNotificationsDialogClose = () => {
     setShowNotificationsDialog(false);
+    handleNotifList();
   };
+
+  useEffect(() => {
+    handleNotifList();
+  }, [handleNotifList])
 
   return (
     <Drawer
@@ -163,17 +203,19 @@ const Sidebar = ({ isOpen, onClose }) => {
         <DialogTitle>Notifications</DialogTitle>
         <DialogContent>
         <List>
-          {notifications.slice().reverse().map((notification, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={typeof notification === 'string' ? notification : notification.message}
-                primaryTypographyProps={{
-                  style: { fontWeight: index < unreadCount ? 'bold' : 'normal' },
-                }}
-              />
-            </ListItem>
-          ))}
+          {[...notifications] // Make a copy of notifications to avoid mutating the original array
+            .map((notification, index) => (
+              <ListItem key={index}>
+                <ListItemText
+                  primary={typeof notification === 'string' ? notification : notification.message}
+                  primaryTypographyProps={{
+                    style: { fontWeight: notification.unread ? 'bold' : 'normal' },
+                  }}
+                />
+              </ListItem>
+            ))}
         </List>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleNotificationsDialogClose} color="primary">

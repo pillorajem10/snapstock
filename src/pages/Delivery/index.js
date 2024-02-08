@@ -60,6 +60,7 @@ const Page = () => {
     ui: { loading },
   } = useSelector((state) => state.common);
   const role = Cookies.get('role');
+  const category = Cookies.get('category');
   const daysArray = Array.from({ length: 31 }, (_, index) => index + 1);
   const currentYear = new Date().getFullYear();
   const yearsArray = Array.from({ length: currentYear - 1999 + 1 }, (_, index) => 1999 + index);
@@ -108,6 +109,7 @@ const Page = () => {
       monthDelivered,
       dateDelivered,
       yearDelivered,
+      category
     }
 
     dispatch(common.ui.setLoading());

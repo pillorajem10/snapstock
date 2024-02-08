@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { jkai, common } from '../../../../redux/combineActions';
 
+import Cookies from 'js-cookie';
+
 //MUI STUFFS
 import {
   TextField,
@@ -23,6 +25,7 @@ const Page = () => {
   } = useSelector((state) => state.common);
 
   const dispatch = useDispatch();
+  const category = Cookies.get('category');
   const navigate = useNavigate();
 
   const [customerName, setCustomerName] = useState('');
@@ -35,6 +38,7 @@ const Page = () => {
 
     const payload = {
       productId,
+      category,
       qty
     }
 
