@@ -32,7 +32,6 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { Helmet } from 'react-helmet';
 
 // sectiions
 import AddOrderForm from './sections/AddOrder';
@@ -269,22 +268,6 @@ const Page = () => {
 
   return (
     <>
-      <Helmet>
-        <meta
-          property="og:title"
-          content="SnapStock"
-          key="title"
-        />
-        <meta
-          name="description"
-          content="Monitor your inventory and sales anytime and anywhere using SnapStock."
-        />
-        <meta
-          property="og:image"
-          content="%PUBLIC_URL%/snapstocklogo.png"
-          key="image"
-        />
-      </Helmet>
       <Snackbar open={openSuccessSnackbar} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
           {successMessage}

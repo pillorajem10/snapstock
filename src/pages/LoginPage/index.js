@@ -15,8 +15,6 @@ import ReCAPTCHA from "react-google-recaptcha";
 // COOKIES
 import Cookies from 'js-cookie';
 
-import { Helmet } from 'react-helmet';
-
 //MUI STUFFS
 import {
   CircularProgress,
@@ -163,22 +161,6 @@ const Page = () => {
 
   return (
     <div className={styles.container}>
-    <Helmet>
-      <meta
-        property="og:title"
-        content="SnapStock"
-        key="title"
-      />
-      <meta
-        name="description"
-        content="Monitor your inventory and sales anytime and anywhere using SnapStock."
-      />
-      <meta
-        property="og:image"
-        content="%PUBLIC_URL%/snapstocklogo.png"
-        key="image"
-      />
-    </Helmet>
     <>
       <Snackbar open={openErrorSnackbar} autoHideDuration={5000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
