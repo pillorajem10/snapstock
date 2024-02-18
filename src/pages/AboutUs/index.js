@@ -8,9 +8,27 @@ import styles from './index.module.css';
 import aboutPhoto1 from './aboutPhoto1.jpg';
 import fullLogo from './snapstocklogo.png'; // Replace with the actual path to your image
 
+import { Helmet } from 'react-helmet';
+
 const Page = () => {
   return (
     <>
+      <Helmet>
+        <meta
+          property="og:title"
+          content="SnapStock | About Us"
+          key="title"
+        />
+        <meta
+          name="description"
+          content="Monitor your inventory and sales anytime and anywhere using SnapStock."
+        />
+        <meta
+          property="og:image"
+          content="%PUBLIC_URL%/snapstocklogo.png"
+          key="image"
+        />
+      </Helmet>
       <div className={styles.aboutUsContainer}>
         <div className={styles.leftContainer}>
           <img src={aboutPhoto1} alt="Logo" className={styles.logoImage} />
