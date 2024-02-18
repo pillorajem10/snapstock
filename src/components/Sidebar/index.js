@@ -144,7 +144,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   }, [category]);
 
   useEffect(() => {
-    socket.on("newOrder", (message) => {
+    socket.on("notify", (message) => {
       console.log('NOTIFICATION SENT!!!!')
       const updatedNotifications = [...notifications, message];
       setNotifications(updatedNotifications);
@@ -155,7 +155,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     });
 
     return () => {
-      socket.off("newOrder");
+      socket.off("notify");
     };
   }, [notifications]);
 
