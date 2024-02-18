@@ -128,8 +128,10 @@ const Sidebar = ({ isOpen, onClose }) => {
       setAccountDeets(JSON.parse(account));
     }
 
-    // const socket = socketIOClient(baseUrl); // Replace with your server URL
+    return () => {};
+  }, [storedToken, account]);
 
+  useEffect(() => {
     socket.emit("joinRoom", category, (acknowledgmentData) => {
       if (acknowledgmentData && acknowledgmentData.success) {
         console.log(`Successfully joined room ${category}`);
@@ -138,7 +140,12 @@ const Sidebar = ({ isOpen, onClose }) => {
       }
     });
 
+    return () => {};
+  }, [category]);
+
+  useEffect(() => {
     socket.on("newOrder", (message) => {
+      console.log('NOTIFICATION SENT!!!!')
       const updatedNotifications = [...notifications, message];
       setNotifications(updatedNotifications);
       setUnreadCount(unreadCount + 1);
@@ -147,8 +154,11 @@ const Sidebar = ({ isOpen, onClose }) => {
       sound.play();
     });
 
-    return () => {};
+    return () => {
+      socket.off("newOrder");
+    };
   }, [notifications]);
+
 
 
   const handleSignOut = () => {
