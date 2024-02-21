@@ -86,7 +86,6 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
   const [pageSize] = useState(10);
-  // const [audio] = useState(new Audio(notificationSound));
 
   const sound = new Howl({
     src: [notificationSound],
@@ -144,20 +143,26 @@ const Sidebar = ({ isOpen, onClose }) => {
   }, [category]);
 
   useEffect(() => {
-    socket.on("notify", (message) => {
-      console.log('NOTIFICATION SENT!!!!')
+    socket.on("notify", ({ token, message }) => {
+      console.log('NOTIFICATION SENT!!!!', token)
+
       const updatedNotifications = [...notifications, message];
       setNotifications(updatedNotifications);
       setUnreadCount(unreadCount + 1);
 
       handleNotifList();
-      sound.play();
+
+      if (token !== storedToken) {
+       sound.play();
+     }
+
     });
 
     return () => {
       socket.off("notify");
     };
   }, [notifications]);
+
 
 
 
