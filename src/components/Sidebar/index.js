@@ -64,6 +64,7 @@ import styles from './index.module.css';
 
 // NOTIFICATION SOUND
 import notificationSound from './notifSound.mp3';
+import snapLogo from './snapstocklogo.png';
 import { Howl, Howler } from 'howler';
 
 
@@ -85,7 +86,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(5000);
 
   const sound = new Howl({
     src: [notificationSound],
@@ -144,7 +145,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     socket.on("notify", ({ token, message }) => {
-      console.log('NOTIFICATION SENT!!!!', token)
+      console.log('NOTIFICATION SENT!!!!', token);
 
       const updatedNotifications = [...notifications, message];
       setNotifications(updatedNotifications);
@@ -153,15 +154,45 @@ const Sidebar = ({ isOpen, onClose }) => {
       handleNotifList();
 
       if (token !== storedToken) {
-       sound.play();
-     }
+        sound.play();
+      }
 
+      // Show desktop notification
+
+      if (Notification.permission === "granted") {
+        try {
+          new Notification("SnapStock Notification", {
+            body: message,
+            icon: snapLogo, // Use the imported snapLogo directly
+          });
+        } catch (error) {
+          console.error('Error showing notification:', error);
+        }
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            try {
+              new Notification("SnapStock Notification", {
+                body: message,
+                icon: snapLogo, // Use the imported snapLogo directly
+              });
+            } catch (error) {
+              console.error('Error showing notification:', error);
+            }
+          }
+        }).catch((error) => {
+          console.error('Error requesting notification permission:', error);
+        });
+      }
     });
 
     return () => {
       socket.off("notify");
     };
   }, [notifications]);
+
+
+
 
 
 
