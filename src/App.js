@@ -2,6 +2,7 @@
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import AuthRouter from './components/AuthRouter'
+import AdminRouter from './components/AdminRouter'
 import Footer from './components/Footer'
 
 //REACT ROUTER
@@ -14,6 +15,7 @@ import ViewAllOrders from './pages/ViewAllOrders';
 import Order from './pages/Order';
 import OrderItem from './pages/OrderItem';
 import Product from './pages/Product';
+import Category from './pages/Category';
 import DeliveryDeets from './pages/DeliveryDeets';
 import Delivery from './pages/Delivery';
 import User from './pages/User';
@@ -27,6 +29,10 @@ import Services from './pages/Services';
 import ForgotPassword from './pages/ForgotPassword';
 import Changepassword from './pages/Changepassword';
 import ContactUs from './pages/ContactUs';
+
+// ADMIN PAGES
+import AdminHome from './pages/AdminHome';
+
 
 // MUI SHITS
 import {  ThemeProvider } from '@mui/styles';
@@ -67,6 +73,10 @@ function App() {
               <Route path="/user/:id" element={<AuthRouter><UserDeets/></AuthRouter>} />
               <Route path="/viewallorders" element={<AuthRouter><ViewAllOrders/></AuthRouter>} />
               <Route path="/verify/:token" element={<AuthRouter><VerifyingPage/></AuthRouter>} />
+
+              {/* ROUTES OS PAGES THAT NEED TO BE ADMIN ROLE */}
+              <Route path="/admin" element={<AdminRouter><AdminHome/></AdminRouter>} />
+              <Route path="/admin/:id" element={<AdminRouter><Category/></AdminRouter>} />
             </Routes>
           </main>
           <footer className="footer"><Footer/></footer>

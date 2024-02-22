@@ -1,5 +1,5 @@
 //REACT
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,6 +14,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  Button,
   TableContainer,
   TableHead,
   TextField,
@@ -48,12 +49,17 @@ const Page = () => {
   const navigate = useNavigate();
 
   const [orderList, setOrderList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [pageDetails, setPageDetails] = useState(null);
+  const [category, setCategory] = useState('');
   const [pageSize] = useState(7);
 
-  const category = Cookies.get('category');
 
+  // const category = Cookies.get('category');
+  const role = Cookies.get('role');
+
+  const selectRef = useRef(null);
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
   const monthOrdered = +fomattedDateNow.split('/')[0];
@@ -61,37 +67,64 @@ const Page = () => {
   const yearOrdered = +fomattedDateNow.split('/')[2];
 
   const handleOrderList = useCallback(
-  (pageIndex = 1) => {
-    const payload = {
-      pageIndex,
-      pageSize,
-      customerName,
-      category
-      // monthOrdered,
-      // dateOrdered,
-      // yearOrdered,
-    }
+    (pageIndex = 1) => {
+      let selectedCategory = category;
 
-    dispatch(common.ui.setLoading());
-    dispatch(jkai.order.getOrdersByParams(payload))
-      .then((res) => {
-        const { success, data } = res;
-        if (success) {
-          setOrderList(data.docs);
-          setPageDetails({
-            pageIndex: data.page,
-            pageSize: data.limit,
-            totalPages: data.totalPages,
-            totalDocs: data.totalDocs
-          });
-        }
-      })
-      .finally(() => {
-        dispatch(common.ui.clearLoading());
-      });
-  },
-  [dispatch, customerName, pageSize],
-);
+      if (role !== '3') {
+        selectedCategory = Cookies.get('category');
+      }
+
+      const payload = {
+        pageIndex,
+        pageSize,
+        customerName,
+        category: selectedCategory,
+        // monthOrdered,
+        // dateOrdered,
+        // yearOrdered,
+      };
+
+      dispatch(common.ui.setLoading());
+      dispatch(jkai.order.getOrdersByParams(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setOrderList(data.docs);
+            setPageDetails({
+              pageIndex: data.page,
+              pageSize: data.limit,
+              totalPages: data.totalPages,
+              totalDocs: data.totalDocs,
+            });
+          }
+        })
+        .finally(() => {
+          dispatch(common.ui.clearLoading());
+        });
+    },
+    [dispatch, customerName, pageSize, category]
+  );
+
+  const handleCategoryList = useCallback(
+    () => {
+      const payload = {
+        pageIndex: 1,
+        pageSize: 100,
+      }
+      dispatch(jkai.category.getCategories(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setCategoryList(data.docs);
+          }
+        })
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    handleCategoryList();
+  }, [handleCategoryList])
 
 
   useEffect(() =>{
@@ -118,14 +151,48 @@ const Page = () => {
     handleOrderList(value);
   };
 
+  const handleClearFilters = () => {
+    setCustomerName('');
+    setCategory('');
+    selectRef.current.value = '';
+  };
+
   // const filteredCreditArray = orderList && orderList.filter(order => order.credit === "false" || order.credit === false);
 
   return (
     <>
-      <form className={styles.searchForm}>
-        <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setCustomerName(e.target.value)} placeholder="Search orders by customer name" size="small"/>
-        {/*<button className={styles.btn} type="submit">Search</button>*/}
-      </form>
+      <div className={styles.searchForm}>
+        <TextField
+          style={{ width: '20rem' }}
+          onChange={(e) => setCustomerName(e.target.value)}
+          placeholder="Search orders by customer name"
+          size="small"
+          value={customerName}
+        />
+        { role === '3' && (
+          <>
+            <div className={styles.inputField}>
+              <select
+                ref={selectRef}
+                required
+                className={styles.slct}
+                onChange={(e) => setCategory(e.target.value)}
+                value={category}
+              >
+                <option value=''>Filter by Business name</option>
+                {categoryList.map((category) => (
+                  <option key={category.name} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+              Clear Filters
+            </Button>
+          </>
+        )}
+      </div>
       {loading ? <LoadingSpinner /> :
       <div>
         <TableContainer style = {{ display: loading && 'none' }} component={Paper}>

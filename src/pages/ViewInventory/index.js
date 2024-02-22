@@ -1,5 +1,5 @@
 //REACT
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -59,8 +59,10 @@ const Page = () => {
   const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
 
   const [productList, setProductList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
   const [name, setName] = useState('');
+  const [category, setCategory] = useState('');
   const [deleteUserId, setDeleteProductId] = useState(null);
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
@@ -68,17 +70,24 @@ const Page = () => {
   const [successMessage, setSuccessMessage] = useState('')
   const [pageSize] = useState(7);
 
-  const category = Cookies.get('category');
+  // const category = Cookies.get('category');
   const role = Cookies.get('role');
   const fomattedDateNow = convertMomentWithFormat(Date.now());
-
+  const selectRef = useRef(null);
+  
   const handleProductList = useCallback(
   (pageIndex = 1) => {
+    let selectedCategory = category;
+
+    if (role !== '3') {
+      selectedCategory = Cookies.get('category');
+    }
+
     const payload = {
       pageIndex,
       pageSize,
       name,
-      category
+      category: selectedCategory,
     };
 
     dispatch(common.ui.setLoading());
@@ -99,7 +108,7 @@ const Page = () => {
         dispatch(common.ui.clearLoading());
       });
   },
-  [dispatch, pageSize, name],
+  [dispatch, pageSize, name, category]
 );
 
 
@@ -240,6 +249,32 @@ const Page = () => {
       });
   };
 
+  const handleClearFilters = () => {
+    setName('');
+    setCategory('');
+    selectRef.current.value = '';
+  };
+
+  const handleCategoryList = useCallback(
+    () => {
+      const payload = {
+        pageIndex: 1,
+        pageSize: 100,
+      }
+      dispatch(jkai.category.getCategories(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setCategoryList(data.docs);
+          }
+        })
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    handleCategoryList();
+  }, [handleCategoryList])
 
   return (
     <>
@@ -287,14 +322,60 @@ const Page = () => {
       <div className={styles.upperForm}>
         { (role === '2' || role === '1') ? (
           <>
-            <form className={styles.searchForm}>
+            <div className={styles.searchForm}>
               <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
-            </form>
+              { role === '3' && (
+                <>
+                  <div className={styles.inputField}>
+                    <select
+                      ref={selectRef}
+                      required
+                      className={styles.slct}
+                      onChange={(e) => setCategory(e.target.value)}
+                      value={category}
+                    >
+                      <option value=''>Filter by Business name</option>
+                      {categoryList.map((category) => (
+                        <option key={category.name} value={category._id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+                    Clear Filters
+                  </Button>
+                </>
+              )}
+            </div>
             </>
         ) : (
           <>
             <form className={styles.searchForm1}>
               <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
+              { role === '3' && (
+                <>
+                  <div className={styles.inputField}>
+                    <select
+                      ref={selectRef}
+                      required
+                      className={styles.slct}
+                      onChange={(e) => setCategory(e.target.value)}
+                      value={category}
+                    >
+                      <option value=''>Filter by Business name</option>
+                      {categoryList.map((category) => (
+                        <option key={category.name} value={category._id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+                    Clear Filters
+                  </Button>
+                </>
+              )}
             </form>
           </>
         )}
@@ -317,11 +398,11 @@ const Page = () => {
                   <TableCell><b style={{ fontSize: "1.5rem" }}>Name</b></TableCell>
                   <TableCell><b style={{ fontSize: "1.5rem" }}>Stock</b></TableCell>
                   <TableCell><b style={{ fontSize: "1.5rem" }}>Price</b></TableCell>
-                  {role === '2' || role === '1' && (
+                  {role === '1' || role === '2' ? (
                     <>
                       <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
                     </>
-                  )}
+                  ) : null}
                 </TableRow>
               </TableHead>
               {productList.map((product, index) => (
@@ -333,7 +414,7 @@ const Page = () => {
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.stocks}</TableCell>
                   <TableCell>{formatPriceX(product.price)}</TableCell>
-                  {role === '2' || role === '1' && (
+                  {role === '1' || role === '2' ? (
                     <TableCell>
                       <DeleteIcon
                         style={{ color: 'red', cursor: 'pointer' }}
@@ -343,7 +424,7 @@ const Page = () => {
                         }}
                       />
                     </TableCell>
-                  )}
+                  ) : null}
                 </TableRow>
               ))}
             </Table>

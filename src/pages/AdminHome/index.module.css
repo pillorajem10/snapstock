@@ -1,3 +1,8 @@
+.searchForm {
+  margin-top: 2rem;
+  margin-left: 1rem;
+}
+
 .upperForm {
   display: flex;
   align-items: center;
@@ -6,11 +11,6 @@
 }
 
 .searchForm1 {
-  margin-left: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 2rem;
   margin-left: 1rem;
 }
 
@@ -31,19 +31,4 @@
   background-color: white;
   color: black;
   transition: .5s;
-}
-
-.slct {
-  width: 13rem;
-  border-color: #C1C1C1;
-  border-radius: 4px;
-  height: 2.5rem;
-}
-
-.searchForm {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 2rem;
-    margin-left: 1rem;
 }

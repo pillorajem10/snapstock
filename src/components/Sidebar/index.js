@@ -343,7 +343,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           </>
         )}
 
-        {/* SIDEBAR MANAGER ROLE */}
+        {/* SIDEBAR EMPLOYEE ROLE */}
         {role === '0' && (
           <>
             <div className={styles.introContainer}>
@@ -362,6 +362,38 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
             <div className={styles.listings}>
               <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> All Orders</Link>
+            </div>
+            <div className={styles.listings} onClick={handleSignOut}>
+              <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
+            </div>
+          </>
+        )}
+
+        {/* SIDEBAR WEBSITE ADMIN ROLE */}
+        {role === '3' && (
+          <>
+            <div className={styles.introContainer}>
+              <Badge badgeContent={unreadCount} color="primary">
+                <AccountCircle sx={{ fontSize: 50 }} onClick={handleAccountCircleClick} />
+              </Badge>
+              <div onClick={goToMyprofile}>
+                <div className={styles.introName}>Hello, {accountDeets.fname}</div>
+              </div>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/admin' onClick={onClose}><Home sx={{ marginRight: 3 }} />Home</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/viewinvt' onClick={onClose}><ShoppingCart sx={{ marginRight: 3 }} /> Manage Products</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/viewallorders' onClick={onClose}><ListAlt sx={{ marginRight: 3 }} /> Manage Orders</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/deliveries' onClick={onClose}><AddBox sx={{ marginRight: 3 }} /> Manage Deliveries</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/users' onClick={onClose}><People sx={{ marginRight: 3 }} /> Manage Users</Link>
             </div>
             <div className={styles.listings} onClick={handleSignOut}>
               <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>

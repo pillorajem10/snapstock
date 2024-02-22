@@ -1,8 +1,26 @@
 //api
-import { fetchCategory, updateCategoryById } from '../../../services/api/category';
+import { fetchCategory, updateCategoryById, fetchCategoriesByParams } from '../../../services/api/category';
 
 //types
 import * as types from '../types';
+
+export const getCategories = (payload) => (dispatch) => {
+  return fetchCategoriesByParams(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.CATEGORY_LIST_SUCCESS,
+        payload: res.data.docs,
+      });
+    } else {
+      dispatch({
+        type: types.CATEGORY_LIST_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
 
 export const getCategory = (payload) => (dispatch) => {
   // console.log("DITO YON")

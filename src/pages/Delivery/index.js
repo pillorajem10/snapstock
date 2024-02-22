@@ -305,7 +305,7 @@ const Page = () => {
          </Button>
        </DialogActions>
       </Dialog>
-      <AddDeliveryForm/>
+      {role !== '3' && <AddDeliveryForm/>}
       <div className={styles.upperForm}>
         <form className={styles.searchForm}>
           <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setProductName(e.target.value)} placeholder="Search deliveries by product name" size="small"/>

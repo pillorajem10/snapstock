@@ -86,15 +86,14 @@ const AddUserSection = ({ onClose }) => {
         } else {
           setOpenErrorSnackbar(true);
 
+
           // Check if 'data' is defined in the response
-          if (res.data) {
+          if (res) {
             // Log the error message or handle it appropriately
-            console.error('Error:', res.data);
-            setErrMsg(res.data);
+            setErrMsg(res.payload);
           } else {
             // Handle the case where 'data' is undefined
-            console.error('Error: Response data is undefined');
-            setErrMsg('An unexpected error occurred.');
+            setErrMsg(res.payload);
           }
         }
       })

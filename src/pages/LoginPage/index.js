@@ -68,10 +68,16 @@ const Page = () => {
 
   useEffect(() => {
     const token = Cookies.get('token'); // Check local storage for the token
+    const role = Cookies.get('role');
 
     if (token) {
       // If there's no token, redirect to the login page or any other route
       navigate('/home');
+      if (role === '3') {
+        navigate('/admin');
+      } else {
+        navigate('/home');
+      }
     }
   }, [navigate]);
 

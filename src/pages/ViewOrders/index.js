@@ -77,6 +77,7 @@ const Page = () => {
 
 
   const category = Cookies.get('category');
+  const role = Cookies.get('role');
 
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
@@ -153,6 +154,10 @@ const Page = () => {
   };
 
   useEffect(() =>{
+    if (role === '3') {
+      navigate('/admin');
+    }
+    
     handleOrderList();
   },[handleOrderList])
 

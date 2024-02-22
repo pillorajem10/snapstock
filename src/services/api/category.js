@@ -19,7 +19,7 @@ export async function fetchCategoryByParams() {
  }
 
 
-export async function fetchCategoryByParams(payload) {
+export async function fetchCategoriesByParams(payload) {
   const params = methods.convertQueryString(payload);
   return GET(`/category?${params}`);
 }

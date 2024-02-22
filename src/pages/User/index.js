@@ -103,7 +103,7 @@ const Page = () => {
 
 
   useEffect(() =>{
-    if (role !== '1') {
+    if (role !== '1' && role !== '3') {
       navigate('/home');
     }
 
