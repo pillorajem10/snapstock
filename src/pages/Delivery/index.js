@@ -1,5 +1,5 @@
 //REACT
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -60,7 +60,7 @@ const Page = () => {
     ui: { loading },
   } = useSelector((state) => state.common);
   const role = Cookies.get('role');
-  const category = Cookies.get('category');
+  // const category = Cookies.get('category');
   const daysArray = Array.from({ length: 31 }, (_, index) => index + 1);
   const currentYear = new Date().getFullYear();
   const yearsArray = Array.from({ length: currentYear - 1999 + 1 }, (_, index) => 1999 + index);
@@ -68,6 +68,7 @@ const Page = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const selectRef = useRef(null);
 
  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://snapstock.site/api';
 
@@ -83,6 +84,8 @@ const Page = () => {
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [errMsg, setErrMsg] = useState('');
+  const [categoryList, setCategoryList] = useState([]);
+  const [category, setCategory] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -102,6 +105,12 @@ const Page = () => {
 
   const handleDeliveryList = useCallback(
   (pageIndex = 1) => {
+    let selectedCategory = category;
+
+    if (role !== '3') {
+      selectedCategory = Cookies.get('category');
+    }
+
     const payload = {
       pageIndex,
       pageSize,
@@ -109,7 +118,7 @@ const Page = () => {
       monthDelivered,
       dateDelivered,
       yearDelivered,
-      category
+      category: selectedCategory,
     }
 
     dispatch(common.ui.setLoading());
@@ -131,7 +140,7 @@ const Page = () => {
         dispatch(common.ui.clearLoading());
       });
   },
-  [dispatch, productName, pageSize, monthDelivered, dateDelivered, yearDelivered],
+  [dispatch, productName, pageSize, monthDelivered, dateDelivered, yearDelivered, category]
 );
 
 
@@ -165,6 +174,9 @@ const Page = () => {
     setMonthDelivered('');
     setDateDelivered('');
     setYearDelivered('');
+    setProductName('');
+    setCategory('');
+    selectRef.current.value = '';
   };
 
   const handleDownloadPDF = () => {
@@ -279,7 +291,26 @@ const Page = () => {
     setDeleteDeliveryId(null);
   };
 
+  const handleCategoryList = useCallback(
+    () => {
+      const payload = {
+        pageIndex: 1,
+        pageSize: 100,
+      }
+      dispatch(jkai.category.getCategories(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setCategoryList(data.docs);
+          }
+        })
+    },
+    [dispatch],
+  );
 
+  useEffect(() => {
+    handleCategoryList();
+  }, [handleCategoryList])
 
   return (
     <>
@@ -368,12 +399,34 @@ const Page = () => {
         </Button>
       </div>
       <div className={styles.reportButtons}>
+        { role === '3' && (
+          <>
+            <div className={styles.inputField}>
+              <select
+                ref={selectRef}
+                required
+                className={styles.slct}
+                onChange={(e) => setCategory(e.target.value)}
+                value={category}
+              >
+                <option value=''>Filter by Business name</option>
+                {categoryList.map((category) => (
+                  <option key={category.name} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
+        )}
         <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
           Generate Re-stocking Report PDF
         </Button>
         <Button onClick={handleDownloadExcel} variant="contained" color="primary">
           Generate Re-stocking Report Excel
         </Button>
+      </div>
+      <div>
       </div>
       {loading ? <LoadingSpinner/> :
       <div>

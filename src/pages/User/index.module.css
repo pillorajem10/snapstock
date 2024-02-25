@@ -35,3 +35,17 @@
 .addUserButton {
   margin-left: 10px; /* Adjust the margin as needed */
 }
+
+.searchForm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 2rem;
+    margin-left: 1rem;
+}
+.slct {
+  width: 13rem;
+  border-color: #C1C1C1;
+  border-radius: 4px;
+  height: 2.5rem;
+}

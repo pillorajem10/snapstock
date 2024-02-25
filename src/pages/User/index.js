@@ -1,5 +1,5 @@
 //REACT
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -56,6 +56,8 @@ const Page = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const role = Cookies.get('role');
+  const selectRef = useRef(null);
 
   const [userList, setUserList] = useState([]);
   const [pageDetails, setPageDetails] = useState(null);
@@ -66,18 +68,25 @@ const Page = () => {
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const [successMessage, setSuccessMessage] = useState('')
+  const [categoryList, setCategoryList] = useState([]);
+  const [category, setCategory] = useState('');
   const [pageSize] = useState(7);
 
-  const category = Cookies.get('category');
-  const role = Cookies.get('role');
+  // const category = Cookies.get('category');
 
   const handleUserList = useCallback(
   (pageIndex = 1) => {
+    let selectedCategory = category;
+
+    if (role !== '3') {
+      selectedCategory = Cookies.get('category');
+    }
+
     const payload = {
       pageIndex,
       pageSize,
       username,
-      category
+      category: selectedCategory,
     };
 
     dispatch(common.ui.setLoading());
@@ -98,7 +107,7 @@ const Page = () => {
         dispatch(common.ui.clearLoading());
       });
   },
-  [dispatch, pageSize, username],
+  [dispatch, pageSize, username, category]
 );
 
 
@@ -170,6 +179,33 @@ const Page = () => {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
+  const handleCategoryList = useCallback(
+    () => {
+      const payload = {
+        pageIndex: 1,
+        pageSize: 100,
+      }
+      dispatch(jkai.category.getCategories(payload))
+        .then((res) => {
+          const { success, data } = res;
+          if (success) {
+            setCategoryList(data.docs);
+          }
+        })
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    handleCategoryList();
+  }, [handleCategoryList])
+
+  const handleClearFilters = () => {
+    setUsername('');
+    setCategory('');
+    selectRef.current.value = '';
+  };
+
   return (
     <>
       <Dialog open={!!deleteUserId} onClose={handleDeleteCancel}>
@@ -195,9 +231,32 @@ const Page = () => {
         </Alert>
       </Snackbar>
       <div className={styles.header}>
-        <form className={styles.searchForm}>
+        <div className={styles.searchForm}>
           <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>
-        </form>
+          { role === '3' && (
+            <>
+              <div className={styles.inputField}>
+                <select
+                  ref={selectRef}
+                  required
+                  className={styles.slct}
+                  onChange={(e) => setCategory(e.target.value)}
+                  value={category}
+                >
+                  <option value=''>Filter by Business name</option>
+                  {categoryList.map((category) => (
+                    <option key={category.name} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+                Clear Filters
+              </Button>
+            </>
+          )}
+        </div>
         <Button
           variant="contained"
           color="primary"
@@ -252,6 +311,8 @@ const Page = () => {
                         ? "Manager"
                         : user.role === 0
                         ? "Employee"
+                        : user.role === 3
+                        ? "Website Admin"
                         : null}
                     </TableCell>
                     <TableCell>

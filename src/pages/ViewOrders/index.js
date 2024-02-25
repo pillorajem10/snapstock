@@ -157,7 +157,7 @@ const Page = () => {
     if (role === '3') {
       navigate('/admin');
     }
-    
+
     handleOrderList();
   },[handleOrderList])
 
