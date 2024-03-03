@@ -1,7 +1,7 @@
 // utils
 import * as methods from '../../utils/methods';
 
-import { GET, POST, PUT } from '../request';
+import { GET, POST, PUT, DELETE } from '../request';
 
 /*
 export async function fetchCategoryByParams() {
@@ -35,7 +35,9 @@ export async function updateCategoryById(payload) {
   return PUT(`/category/${id}`, payload);
 }
 
-
+export async function deleteCategoryById(payload) {
+  return DELETE(`/category/${payload}`);
+}
 
 /*
  * fetch gemstones by id

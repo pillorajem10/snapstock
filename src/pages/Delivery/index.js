@@ -229,7 +229,7 @@ const Page = () => {
 
     dispatch(common.ui.setLoading());
 
-    fetch(`${baseUrl}/order/report/generateexcel`, {
+    fetch(`${baseUrl}/delivery/report/generateexcel`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -62,6 +62,7 @@ const Page = () => {
       const payload = {
         pageIndex: 1,
         pageSize: 100,
+        category,
       }
       dispatch(jkai.product.getProductsByParams(payload))
         .then((res) => {

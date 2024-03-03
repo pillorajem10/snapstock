@@ -257,14 +257,16 @@ const Page = () => {
             </>
           )}
         </div>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpenAddUserModal}
-          className={styles.addUserButton}
-        >
-          Add User
-        </Button>
+        { role !== '3' &&
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenAddUserModal}
+            className={styles.addUserButton}
+          >
+            Add User
+          </Button>
+        }
       </div>
 
       {/* Add User Modal */}

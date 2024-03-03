@@ -121,7 +121,7 @@ const Page = () => {
     try {
       dispatch(common.ui.setLoading());
 
-      const res = await dispatch(jkai.product.removeProduct(deleteUserId));
+      const res = await dispatch(jkai.category.removeCategory(deleteUserId));
 
       if (res.success) {
         console.log('SUCCESSSSSSSSSSSSSSSS')

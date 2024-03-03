@@ -1,5 +1,5 @@
 //api
-import { fetchCategory, updateCategoryById, fetchCategoriesByParams } from '../../../services/api/category';
+import { fetchCategory, updateCategoryById, fetchCategoriesByParams, deleteCategoryById } from '../../../services/api/category';
 
 //types
 import * as types from '../types';
@@ -65,4 +65,22 @@ export const updateCategory = (payload) => async (dispatch) => {
       payload: err.response.data.msg,
     });
   }
+};
+
+export const removeCategory = (payload) => (dispatch) => {
+  return deleteCategoryById(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.CATEGORY_DELETE_SUCCESS,
+        payload: res.data,
+      });
+    } else {
+      dispatch({
+        type: types.CATEGORY_DELETE_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
 };

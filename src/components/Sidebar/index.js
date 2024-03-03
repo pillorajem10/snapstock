@@ -145,7 +145,6 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     socket.on("notify", ({ token, message }) => {
-      console.log('NOTIFICATION SENT!!!!', token);
 
       const updatedNotifications = [...notifications, message];
       setNotifications(updatedNotifications);
@@ -156,6 +155,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       if (token !== storedToken) {
         sound.play();
       }
+
 
       // Show desktop notification
 
