@@ -85,6 +85,37 @@ const Page = () => {
   const dateOrdered = +fomattedDateNow.split('/')[1];
   const yearOrdered = +fomattedDateNow.split('/')[2];
 
+  const filteredCreditArray = orderList && orderList.filter(order => order.credit === "false" || order.credit === false);
+
+  const saleDate = `${monthOrdered}/${dateOrdered}/${yearOrdered}`
+  const priceOfTheDay = filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0);
+
+  const handleAddSale = () => {
+
+    const payload = {
+      date: saleDate,
+      price: priceOfTheDay,
+      category
+    }
+
+    dispatch(jkai.sale.addSale(payload));
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentTime = new Date();
+      const manilaTime = new Date(currentTime.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+
+      // Check if the time is 12:00 AM
+      if (manilaTime.getHours() === 11 && manilaTime.getMinutes() === 59 && manilaTime.getSeconds() === 55) {
+        handleAddSale();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
   const handleOrderList = useCallback(
   (pageIndex = 1) => {
     const payload = {
@@ -166,7 +197,6 @@ const Page = () => {
     handleOrderList(value);
   };
 
-  const filteredCreditArray = orderList && orderList.filter(order => order.credit === "false" || order.credit === false);
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -357,7 +387,7 @@ const Page = () => {
               <TableRow style={{ marginTop: "1rem" }}>
                 <TableCell>
                   <b style={{ fontSize: "1.5rem" }}>
-                    Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0))}</span>
+                    Total for the day: <span style={{ color: "#39CD35" }}>{formatPriceX(priceOfTheDay)}</span>
                   </b>
                 </TableCell>
               </TableRow>

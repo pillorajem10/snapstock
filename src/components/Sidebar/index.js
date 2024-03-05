@@ -51,7 +51,8 @@ import {
   AddBox,
   AccountCircle,
   People,
-  ExitToApp
+  ExitToApp,
+  BarChart
 } from '@mui/icons-material';
 
 
@@ -308,6 +309,9 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className={styles.listings}>
               <Link to='/users' onClick={onClose}><People sx={{ marginRight: 3 }} /> Users</Link>
             </div>
+            <div className={styles.listings}>
+              <Link to='/sales' onClick={onClose}><BarChart sx={{ marginRight: 3 }} /> Sales</Link>
+            </div>
             <div className={styles.listings} onClick={handleSignOut}>
               <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>
             </div>
@@ -336,6 +340,9 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
             <div className={styles.listings}>
               <Link to='/deliveries' onClick={onClose}><AddBox sx={{ marginRight: 3 }} /> Add Stocks</Link>
+            </div>
+            <div className={styles.listings}>
+              <Link to='/sales' onClick={onClose}><BarChart sx={{ marginRight: 3 }} /> Sales</Link>
             </div>
             <div className={styles.listings} onClick={handleSignOut}>
               <Link><ExitToApp sx={{ marginRight: 3 }} />Sign Out</Link>

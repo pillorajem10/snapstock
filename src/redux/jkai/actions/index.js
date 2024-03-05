@@ -4,6 +4,7 @@ import * as delivery from './delivery';
 import * as user from './user';
 import * as category from './category';
 import * as notification from './notification';
+import * as sale from './sale';
 
 export {
   product,
@@ -11,5 +12,6 @@ export {
   delivery,
   user,
   category,
-  notification
+  notification,
+  sale
 };

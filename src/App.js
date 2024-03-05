@@ -29,6 +29,7 @@ import Services from './pages/Services';
 import ForgotPassword from './pages/ForgotPassword';
 import Changepassword from './pages/Changepassword';
 import ContactUs from './pages/ContactUs';
+import Sales from './pages/Sales';
 
 // ADMIN PAGES
 import AdminHome from './pages/AdminHome';
@@ -70,6 +71,7 @@ function App() {
               <Route path="/delivery/:id" element={<AuthRouter><DeliveryDeets/></AuthRouter>} />
               <Route path="/home" element={<AuthRouter><ViewOrders/></AuthRouter>} />
               <Route path="/users" element={<AuthRouter><User/></AuthRouter>} />
+              <Route path="/sales" element={<AuthRouter><Sales/></AuthRouter>} />
               <Route path="/user/:id" element={<AuthRouter><UserDeets/></AuthRouter>} />
               <Route path="/viewallorders" element={<AuthRouter><ViewAllOrders/></AuthRouter>} />
               <Route path="/verify/:token" element={<AuthRouter><VerifyingPage/></AuthRouter>} />

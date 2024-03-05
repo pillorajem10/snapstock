@@ -1,0 +1,51 @@
+.searchForm {
+  margin-top: 2rem;
+  margin-left: 1rem;
+}
+
+.btn {
+  margin-left: 1rem;
+  height: 2.5rem;
+  width: 8rem;
+  border: none;
+  border-radius: 8px;
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border: solid;
+  background-color: white;
+  color: black;
+  transition: .5s;
+}
+
+
+/* Add styles to align the header items */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+/* Add styles for the "Add User" button */
+.addUserButton {
+  margin-left: 10px; /* Adjust the margin as needed */
+}
+
+.searchForm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 2rem;
+    margin-left: 1rem;
+}
+.slct {
+  width: 13rem;
+  border-color: #C1C1C1;
+  border-radius: 4px;
+  height: 2.5rem;
+}
