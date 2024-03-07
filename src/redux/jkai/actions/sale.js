@@ -40,6 +40,24 @@ export const addSale = (payload) => (dispatch) => {
   });
 };
 
+export const removeSale = (payload) => (dispatch) => {
+  return deleteSaleById(payload).then((res) => {
+    if (res.success) {
+      dispatch({
+        type: types.SALE_DELETE_SUCCESS,
+        payload: res.data,
+      });
+    } else {
+      dispatch({
+        type: types.SALE_DELETE_FAIL,
+        payload: res.msg,
+      });
+    }
+
+    return res;
+  });
+};
+
 /*
 export const getSale = (payload) => (dispatch) => {
   // console.log("DITO YON")
