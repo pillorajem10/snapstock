@@ -91,7 +91,7 @@ const Page = () => {
   const priceOfTheDay = filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0);
 
   const handleAddSale = () => {
-
+    console.log('time detected sale added');
     const payload = {
       date: saleDate,
       price: priceOfTheDay,
@@ -107,7 +107,10 @@ const Page = () => {
       const manilaTime = new Date(currentTime.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
 
       // Check if the time is 12:00 AM
-      if (manilaTime.getHours() === 14 && manilaTime.getMinutes() === 43 && manilaTime.getSeconds() === 30) {
+
+      console.log('time', manilaTime)
+      if (manilaTime.getHours() === 14 && manilaTime.getMinutes() === 53 && manilaTime.getSeconds() === 0) {
+        console.log('time to add some sale');
         handleAddSale();
       }
     }, 1000);
