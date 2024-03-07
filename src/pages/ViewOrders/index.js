@@ -90,7 +90,7 @@ const Page = () => {
   const saleDate = `${monthOrdered}/${dateOrdered}/${yearOrdered}`
   const priceOfTheDay = filteredCreditArray.reduce((a, c) => c.totalPrice + a, 0);
 
-  const handleAddSale = () => {
+  /*const handleAddSale = () => {
     console.log('time detected sale added');
     const payload = {
       date: saleDate,
@@ -99,7 +99,36 @@ const Page = () => {
     }
 
     dispatch(jkai.sale.addSale(payload));
-  }
+  }*/
+
+  const handleAddSale = async () => {
+    const payload = {
+      date: saleDate,
+      price: priceOfTheDay,
+      category
+    }
+
+    try {
+      dispatch(common.ui.setLoading());
+
+      const res = await dispatch(jkai.sale.addSale(payload));
+
+      if (res.success) {
+        console.log('SUCCESSSSSSSSSSSSSSSS')
+        setOpenSuccessSnackbar(true);
+        setSuccessMessage(res.msg);
+      } else {
+        setOpenErrorSnackbar(true);
+      }
+    } catch (error) {
+      console.error('Error during delete:', error);
+      setOpenSuccessSnackbar(true);
+    } finally {
+      setDeleteOrderId(null);
+      dispatch(common.ui.clearLoading());
+      handleOrderList(); // Refresh the order list after deletion
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -109,7 +138,7 @@ const Page = () => {
       // Check if the time is 12:00 AM
 
       console.log('time', manilaTime)
-      if (manilaTime.getHours() === 14 && manilaTime.getMinutes() === 53 && manilaTime.getSeconds() === 0) {
+      if (manilaTime.getHours() === 15 && manilaTime.getMinutes() === 40 && manilaTime.getSeconds() === 0) {
         console.log('time to add some sale');
         handleAddSale();
       }
@@ -342,8 +371,11 @@ const Page = () => {
           <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">
             Generate Orders Report PDF
           </Button>
-          <Button onClick={handleDownloadExcel} variant="contained" color="primary">
+          <Button style={{marginRight: 20}}  onClick={handleDownloadExcel} variant="contained" color="primary">
             Generate Orders Report Excel
+          </Button>
+          <Button onClick={handleAddSale} variant="contained" color="primary">
+            Add Sales report
           </Button>
         </div>
       </div>
