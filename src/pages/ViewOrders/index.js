@@ -107,7 +107,7 @@ const Page = () => {
       const manilaTime = new Date(currentTime.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
 
       // Check if the time is 12:00 AM
-      if (manilaTime.getHours() === 11 && manilaTime.getMinutes() === 59 && manilaTime.getSeconds() === 55) {
+      if (manilaTime.getHours() === 14 && manilaTime.getMinutes() === 43 && manilaTime.getSeconds() === 30) {
         handleAddSale();
       }
     }, 1000);
