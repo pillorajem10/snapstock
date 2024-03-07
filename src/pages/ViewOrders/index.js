@@ -130,7 +130,7 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     const interval = setInterval(() => {
       const currentTime = new Date();
       const manilaTime = new Date(currentTime.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
@@ -145,7 +145,7 @@ const Page = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, []);*/
 
 
   const handleOrderList = useCallback(
@@ -374,7 +374,7 @@ const Page = () => {
           <Button style={{marginRight: 20}}  onClick={handleDownloadExcel} variant="contained" color="primary">
             Generate Orders Report Excel
           </Button>
-          <Button onClick={handleAddSale} variant="contained" color="primary">
+          <Button onClick={handleAddSale} variant="contained" color="secondary">
             Add Sales report
           </Button>
         </div>

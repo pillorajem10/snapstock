@@ -48,7 +48,7 @@ import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpin
 import BarChart from '../../components/BarChart'; // Import the LoadingSpinner component
 
 const Page = () => {
-  const { error } = useSelector(state => state.jkai.user);
+  // const { error } = useSelector(state => state.jkai.user);
   const {
     ui: { loading },
   } = useSelector((state) => state.common);
@@ -165,7 +165,7 @@ const Page = () => {
     try {
       dispatch(common.ui.setLoading());
 
-      const res = await dispatch(jkai.user.removeUser(deleteUserId));
+      const res = await dispatch(jkai.sale.removeSale(deleteUserId));
 
       if (res.success) {
         console.log('SUCCESSSSSSSSSSSSSSSS')
@@ -230,7 +230,7 @@ const Page = () => {
       <Dialog open={!!deleteUserId} onClose={handleDeleteCancel}>
        <DialogTitle>Confirm Deletion</DialogTitle>
        <DialogContent>
-         Are you sure you want to delete this user?
+         Are you sure you want to delete this sale?
        </DialogContent>
        <DialogActions>
          <Button onClick={handleDeleteCancel}>Cancel</Button>
@@ -249,7 +249,16 @@ const Page = () => {
           {errMsg}
         </Alert>
       </Snackbar>
-      {/*<div className={styles.header}>
+      <div style={{ width: 850 }}>
+        {
+          chartDate && Object.keys(chartDate).length !== 0 ? (
+            <BarChart chartData={chartDate} />
+          ) : (
+            null
+          )
+        }
+      </div>
+      <div className={styles.header}>
         <div className={styles.searchForm}>
           <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>
           { role === '3' && (
@@ -276,17 +285,17 @@ const Page = () => {
             </>
           )}
         </div>
-      </div>*/}
+      </div>
 
       {loading ? <LoadingSpinner /> :
         <div>
-          {/*<TableContainer style = {{ display: loading && 'none' }} component={Paper}>
+          <TableContainer style = {{ display: loading && 'none' }} component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow style={{ marginTop:"1rem" }} >
                   <TableCell><b style={{ fontSize: "1.5rem" }}>Date</b></TableCell>
                   <TableCell><b style={{ fontSize: "1.5rem" }}>Sale</b></TableCell>
-                  {/*<TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
+                  <TableCell><b style={{ fontSize: "1.5rem" }}>Action</b></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -297,12 +306,12 @@ const Page = () => {
                   >
                     <TableCell>{sale.date}</TableCell>
                     <TableCell>{formatPriceX(sale.price)}</TableCell>
-                    {/*<TableCell>
+                    <TableCell>
                       <DeleteIcon
                         style={{ color: 'red', cursor: 'pointer' }}
                         onClick={(e) => {
                           e.stopPropagation(); // Prevent row click event from triggering
-                          handleDeleteClick(user._id);
+                          handleDeleteClick(sale._id);
                         }}
                       />
                     </TableCell>
@@ -310,9 +319,9 @@ const Page = () => {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>*/}
+          </TableContainer>
 
-          {/*<Pagination
+          <Pagination
             style = {{ display: loading && 'none', marginTop: "1rem" }}
             count={pageDetails && pageDetails.totalPages}
             page={pageDetails && pageDetails.pageIndex}
@@ -320,16 +329,7 @@ const Page = () => {
             color="primary"
             size="large"
             onChange={handleChangePageIndex}
-          />*/}
-          <div style={{ width: 1000 }}>
-            {
-              chartDate && Object.keys(chartDate).length !== 0 ? (
-                <BarChart chartData={chartDate} />
-              ) : (
-                null
-              )
-            }
-          </div>
+          />
         </div>
       }
     </>
