@@ -40,7 +40,7 @@ import AddOrderForm from './sections/AddOrder';
 import styles from './index.module.css';
 
 //UTILS
-import { formatPriceX, formatPriceY, convertMomentWithFormat } from '../../utils/methods'
+import { formatPriceX, formatPriceY, convertMomentWithFormat, convertMomentWithFormatWhole } from '../../utils/methods'
 
 // LoadingSpinner
 import LoadingSpinner from '../../components/Loading'; // Import the LoadingSpinner component
@@ -80,6 +80,7 @@ const Page = () => {
   const role = Cookies.get('role');
 
   const fomattedDateNow = convertMomentWithFormat(Date.now());
+  const formattedDateNowWhole = convertMomentWithFormatWhole(Date.now());
 
   const monthOrdered = +fomattedDateNow.split('/')[0];
   const dateOrdered = +fomattedDateNow.split('/')[1];
@@ -103,7 +104,7 @@ const Page = () => {
 
   const handleAddSale = async () => {
     const payload = {
-      date: saleDate,
+      date: formattedDateNowWhole,
       price: priceOfTheDay,
       category
     }

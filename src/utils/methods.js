@@ -50,6 +50,10 @@ export const evalBoolean = (params) => {
    return moment(v).format('MM/DD/YYYY');
  };
 
+ export const convertMomentWithFormatWhole = (v) => {
+   return moment(v).format('MMMM DD, YYYY');
+ };
+
  export const evaluateBooleanFields = (v) => {
    const evalObj = v;
    Object.keys(evalObj).map(fld => {
