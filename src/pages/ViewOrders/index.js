@@ -362,7 +362,7 @@ const Page = () => {
       <div className={styles.upperForm}>
         <form className={styles.searchForm}>
           <TextField
-            style={{ width: "20rem", border: "double", borderRadius: "16px" }}
+            style={{ width: "20rem" }}
             onChange={(e) => setCustomerName(e.target.value)}
             placeholder="Search orders by customer name"
             size="small"
@@ -375,7 +375,7 @@ const Page = () => {
           <Button style={{marginRight: 20}}  onClick={handleDownloadExcel} variant="contained" color="primary">
             Generate Orders Report Excel
           </Button>
-          <Button onClick={handleAddSale} variant="contained" color="secondary">
+          <Button style={{marginRight: 20}} onClick={handleAddSale} variant="contained" color="secondary">
             Add Sales report
           </Button>
         </div>

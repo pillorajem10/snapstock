@@ -74,7 +74,7 @@ const Page = () => {
   const role = Cookies.get('role');
   const fomattedDateNow = convertMomentWithFormat(Date.now());
   const selectRef = useRef(null);
-  
+
   const handleProductList = useCallback(
   (pageIndex = 1) => {
     let selectedCategory = category;
@@ -323,7 +323,7 @@ const Page = () => {
         { (role === '2' || role === '1') ? (
           <>
             <div className={styles.searchForm}>
-              <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
+              <TextField style={{ width: "20rem" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
               { role === '3' && (
                 <>
                   <div className={styles.inputField}>
@@ -352,7 +352,7 @@ const Page = () => {
         ) : (
           <>
             <form className={styles.searchForm1}>
-              <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
+              <TextField style={{ width: "20rem" }} onChange={(e) => setName(e.target.value)} placeholder="Search for product" size="small" />
               { role === '3' && (
                 <>
                   <div className={styles.inputField}>

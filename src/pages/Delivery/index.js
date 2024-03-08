@@ -339,64 +339,66 @@ const Page = () => {
       {role !== '3' && <AddDeliveryForm/>}
       <div className={styles.upperForm}>
         <form className={styles.searchForm}>
-          <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setProductName(e.target.value)} placeholder="Search deliveries by product name" size="small"/>
+          <TextField style={{width: "20rem"}} onChange={(e) => setProductName(e.target.value)} placeholder="Search deliveries by product name" size="small"/>
           {/*<button className={styles.btn} type="submit">Search</button>*/}
         </form>
-        <FormControl style={{ width: 250 }}>
-          <InputLabel id="monthLabel">Month</InputLabel>
-          <Select
-            labelId="monthLabel"
-            id="month"
-            value={monthDelivered}
-            onChange={handleChangeMonth}
-          >
-            <MenuItem value={1}>January</MenuItem>
-            <MenuItem value={2}>February</MenuItem>
-            <MenuItem value={3}>March</MenuItem>
-            <MenuItem value={4}>April</MenuItem>
-            <MenuItem value={5}>May</MenuItem>
-            <MenuItem value={6}>June</MenuItem>
-            <MenuItem value={7}>July</MenuItem>
-            <MenuItem value={8}>August</MenuItem>
-            <MenuItem value={9}>September</MenuItem>
-            <MenuItem value={10}>October</MenuItem>
-            <MenuItem value={11}>November</MenuItem>
-            <MenuItem value={12}>December</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl style={{ width: 250 }}>
-          <InputLabel id="dayLabel">Day</InputLabel>
-          <Select
-            labelId="dayLabel"
-            id="day"
-            value={dateDelivered}
-            onChange={handleChangeDay}
-          >
-            {daysArray.map((day) => (
-              <MenuItem key={day} value={day}>
-                {day}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl style={{ width: 250 }}>
-          <InputLabel id="yearLabel">Year</InputLabel>
-          <Select
-            labelId="yearLabel"
-            id="year"
-            value={yearDelivered}
-            onChange={handleChangeYear}
-          >
-            {yearsArray.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
-          Clear Filters
-        </Button>
+        <div>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="monthLabel">Month</InputLabel>
+            <Select
+              labelId="monthLabel"
+              id="month"
+              value={monthDelivered}
+              onChange={handleChangeMonth}
+            >
+              <MenuItem value={1}>January</MenuItem>
+              <MenuItem value={2}>February</MenuItem>
+              <MenuItem value={3}>March</MenuItem>
+              <MenuItem value={4}>April</MenuItem>
+              <MenuItem value={5}>May</MenuItem>
+              <MenuItem value={6}>June</MenuItem>
+              <MenuItem value={7}>July</MenuItem>
+              <MenuItem value={8}>August</MenuItem>
+              <MenuItem value={9}>September</MenuItem>
+              <MenuItem value={10}>October</MenuItem>
+              <MenuItem value={11}>November</MenuItem>
+              <MenuItem value={12}>December</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="dayLabel">Day</InputLabel>
+            <Select
+              labelId="dayLabel"
+              id="day"
+              value={dateDelivered}
+              onChange={handleChangeDay}
+            >
+              {daysArray.map((day) => (
+                <MenuItem key={day} value={day}>
+                  {day}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="yearLabel">Year</InputLabel>
+            <Select
+              labelId="yearLabel"
+              id="year"
+              value={yearDelivered}
+              onChange={handleChangeYear}
+            >
+              {yearsArray.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+            Clear Filters
+          </Button>
+        </div>
       </div>
       <div className={styles.reportButtons}>
         { role === '3' && (
