@@ -29,8 +29,6 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import MuiAlert from '@mui/material/Alert';
 
-// sectiions
-import AddProductForm from './sections/AddProduct';
 
 //REACT ROUTER SHIT
 import { useNavigate } from 'react-router-dom';
@@ -269,7 +267,7 @@ const Page = () => {
 
       <div className={styles.upperForm}>
         <form className={styles.searchForm1}>
-          <TextField style={{ width: "20rem", border: "double", borderRadius: "16px" }} onChange={(e) => setName(e.target.value)} placeholder="Search for category" size="small" />
+          <TextField style={{ width: "20rem"}} onChange={(e) => setName(e.target.value)} placeholder="Search for category" size="small" />
         </form>
         {/*<div className={styles.reportButtons}>
           <Button style={{marginRight: 20}} onClick={handleDownloadPDF} variant="outlined" color="primary">

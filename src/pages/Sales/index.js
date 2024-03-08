@@ -260,7 +260,7 @@ const Page = () => {
       </div>
       <div className={styles.header}>
         <div className={styles.searchForm}>
-          <TextField style={{width: "20rem", border: "double", borderRadius: "16px"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>
+          <TextField style={{width: "20rem"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>
           { role === '3' && (
             <>
               <div className={styles.inputField}>
