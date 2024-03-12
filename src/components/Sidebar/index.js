@@ -65,7 +65,7 @@ import styles from './index.module.css';
 
 // NOTIFICATION SOUND
 import notificationSound from './notifSound.mp3';
-import snapLogo from './snapstocklogo.png';
+import snapLogo from './snapstocklogo1.png';
 import { Howl, Howler } from 'howler';
 
 
