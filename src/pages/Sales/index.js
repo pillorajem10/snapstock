@@ -106,7 +106,7 @@ const Page = () => {
             labels: data.docs.map((data, index) => data.date),
             datasets: [
               {
-                label: "Sales Comparison",
+                label: "Sales",
                 data: data.docs.map((data) => data.price),
                 backgroundColor: [
                   "rgba(75,192,192,1)",
