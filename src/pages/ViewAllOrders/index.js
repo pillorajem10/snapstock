@@ -18,6 +18,10 @@ import {
   TableContainer,
   TableHead,
   TextField,
+  FormControl,
+  MenuItem,
+  Select,
+  InputLabel,
   TableRow,
   Paper,
   CircularProgress,
@@ -55,16 +59,23 @@ const Page = () => {
   const [category, setCategory] = useState('');
   const [pageSize] = useState(7);
 
+  const [monthOrdered, setMonthOrdered] = useState('');
+  const [dateOrdered, setDateOrdered] = useState('');
+  const [yearOrdered, setYearOrdered] = useState('');
+
 
   // const category = Cookies.get('category');
   const role = Cookies.get('role');
 
   const selectRef = useRef(null);
+  const daysArray = Array.from({ length: 31 }, (_, index) => index + 1);
+  const currentYear = new Date().getFullYear();
+  const yearsArray = Array.from({ length: currentYear - 1999 + 1 }, (_, index) => 1999 + index);
   const fomattedDateNow = convertMomentWithFormat(Date.now());
 
-  const monthOrdered = +fomattedDateNow.split('/')[0];
-  const dateOrdered = +fomattedDateNow.split('/')[1];
-  const yearOrdered = +fomattedDateNow.split('/')[2];
+  // const monthOrdered = +fomattedDateNow.split('/')[0];
+  // const dateOrdered = +fomattedDateNow.split('/')[1];
+  // const yearOrdered = +fomattedDateNow.split('/')[2];
 
   const handleOrderList = useCallback(
     (pageIndex = 1) => {
@@ -79,9 +90,9 @@ const Page = () => {
         pageSize,
         customerName,
         category: selectedCategory,
-        // monthOrdered,
-        // dateOrdered,
-        // yearOrdered,
+        monthOrdered,
+        dateOrdered,
+        yearOrdered,
       };
 
       dispatch(common.ui.setLoading());
@@ -102,7 +113,7 @@ const Page = () => {
           dispatch(common.ui.clearLoading());
         });
     },
-    [dispatch, customerName, pageSize, category]
+    [dispatch, customerName, monthOrdered, dateOrdered, yearOrdered, pageSize, category]
   );
 
   const handleCategoryList = useCallback(
@@ -151,8 +162,25 @@ const Page = () => {
     handleOrderList(value);
   };
 
+  const handleChangeMonth = (event) => {
+    console.log('event ', event.target.value)
+    setMonthOrdered(event.target.value);
+  };
+
+  const handleChangeDay = (event) => {
+    console.log('event ', event.target.value)
+    setDateOrdered(event.target.value);
+  };
+
+  const handleChangeYear = (event) => {
+    console.log('event ', event.target.value)
+    setYearOrdered(event.target.value);
+  };
+
   const handleClearFilters = () => {
-    setCustomerName('');
+    setMonthOrdered('');
+    setDateOrdered('');
+    setYearOrdered('');
     setCategory('');
     selectRef.current.value = '';
   };
@@ -161,37 +189,93 @@ const Page = () => {
 
   return (
     <>
-      <div className={styles.searchForm}>
-        <TextField
-          style={{ width: '20rem' }}
-          onChange={(e) => setCustomerName(e.target.value)}
-          placeholder="Search orders by customer name"
-          size="small"
-          value={customerName}
-        />
-        { role === '3' && (
-          <>
-            <div className={styles.inputField}>
-              <select
-                ref={selectRef}
-                required
-                className={styles.slct}
-                onChange={(e) => setCategory(e.target.value)}
-                value={category}
-              >
-                <option value=''>Filter by Business name</option>
-                {categoryList.map((category) => (
-                  <option key={category.name} value={category._id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
-              Clear Filters
-            </Button>
-          </>
-        )}
+      <div className={styles.upperForm}>
+        <div className={styles.searchForm}>
+          <TextField
+            style={{ width: '20rem' }}
+            onChange={(e) => setCustomerName(e.target.value)}
+            placeholder="Search orders by customer name"
+            size="small"
+            value={customerName}
+          />
+          { role === '3' && (
+            <>
+              <div className={styles.inputField}>
+                <select
+                  ref={selectRef}
+                  required
+                  className={styles.slct}
+                  onChange={(e) => setCategory(e.target.value)}
+                  value={category}
+                >
+                  <option value=''>Filter by Business name</option>
+                  {categoryList.map((category) => (
+                    <option key={category.name} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          )}
+        </div>
+        <div className={styles.searchForm}>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="monthLabel">Month</InputLabel>
+            <Select
+              labelId="monthLabel"
+              id="month"
+              value={monthOrdered}
+              onChange={handleChangeMonth}
+            >
+              <MenuItem value={1}>January</MenuItem>
+              <MenuItem value={2}>February</MenuItem>
+              <MenuItem value={3}>March</MenuItem>
+              <MenuItem value={4}>April</MenuItem>
+              <MenuItem value={5}>May</MenuItem>
+              <MenuItem value={6}>June</MenuItem>
+              <MenuItem value={7}>July</MenuItem>
+              <MenuItem value={8}>August</MenuItem>
+              <MenuItem value={9}>September</MenuItem>
+              <MenuItem value={10}>October</MenuItem>
+              <MenuItem value={11}>November</MenuItem>
+              <MenuItem value={12}>December</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="dayLabel">Day</InputLabel>
+            <Select
+              labelId="dayLabel"
+              id="day"
+              value={dateOrdered}
+              onChange={handleChangeDay}
+            >
+              {daysArray.map((day) => (
+                <MenuItem key={day} value={day}>
+                  {day}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="yearLabel">Year</InputLabel>
+            <Select
+              labelId="yearLabel"
+              id="year"
+              value={yearOrdered}
+              onChange={handleChangeYear}
+            >
+              {yearsArray.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+            Clear Filters
+          </Button>
+        </div>
       </div>
       {loading ? <LoadingSpinner /> :
       <div>

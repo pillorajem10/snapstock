@@ -25,6 +25,10 @@ import {
   Button,
   Snackbar,
   Modal,
+  FormControl,
+  MenuItem,
+  Select,
+  InputLabel,
   Box,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -72,6 +76,14 @@ const Page = () => {
   const [pageSize] = useState(7);
   const [chartDate, setChartDate] = useState({});
 
+  const [monthOrdered, setMonthOrdered] = useState('');
+  const [dateOrdered, setDateOrdered] = useState('');
+  const [yearOrdered, setYearOrdered] = useState('');
+
+  const daysArray = Array.from({ length: 31 }, (_, index) => index + 1);
+  const currentYear = new Date().getFullYear();
+  const yearsArray = Array.from({ length: currentYear - 1999 + 1 }, (_, index) => 1999 + index);
+
   // const category = Cookies.get('category');
 
   const handleSaleList = useCallback(
@@ -87,7 +99,12 @@ const Page = () => {
       pageSize,
       username,
       category: selectedCategory,
+      monthOrdered,
+      dateOrdered,
+      yearOrdered,
     };
+
+    console.log('payload', payload)
 
     dispatch(common.ui.setLoading());
     dispatch(jkai.sale.getSales(payload))
@@ -126,7 +143,7 @@ const Page = () => {
         dispatch(common.ui.clearLoading());
       });
   },
-  [dispatch, pageSize, category]
+  [dispatch, pageSize, category, monthOrdered, dateOrdered, yearOrdered]
 );
 
 
@@ -219,10 +236,27 @@ const Page = () => {
     handleCategoryList();
   }, [handleCategoryList])
 
+
+  const handleChangeMonth = (event) => {
+    console.log('event ', event.target.value)
+    setMonthOrdered(event.target.value);
+  };
+
+  const handleChangeDay = (event) => {
+    console.log('event ', event.target.value)
+    setDateOrdered(event.target.value);
+  };
+
+  const handleChangeYear = (event) => {
+    console.log('event ', event.target.value)
+    setYearOrdered(event.target.value);
+  };
+
   const handleClearFilters = () => {
-    setUsername('');
+    setMonthOrdered('');
+    setDateOrdered('');
+    setYearOrdered('');
     setCategory('');
-    selectRef.current.value = '';
   };
 
   return (
@@ -260,7 +294,7 @@ const Page = () => {
       </div>
       <div className={styles.header}>
         <div className={styles.searchForm}>
-          <TextField style={{width: "20rem"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>
+          {/*<TextField style={{width: "20rem"}} onChange={(e) => setUsername(e.target.value)} placeholder="Search for user" size="small"/>*/}
           { role === '3' && (
             <>
               <div className={styles.inputField}>
@@ -284,6 +318,63 @@ const Page = () => {
               </Button>
             </>
           )}
+        </div>
+        <div className={styles.searchForm}>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="monthLabel">Month</InputLabel>
+            <Select
+              labelId="monthLabel"
+              id="month"
+              value={monthOrdered}
+              onChange={handleChangeMonth}
+            >
+              <MenuItem value={1}>January</MenuItem>
+              <MenuItem value={2}>February</MenuItem>
+              <MenuItem value={3}>March</MenuItem>
+              <MenuItem value={4}>April</MenuItem>
+              <MenuItem value={5}>May</MenuItem>
+              <MenuItem value={6}>June</MenuItem>
+              <MenuItem value={7}>July</MenuItem>
+              <MenuItem value={8}>August</MenuItem>
+              <MenuItem value={9}>September</MenuItem>
+              <MenuItem value={10}>October</MenuItem>
+              <MenuItem value={11}>November</MenuItem>
+              <MenuItem value={12}>December</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="dayLabel">Day</InputLabel>
+            <Select
+              labelId="dayLabel"
+              id="day"
+              value={dateOrdered}
+              onChange={handleChangeDay}
+            >
+              {daysArray.map((day) => (
+                <MenuItem key={day} value={day}>
+                  {day}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl style={{ width: 150, marginRight: 10 }}>
+            <InputLabel id="yearLabel">Year</InputLabel>
+            <Select
+              labelId="yearLabel"
+              id="year"
+              value={yearOrdered}
+              onChange={handleChangeYear}
+            >
+              {yearsArray.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Button variant="outlined" color="secondary" onClick={handleClearFilters}>
+            Clear Filters
+          </Button>
         </div>
       </div>
 
