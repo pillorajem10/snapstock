@@ -106,7 +106,10 @@ const Page = () => {
     const payload = {
       date: formattedDateNowWhole,
       price: priceOfTheDay,
-      category
+      category,
+      monthOrdered,
+      dateOrdered,
+      yearOrdered,
     }
 
     try {
